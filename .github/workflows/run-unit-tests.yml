@@ -29,8 +29,11 @@ jobs:
       # build everything (includes running unit tests)
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
       - name: Execute Gradle build
         run: ./gradlew build
+        
+      
 
       # report the results
       - name: Publish Test Report
