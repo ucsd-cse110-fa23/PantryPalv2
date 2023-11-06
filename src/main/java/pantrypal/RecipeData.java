@@ -1,11 +1,11 @@
 package pantrypal;
 
-public class Recipe {
+public class RecipeData {
     String title;
     String[] ingredients;
     String instructions;
 
-    public Recipe(String[] gptResponse) {
+    public RecipeData(String[] gptResponse) {
         String body = gptResponse[0];
         int newlineIndex = body.indexOf("\n");
 
