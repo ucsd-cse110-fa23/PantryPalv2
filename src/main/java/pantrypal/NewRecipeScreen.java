@@ -29,7 +29,6 @@ public class NewRecipeScreen extends BorderPane {
     private Button editButton;
     private Button saveButton;
     private Button cancelButton;
-    // private static String FILE_PATH = "./my_audio.m4a";
     private String response;
     private RecipeData recipe;
     private Stage primaryStage;
@@ -38,7 +37,7 @@ public class NewRecipeScreen extends BorderPane {
 
         this.response = recipe.title + "\n" + recipe.instructions;
         // Initialise the header Object
-        header = new NewRecipeHeader();
+        header = new NewRecipeHeader(recipe.title);
 
         // Initialise the body Object
         body = new NewRecipeBody(response);
@@ -74,11 +73,11 @@ public class NewRecipeScreen extends BorderPane {
 
 class NewRecipeHeader extends HBox {
 
-    NewRecipeHeader() {
+    NewRecipeHeader(String title) {
         this.setPrefSize(500, 60); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-        Text titleText = new Text("Recipe Title (should be passed from chatgpt)"); // Text of the Header
+        Text titleText = new Text(title); // Text of the Header
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
         this.getChildren().add(titleText);
         this.setAlignment(Pos.CENTER); // Align the text to the Center
