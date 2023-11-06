@@ -14,8 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RecipeTest {
     private Recipe recipe;
+
     @BeforeEach
-    void setUp() {recipe = new Recipe();
+    void setUp() {
+        recipe = new Recipe();
     }
     
     @Test
@@ -25,7 +27,7 @@ public class RecipeTest {
     }
 
     @Test
-    void testSetRecipeName() 
+    void testSetRecipeName() {
         recipe.setRecipeName("Pasta");
         assertEquals("Pasta", recipe.recipeName.getText());
     }
