@@ -12,6 +12,8 @@ import java.net.URISyntaxException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import pantrypal.Main;
+
 public class RecipeTest {
     private Recipe recipe;
 
