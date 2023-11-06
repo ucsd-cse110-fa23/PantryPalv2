@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
 java {
@@ -10,6 +12,11 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 dependencies {
@@ -24,3 +31,5 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+mainClassName = 'pantrypal.Main'
