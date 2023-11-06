@@ -19,6 +19,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 class Recipe extends HBox {
 
@@ -458,7 +460,9 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
+        String result = OpenAI.getRecipeFromAudio("my_audio.m4a");
+        System.out.println(result);
         launch(args);
     }
 }

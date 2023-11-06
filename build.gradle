@@ -6,7 +6,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -26,6 +26,10 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     // This provides the TestEngine to actually run the tests.
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation group: 'org.json', name: 'json', version: '20230227'
+
 }
 
 test {
