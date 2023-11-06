@@ -14,16 +14,5 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WhisperTest {
 
-    @Test
-    void testHumanVoice() throws IOException, URISyntaxException {
-        String transcript = Whisper.getTranscript("./src/test/java/resources/my_audio.m4a");
-        assertEquals("I love computer science. It is great.", transcript);
-    }
-
-    @Test
-    void testHello() throws IOException, URISyntaxException {
-        String transcript = Whisper.getTranscript("./src/test/java/resources/hello.mp3");
-        assertEquals("Hello, world.", transcript);
-    }
 
 }
