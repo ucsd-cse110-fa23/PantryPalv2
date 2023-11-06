@@ -31,9 +31,12 @@ public class NewRecipeScreen extends BorderPane {
     private Button cancelButton;
     // private static String FILE_PATH = "./my_audio.m4a";
     private String response;
+    private RecipeData recipe;
+    private Stage primaryStage;
 
-    public NewRecipeScreen() {
+    public NewRecipeScreen(Stage primaryStage, RecipeData recipe) {
 
+        this.response = recipe.title + "\n" + recipe.instructions;
         // Initialise the header Object
         header = new NewRecipeHeader();
 
@@ -55,11 +58,17 @@ public class NewRecipeScreen extends BorderPane {
         saveButton = newfooter.getSaveButton();
         cancelButton = newfooter.getCancelButton();
 
+        this.recipe = recipe;
+        this.primaryStage = primaryStage;
+
         // Call Event Listeners for the Buttons
         addListeners();
     }
 
     public void addListeners() {
+        cancelButton.setOnAction(e -> {
+            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+        });
     }
 }
 

@@ -254,7 +254,7 @@ class CreateRecipe extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
-        stopButton = new Button("Stop");
+        stopButton = new Button("Stop and Generate Recipe");
 
         recordingLabel = new Label("Recording...");
 
@@ -373,8 +373,9 @@ class AppFrame extends BorderPane {
 
     // private Button backButton;
     private ScrollPane scrollPane;
+    private Stage primaryStage;
 
-    AppFrame() {
+    AppFrame(Stage primaryStage) {
         // Initialise the header Object
         header = new Header();
 
@@ -396,6 +397,8 @@ class AppFrame extends BorderPane {
         stackPane.getChildren().addAll(scrollPane, createRecipe);
         scrollPane.setVisible(true);
         createRecipe.setVisible(true);
+
+        this.primaryStage = primaryStage;
 
         // Add header to the top of the BorderPane
         this.setTop(header);
@@ -431,6 +434,26 @@ class AppFrame extends BorderPane {
         // Stop Button
         stopButton.setOnAction(e -> {
             stopRecording();
+            String[] result;
+            try {
+                recordingLabel.setText("Processing...");
+                result = OpenAI.getRecipeFromAudio("recording.wav");
+                recordingLabel.setText("Stop and Generate Recipe");
+
+                RecipeData recipe = new RecipeData(result);
+
+                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
+                primaryStage.setScene(scene);
+
+                System.out.println(result[0]);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (URISyntaxException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
         });
     }
 
@@ -560,7 +583,7 @@ public class Main extends Application {
 
         // Setting the Layout of the Window- Should contain a Header, Footer and the
         // RecipeList
-        AppFrame root = new AppFrame();
+        AppFrame root = new AppFrame(primaryStage);
 
         // Set the title of the app
         primaryStage.setTitle("Pantry Pal");
