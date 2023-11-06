@@ -34,6 +34,7 @@ class Recipe extends HBox {
 
     private Label index;
     private TextField recipeName;
+    private TextField recipeDetails;
     private Button deleteButton;
 
     private boolean markedDone;
@@ -58,6 +59,13 @@ class Recipe extends HBox {
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
         this.getChildren().add(recipeName); // add textlabel to recipe
 
+        recipeDetails = new TextField(); // create recipe name text field
+        recipeDetails.setPrefSize(380, 20); // set size of text field
+        recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of texfield
+        index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
+        this.getChildren().add(recipeDetails); // add textlabel to recipe
+
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
         deleteButton.setPrefHeight(Double.MAX_VALUE);
@@ -73,6 +81,10 @@ class Recipe extends HBox {
 
     public void setRecipeName(String name) {
         this.recipeName.setText(name);
+    }
+
+    public void setRecipeDetails(String details) {
+        this.recipeDetails.setText(details);
     }
 
     public TextField getRecipeName() {
@@ -109,6 +121,8 @@ class Recipe extends HBox {
             }
         }
     }
+
+    
 
 }
 

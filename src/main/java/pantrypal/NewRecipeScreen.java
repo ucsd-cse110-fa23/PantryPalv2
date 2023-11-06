@@ -59,14 +59,30 @@ public class NewRecipeScreen extends BorderPane {
 
         this.recipe = recipe;
         this.primaryStage = primaryStage;
-
+        
         // Call Event Listeners for the Buttons
         addListeners();
     }
-
+    
     public void addListeners() {
         cancelButton.setOnAction(e -> {
             primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+        });
+        saveButton.setOnAction(e -> {
+            try {
+            FileWriter writer = new FileWriter("recipes.txt", true);
+
+            String str = recipe.title + "\n" + recipe.instructions;
+
+            writer.write(str);
+            writer.write("\n\n");
+            writer.close();
+            
+        } catch (IOException e1) {
+            System.out.println("An error occurred.");
+            e1.printStackTrace();
+        }
+            
         });
     }
 }
