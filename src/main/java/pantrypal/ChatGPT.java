@@ -27,12 +27,19 @@ public class ChatGPT {
     }
 
     public ChatGPT() {
-        maxTokens = 100;
+        maxTokens = 1500;
     }
 
-    public String generateRecipe(String transcription) {
+    public String[] generateRecipe(String transcription) {
         String[] ingredients = extractIngredients(transcription);
-        return createRecipe(ingredients);
+        String recipe = createRecipe(ingredients);
+
+        String[] toRet = new String[ingredients.length + 1];
+        toRet[0] = recipe;
+        for (int i = 0; i < ingredients.length; i++) {
+            toRet[i + 1] = ingredients[i];
+        }
+        return toRet;
     }
 
     private String createRecipe(String[] ingredients) {
@@ -64,9 +71,7 @@ public class ChatGPT {
                                                                 // URISyntaxException
         String extractIngredientsPrompt = String.format(
                 "Transcript: %s\n" +
-                        "Oh in my fridge I have tomato sauce, chicken, and watermelon. Um lets see. In my pantry I have some pasta and rice.\n"
-                        +
-                        "\n" +
+                        transcription + "\n" +
                         "Given the above transcription create a list of ingredients in a JSON format, do it in the following formation without deviation.\n"
                         +
                         "\n" +

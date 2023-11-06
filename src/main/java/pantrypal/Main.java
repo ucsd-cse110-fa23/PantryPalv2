@@ -461,7 +461,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-        String result = OpenAI.getRecipeFromAudio("my_audio.m4a");
+        String[] result = OpenAI.getRecipeFromAudio("my_audio.m4a");
         System.out.println(result);
         launch(args);
     }
