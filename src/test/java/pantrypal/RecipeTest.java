@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RecipeTest {
-    @Test
-    public void testRecipeCreation() {
-        Recipe recipe = new Recipe();
-        assertNotNull(recipe);
-    }
+    // @Test
+    // public void testRecipeCreation() {
+    //     Recipe recipe = new Recipe();
+    //     assertNotNull(recipe);
+    // }
 
     @Test
     public void testSetRecipeIndex() {

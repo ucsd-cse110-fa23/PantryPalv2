@@ -32,9 +32,9 @@ import java.net.URISyntaxException;
 
 class Recipe extends HBox {
 
-    private Label index;
-    private TextField recipeName;
-    private TextField recipeDetails;
+    public Label index;
+    public TextField recipeName;
+    public TextField recipeDetails;
     private Button deleteButton;
 
     private boolean markedDone;
