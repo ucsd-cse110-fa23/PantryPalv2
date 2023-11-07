@@ -10,7 +10,7 @@ public class RecipeData {
         int newlineIndex = body.indexOf("\n");
 
         // Use substring to split the string into two parts
-        String firstPart = body.substring(0, newlineIndex);
+        String firstPart = body.substring(1, newlineIndex);
         String secondPart = body.substring(newlineIndex + 1); // +1 to exclude the newline character itself
 
         this.title = firstPart;

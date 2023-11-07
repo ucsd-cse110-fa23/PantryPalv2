@@ -19,13 +19,22 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.TargetDataLine;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 class Recipe extends HBox {
 
-    private Label index;
-    private TextField recipeName;
+    //public Label index;
+    public TextField recipeName;
+    public TextField recipeDetails;
     private Button deleteButton;
 
     private boolean markedDone;
@@ -36,19 +45,26 @@ class Recipe extends HBox {
                                                                                                      // color of recipe
         markedDone = false;
 
-        index = new Label();
-        index.setText(""); // create index label
-        index.setPrefSize(40, 20); // set size of Index label
-        index.setTextAlignment(TextAlignment.CENTER); // Set alignment of index label
-        index.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the recipe
-        this.getChildren().add(index); // add index label to recipe
+        // index = new Label();
+        // index.setText(""); // create index label
+        // index.setPrefSize(40, 20); // set size of Index label
+        // index.setTextAlignment(TextAlignment.CENTER); // Set alignment of index label
+        // index.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the recipe
+        // this.getChildren().add(index); // add index label to recipe
 
         recipeName = new TextField(); // create recipe name text field
         recipeName.setPrefSize(380, 20); // set size of text field
         recipeName.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of texfield
-        index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        //index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
         this.getChildren().add(recipeName); // add textlabel to recipe
+
+        recipeDetails = new TextField(); // create recipe name text field
+        recipeDetails.setPrefSize(380, 20); // set size of text field
+        recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of texfield
+        //index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
+        this.getChildren().add(recipeDetails); // add textlabel to recipe
 
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
@@ -58,13 +74,23 @@ class Recipe extends HBox {
         this.getChildren().add(deleteButton);
     }
 
-    public void setRecipeIndex(int num) {
-        this.index.setText(num + ""); // num to String
-        this.recipeName.setPromptText("Recipe " + num);
+    public Recipe(String na, String de) {
+        //this.index.setText(in +"");
+        this.recipeName.setText(na);
+        this.recipeDetails.setText(de);
     }
+
+    // public void setRecipeIndex(int num) {
+    //     this.index.setText(num + ""); // num to String
+    //     //this.recipeName.setPromptText("Recipe " + num);
+    // }
 
     public void setRecipeName(String name) {
         this.recipeName.setText(name);
+    }
+
+    public void setRecipeDetails(String details) {
+        this.recipeDetails.setText(details);
     }
 
     public TextField getRecipeName() {
@@ -102,6 +128,8 @@ class Recipe extends HBox {
         }
     }
 
+    
+
 }
 
 class Pair implements Comparable<Pair> {
@@ -134,20 +162,20 @@ class RecipeList extends VBox {
         this.setStyle("-fx-background-color: #F0F8FF;");
     }
 
-    public void updateRecipeIndices() {
-        int index = 1;
-        for (int i = 0; i < this.getChildren().size(); i++) {
-            if (this.getChildren().get(i) instanceof Recipe) {
-                ((Recipe) this.getChildren().get(i)).setRecipeIndex(index);
-                index++;
-            }
-        }
-    }
+    // public void updateRecipeIndices() {
+    //     int index = 1;
+    //     for (int i = 0; i < this.getChildren().size(); i++) {
+    //         if (this.getChildren().get(i) instanceof Recipe) {
+    //             ((Recipe) this.getChildren().get(i)).setRecipeIndex(index);
+    //             index++;
+    //         }
+    //     }
+    // }
 
-    public void removeCompletedRecipes() {
-        this.getChildren().removeIf(recipe -> recipe instanceof Recipe && ((Recipe) recipe).isMarkedDone());
-        this.updateRecipeIndices();
-    }
+    // public void removeCompletedRecipes() {
+    //     this.getChildren().removeIf(recipe -> recipe instanceof Recipe && ((Recipe) recipe).isMarkedDone());
+    //     this.updateRecipeIndices();
+    // }
 
     /*
      * Load recipes from a file called "recipes.txt"
@@ -171,7 +199,7 @@ class RecipeList extends VBox {
                     // Call toggleDone on click
                     recipe.toggleDone();
                 });
-                this.updateRecipeIndices();
+                //this.updateRecipeIndices();
                 System.out.println(data);
             }
             scan.close();
@@ -213,6 +241,8 @@ class CreateRecipe extends VBox {
 
     // private Button backButton;
     private Button addButton;
+    private Button stopButton;
+    private Label recordingLabel;
     private Button recipeListButton;
 
     CreateRecipe() {
@@ -244,13 +274,17 @@ class CreateRecipe extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
+        stopButton = new Button("Stop and Generate Recipe");
+
+        recordingLabel = new Label("Recording...");
+
         recipeListButton = new Button("View Recipe List"); // text displayed on add button
         recipeListButton.setStyle(defaultButtonStyle); // styling the buttonv
         recipeListButton.setPrefSize(150, 30);
 
         // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
         // this.getChildren().addAll(backButton, addButton, recipeListButton);
-        this.getChildren().addAll(addButton, recipeListButton);
+        this.getChildren().addAll(addButton, stopButton, recordingLabel, recipeListButton);
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
     }
@@ -263,8 +297,16 @@ class CreateRecipe extends VBox {
         return addButton;
     }
 
+    public Button getStopButton() {
+        return stopButton;
+    }
+
     public Button getRecipeListButton() {
         return recipeListButton;
+    }
+
+    public Label getRecordingLabel() {
+        return recordingLabel;
     }
 
 }
@@ -336,8 +378,14 @@ class AppFrame extends BorderPane {
     private CreateRecipe createRecipe;
     private StackPane stackPane = new StackPane();
 
-    private Button addButton;
     private Button recipeListButton;
+
+    private Button addButton;
+    private Button stopButton;
+    private AudioFormat audioFormat;
+    private TargetDataLine targetDataLine;
+    private Label recordingLabel;
+    private Thread t;
 
     // private Button clearButton;
     // private Button loadButton;
@@ -345,8 +393,9 @@ class AppFrame extends BorderPane {
 
     // private Button backButton;
     private ScrollPane scrollPane;
+    private Stage primaryStage;
 
-    AppFrame() {
+    AppFrame(Stage primaryStage) {
         // Initialise the header Object
         header = new Header();
 
@@ -369,6 +418,8 @@ class AppFrame extends BorderPane {
         scrollPane.setVisible(true);
         createRecipe.setVisible(true);
 
+        this.primaryStage = primaryStage;
+
         // Add header to the top of the BorderPane
         this.setTop(header);
         // Add scroller to the centre of the BorderPane
@@ -378,67 +429,171 @@ class AppFrame extends BorderPane {
 
         // Initialise Button Variables through the getters in Footer
         addButton = createRecipe.getAddButton();
+        stopButton = createRecipe.getStopButton();
+        recordingLabel = createRecipe.getRecordingLabel();
         recipeListButton = createRecipe.getRecipeListButton();
+
+        recordingLabel.setVisible(false);
 
         // clearButton = footer.getClearButton();
         // loadButton = footer.getLoadButton();
         // saveButton = footer.getSaveButton();
         // backButton = createRecipe.getBackButton();
         // Call Event Listeners for the Buttons
+        audioFormat = getAudioFormat();
+
         addListeners();
     }
 
     public void addListeners() {
-
-        // Add button functionality
+        // Start Button
         addButton.setOnAction(e -> {
-            // Create a new recipe
-            /*
-             * Recipe recipe = new Recipe();
-             * // Add recipe to recipelist
-             * recipeList.getChildren().add(recipe);
-             * // Add doneButtonToggle to the Done button
-             * Button deleteButton = recipe.getDeleteButton();
-             * deleteButton.setOnAction(e1 -> {
-             * // Call toggleDone on click
-             * recipe.toggleDone();
-             * });
-             * // Update recipe indices
-             * recipeList.updateRecipeIndices();
-             */
-
-            // open next page in the card layout
-            // scrollPane.setVisible(false);
-            // createRecipe.setVisible(true);
-
-            // CALL WHISPER HERE + TAKE MIC INPUT
+            startRecording();
         });
 
-        // backButton.setOnAction(e -> {
-        // scrollPane.setVisible(true);
-        // createRecipe.setVisible(false);
-        // });
+        // Stop Button
+        stopButton.setOnAction(e -> {
+            stopRecording();
+            String[] result;
+            try {
+                recordingLabel.setText("Processing...");
+                result = OpenAI.getRecipeFromAudio("recording.wav");
+                recordingLabel.setText("Stop and Generate Recipe");
 
-        recipeListButton.setOnAction(e -> {
-            // TODO: Open up the list of all recipes, and allow user to select one
+                RecipeData recipe = new RecipeData(result);
+
+                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
+                primaryStage.setScene(scene);
+
+                System.out.println(result[0]);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (URISyntaxException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
         });
-
-        // Clear finished recipes
-        // clearButton.setOnAction(e -> {
-        // recipeList.removeCompletedRecipes();
-        // });
-
-        // load recipes from file
-        // loadButton.setOnAction(e -> {
-        // recipeList.loadRecipes();
-        // });
-
-        // save current recipe list
-        // saveButton.setOnAction(e -> {
-        // recipeList.saveRecipes();
-        // });
-
     }
+
+    private AudioFormat getAudioFormat() {
+        // the number of samples of audio per second.
+        // 44100 represents the typical sample rate for CD-quality audio.
+        float sampleRate = 44100;
+
+        // the number of bits in each sample of a sound that has been digitized.
+        int sampleSizeInBits = 16;
+
+        // the number of audio channels in this format (1 for mono, 2 for stereo).
+        int channels = 2;
+
+        // whether the data is signed or unsigned.
+        boolean signed = true;
+
+        // whether the audio data is stored in big-endian or little-endian order.
+        boolean bigEndian = false;
+
+        return new AudioFormat(
+                sampleRate,
+                sampleSizeInBits,
+                channels,
+                signed,
+                bigEndian);
+    }
+
+    private void startRecording() {
+        t = new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // the format of the TargetDataLine
+                            DataLine.Info dataLineInfo = new DataLine.Info(
+                                    TargetDataLine.class,
+                                    audioFormat);
+                            // the TargetDataLine used to capture audio data from the microphone
+                            targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
+                            targetDataLine.open(audioFormat);
+                            targetDataLine.start();
+                            recordingLabel.setVisible(true);
+
+                            // the AudioInputStream that will be used to write the audio data to a file
+                            AudioInputStream audioInputStream = new AudioInputStream(
+                                    targetDataLine);
+
+                            // the file that will contain the audio data
+                            File audioFile = new File("recording.wav");
+                            AudioSystem.write(
+                                    audioInputStream,
+                                    AudioFileFormat.Type.WAVE,
+                                    audioFile);
+                            recordingLabel.setVisible(false);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+        t.start();
+    }
+
+    private void stopRecording() {
+        targetDataLine.stop();
+        targetDataLine.close();
+    }
+
+    // public void addListeners() {
+
+    // // Add button functionality
+    // addButton.setOnAction(e -> {
+    // // Create a new recipe
+    // /*
+    // * Recipe recipe = new Recipe();
+    // * // Add recipe to recipelist
+    // * recipeList.getChildren().add(recipe);
+    // * // Add doneButtonToggle to the Done button
+    // * Button deleteButton = recipe.getDeleteButton();
+    // * deleteButton.setOnAction(e1 -> {
+    // * // Call toggleDone on click
+    // * recipe.toggleDone();
+    // * });
+    // * // Update recipe indices
+    // * recipeList.updateRecipeIndices();
+    // */
+
+    // // open next page in the card layout
+    // // scrollPane.setVisible(false);
+    // // createRecipe.setVisible(true);
+
+    // // CALL WHISPER HERE + TAKE MIC INPUT
+    // });
+
+    // // backButton.setOnAction(e -> {
+    // // scrollPane.setVisible(true);
+    // // createRecipe.setVisible(false);
+    // // });
+
+    // recipeListButton.setOnAction(e -> {
+    // // TODO: Open up the list of all recipes, and allow user to select one
+    // });
+
+    // // Clear finished recipes
+    // // clearButton.setOnAction(e -> {
+    // // recipeList.removeCompletedRecipes();
+    // // });
+
+    // // load recipes from file
+    // // loadButton.setOnAction(e -> {
+    // // recipeList.loadRecipes();
+    // // });
+
+    // // save current recipe list
+    // // saveButton.setOnAction(e -> {
+    // // recipeList.saveRecipes();
+    // // });
+
+    // }
+    // }
 }
 
 public class Main extends Application {
@@ -448,7 +603,7 @@ public class Main extends Application {
 
         // Setting the Layout of the Window- Should contain a Header, Footer and the
         // RecipeList
-        AppFrame root = new AppFrame();
+        AppFrame root = new AppFrame(primaryStage);
 
         // Set the title of the app
         primaryStage.setTitle("Pantry Pal");
@@ -461,8 +616,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-        String[] result = OpenAI.getRecipeFromAudio("my_audio.m4a");
-        System.out.println(result);
         launch(args);
     }
 }
