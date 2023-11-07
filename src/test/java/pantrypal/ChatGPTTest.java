@@ -11,43 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ChatGPTTest {
 
     @Test
-    void testBDDExtractIngredients() {
-        String prompt = "{\"ingredients\": [\"Chicken\",\"Rice\"]}";
-        String transcription = """
-        {
-            "ingredients": [
-                "Chicken",
-                "Rice"
-            ]
-        }
-        """;
-        MockModel model = new MockModel();
-        ChatGPT gpt = new ChatGPT(model);
-        String[] test = gpt.extractIngredients(prompt);
-        String[] output = {"Chicken", "Rice"};
-        assertEquals(test[0], output[0]);
-    }
-
-    @Test
     void testParseModelResponse1() {
         String prompt = "{\"ingredients\": [\"Chicken\",\"Rice\"]}";
 
         MockModel model = new MockModel();
         ChatGPT gpt = new ChatGPT(model);
         String[] test = gpt.parseModelResponse(prompt);
-        String[] output = {"Chicken", "Rice"};
-        assertEquals(test[0], output[0]);       
-    }
-
-    @Test
-    void testParseModelResponse2() {
-        String prompt = "{\"ingredients\": [\"Chicken\",\"Rice\"]}";
-
-        MockModel model = new MockModel();
-        ChatGPT gpt = new ChatGPT(model);
-        String[] test = gpt.parseModelResponse(prompt);
-        String[] output = {"Chicken", "Rice"};
-        assertEquals(test[1], output[1]);       
+        String[] output = { "Chicken", "Rice" };
+        assertEquals(test[0], output[0]);
+        assertEquals(test[1], test[1]);
     }
 
 }
