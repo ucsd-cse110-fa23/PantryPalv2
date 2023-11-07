@@ -12,13 +12,14 @@ import org.json.JSONObject;
 
 public class ChatGPT {
     private ILanguageModel model;
+
     // Main used for testing
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
         String mockTranscription = "I have rice, pasta, tomato sauce, and water.";
 
-        //ChatGPT gpt = new ChatGPT();
+        // ChatGPT gpt = new ChatGPT();
 
-        //System.out.println(gpt.generateRecipe(mockTranscription));
+        // System.out.println(gpt.generateRecipe(mockTranscription));
     }
 
     public ChatGPT(ILanguageModel model) {
@@ -63,7 +64,7 @@ public class ChatGPT {
     }
 
     public String[] extractIngredients(String transcription) { // throws IOException, InterruptedException,
-                                                                // URISyntaxException
+                                                               // URISyntaxException
         String extractIngredientsPrompt = String.format(
                 "Transcript: %s\n" +
                         transcription + "\n" +
@@ -81,11 +82,10 @@ public class ChatGPT {
                         "The JSON response:",
                 transcription);
 
-        
         String generatedText = model.callModel(extractIngredientsPrompt);
 
         System.out.println(generatedText);
-        
+
         return parseModelResponse(generatedText);
     }
 
