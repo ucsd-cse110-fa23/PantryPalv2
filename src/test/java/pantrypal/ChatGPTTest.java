@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ChatGPTTest {
 
     @Test
-    void testExtractIngredients() {
+    void testBDDExtractIngredients() {
         String prompt = "{\"ingredients\": [\"Chicken\",\"Rice\"]}";
         String transcription = """
         {
