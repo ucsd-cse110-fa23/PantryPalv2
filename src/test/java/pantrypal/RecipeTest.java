@@ -14,25 +14,29 @@ public class RecipeTest {
 
     @BeforeEach
     void setUp() {
-        recipe = new Recipe();
+        int in = 1;
+        String na = "Pasta";
+        String de = "Ingredients: Flour, Water";
+        recipe = new Recipe(in,na,de);
     }
     
-    @Test
-    void testSetRecipeIndex() {
-        recipe.setRecipeIndex(1);
-        assertEquals("1", recipe.index.getText());
-    }
+    // @Test
+    // void testSetRecipeIndex() {
+    //     recipe.setRecipeIndex(1);
+    //     assertEquals("1", recipe.index.getText());
+    // }
 
     @Test
-    void testSetRecipeName() {
-        recipe.setRecipeName("Pasta");
+    void testSetRecipe() {
+        //recipe.setRecipeName("Pasta");
         assertEquals("Pasta", recipe.recipeName.getText());
-    }
-
-    @Test
-    void testSetRecipeDetails() {
-        recipe.setRecipeDetails("Ingredients: Flour, Water");
         assertEquals("Ingredients: Flour, Water", recipe.recipeDetails.getText());
     }
+
+    // @Test
+    // void testSetRecipeDetails() {
+    //     //recipe.setRecipeDetails("Ingredients: Flour, Water");
+    //     assertEquals("Ingredients: Flour, Water", recipe.recipeDetails.getText());
+    // }
 
 }

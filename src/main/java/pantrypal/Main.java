@@ -39,7 +39,7 @@ class Recipe extends HBox {
 
     private boolean markedDone;
 
-    public Recipe() {
+    Recipe() {
         this.setPrefSize(500, 20); // sets size of recipe
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // sets background
                                                                                                      // color of recipe
@@ -74,9 +74,15 @@ class Recipe extends HBox {
         this.getChildren().add(deleteButton);
     }
 
+    public Recipe(int in, String na, String de) {
+        this.index.setText(in+"");
+        this.recipeName.setText(na);
+        this.recipeDetails.setText(de);
+    }
+
     public void setRecipeIndex(int num) {
         this.index.setText(num + ""); // num to String
-        this.recipeName.setPromptText("Recipe " + num);
+        //this.recipeName.setPromptText("Recipe " + num);
     }
 
     public void setRecipeName(String name) {
