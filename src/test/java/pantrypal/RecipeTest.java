@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class RecipeTest {
     private Recipe recipe;
 
-    @BeforeEach
-    void setUp() {
-        //int in = 1;
-        String na = "Pasta";
-        String de = "Ingredients: Flour, Water";
-        recipe = new Recipe(na,de);
-    }
+    // @BeforeEach
+    // void setUp() {
+    //     //int in = 1;
+    //     String na = "Pasta";
+    //     String de = "Ingredients: Flour, Water";
+    //     recipe = new Recipe(na,de);
+    // }
     
     // @Test
     // void testSetRecipeIndex() {
