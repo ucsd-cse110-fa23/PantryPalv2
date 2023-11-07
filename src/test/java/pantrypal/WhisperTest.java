@@ -35,7 +35,7 @@ public class WhisperTest {
             assertNotNull(transcript);
             assertTrue(transcript.length() > 0);
 
-        } catch (IOException) {
+        } catch (IOException | URISyntaxException e) {
             fail("Exception thrown: " + e.getMessage());
         }
     }
