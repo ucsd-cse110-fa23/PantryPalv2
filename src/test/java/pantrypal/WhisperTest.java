@@ -21,23 +21,18 @@ public class WhisperTest {
     private Whisper whisper;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         whisper = new Whisper();
     }
 
     @Test
-    public void testGetTranscript() {
-        try {
-            String filePath = "./my_audio.m4a"; 
-            String transcript = whisper.getTranscript(filePath);
+    void testGetTranscript() {
+        String filePath = "./my_audio.m4a"; 
+        String transcript = whisper.getTranscript(filePath);
 
             
-            assertNotNull(transcript);
-            assertTrue(transcript.length() > 0);
-
-        } catch (IOException | URISyntaxException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
+        assertNotNull(transcript);
+        assertTrue(transcript.length() > 0);
     }
 
 }
