@@ -14,10 +14,10 @@ public class RecipeTest {
 
     @BeforeEach
     void setUp() {
-        int in = 1;
+        //int in = 1;
         String na = "Pasta";
         String de = "Ingredients: Flour, Water";
-        recipe = new Recipe(in,na,de);
+        recipe = new Recipe(na,de);
     }
     
     // @Test

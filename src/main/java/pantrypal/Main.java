@@ -74,7 +74,7 @@ class Recipe extends HBox {
         this.getChildren().add(deleteButton);
     }
 
-    public Recipe( String na, String de) {
+    public Recipe(String na, String de) {
         //this.index.setText(in +"");
         this.recipeName.setText(na);
         this.recipeDetails.setText(de);
