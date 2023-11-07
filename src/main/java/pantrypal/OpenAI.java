@@ -14,7 +14,7 @@ public class OpenAI implements ILanguageModel {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
     private static final String API_KEY = APIKey.getAPIKey();
     private static final String MODEL = "text-davinci-003";
-    private static final int maxTokens = 100;
+    private static final int maxTokens = 1000;
 
     public String callModel(String prompt) {
         // Create a request body which you will pass into request object
