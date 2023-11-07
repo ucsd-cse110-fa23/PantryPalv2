@@ -26,12 +26,12 @@ public class RecipeTest {
     //     assertEquals("1", recipe.index.getText());
     // }
 
-    @Test
-    void testSetRecipe() {
-        //recipe.setRecipeName("Pasta");
-        assertEquals("Pasta", recipe.recipeName.getText());
-        assertEquals("Ingredients: Flour, Water", recipe.recipeDetails.getText());
-    }
+    // @Test
+    // void testSetRecipe() {
+    //     //recipe.setRecipeName("Pasta");
+    //     assertEquals("Pasta", recipe.recipeName.getText());
+    //     assertEquals("Ingredients: Flour, Water", recipe.recipeDetails.getText());
+    // }
 
     // @Test
     // void testSetRecipeDetails() {

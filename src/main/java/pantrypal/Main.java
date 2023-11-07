@@ -457,7 +457,7 @@ class AppFrame extends BorderPane {
             String[] result;
             try {
                 recordingLabel.setText("Processing...");
-                result = OpenAI.getRecipeFromAudio("recording.wav");
+                result = getRecipeFromAudio("recording.wav");
                 recordingLabel.setText("Stop and Generate Recipe");
 
                 RecipeData recipe = new RecipeData(result);
@@ -475,6 +475,14 @@ class AppFrame extends BorderPane {
             }
 
         });
+    }
+
+    public static String[] getRecipeFromAudio(String filePath) throws IOException, URISyntaxException {
+        OpenAI model = new OpenAI();
+        ChatGPT gpt = new ChatGPT(model);
+        String transcript = Whisper.getTranscript(filePath);
+        String[] recipe = gpt.generateRecipe(transcript);
+        return recipe;
     }
 
     private AudioFormat getAudioFormat() {

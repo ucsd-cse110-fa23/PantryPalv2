@@ -11,23 +11,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ChatGPT {
-
-    private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    private static final String API_KEY = APIKey.getAPIKey();
-    private static final String MODEL = "text-davinci-003";
-    private int maxTokens;
-
+    private ILanguageModel model;
     // Main used for testing
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
         String mockTranscription = "I have rice, pasta, tomato sauce, and water.";
 
-        ChatGPT gpt = new ChatGPT();
+        //ChatGPT gpt = new ChatGPT();
 
-        System.out.println(gpt.generateRecipe(mockTranscription));
+        //System.out.println(gpt.generateRecipe(mockTranscription));
     }
 
-    public ChatGPT() {
-        maxTokens = 1500;
+    public ChatGPT(ILanguageModel model) {
+        this.model = model;
     }
 
     public String[] generateRecipe(String transcription) {
@@ -42,7 +37,7 @@ public class ChatGPT {
         return toRet;
     }
 
-    private String createRecipe(String[] ingredients) {
+    public String createRecipe(String[] ingredients) {
         if (ingredients == null)
             return null;
 
@@ -62,12 +57,12 @@ public class ChatGPT {
                 "Fill the following\n" +
                 "Recipe:";
 
-        String generatedText = chatGPTCall(createRecipePrompt);
+        String generatedText = model.callModel(createRecipePrompt);
 
         return generatedText;
     }
 
-    private String[] extractIngredients(String transcription) { // throws IOException, InterruptedException,
+    public String[] extractIngredients(String transcription) { // throws IOException, InterruptedException,
                                                                 // URISyntaxException
         String extractIngredientsPrompt = String.format(
                 "Transcript: %s\n" +
@@ -86,8 +81,15 @@ public class ChatGPT {
                         "The JSON response:",
                 transcription);
 
-        String generatedText = chatGPTCall(extractIngredientsPrompt);
+        
+        String generatedText = model.callModel(extractIngredientsPrompt);
 
+        System.out.println(generatedText);
+        
+        return parseModelResponse(generatedText);
+    }
+
+    public String[] parseModelResponse(String generatedText) {
         // Process response as list of ingredients
         JSONObject obj = new JSONObject(generatedText);
         JSONArray ingredients = obj.getJSONArray("ingredients");
@@ -100,53 +102,6 @@ public class ChatGPT {
         }
 
         return ingredientsString;
-    }
-
-    private String chatGPTCall(String prompt) {
-        // Create a request body which you will pass into request object
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("model", MODEL);
-        requestBody.put("prompt", prompt);
-        requestBody.put("max_tokens", maxTokens);
-        requestBody.put("temperature", 1.0);
-
-        // Create the HTTP Client
-        HttpClient client = HttpClient.newHttpClient();
-
-        // Create the request object
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .uri(URI.create(API_ENDPOINT))
-                .header("Content-Type", "application/json")
-                .header("Authorization", String.format("Bearer %s", API_KEY))
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
-                .build();
-
-        // Send the request and receive the response
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        if (response == null) {
-            return null;
-        }
-
-        // Process the response
-        String responseBody = response.body();
-        JSONObject responseJson = new JSONObject(responseBody);
-        JSONArray choices = responseJson.getJSONArray("choices");
-        String generatedText = choices.getJSONObject(0).getString("text");
-
-        return generatedText;
     }
 
 }
