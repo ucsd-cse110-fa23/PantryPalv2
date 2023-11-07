@@ -39,7 +39,7 @@ class Recipe extends HBox {
 
     private boolean markedDone;
 
-    Recipe() {
+    public Recipe() {
         this.setPrefSize(500, 20); // sets size of recipe
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // sets background
                                                                                                      // color of recipe
