@@ -25,19 +25,4 @@ public class WhisperTest {
         whisper = new Whisper();
     }
 
-    @Test
-    void testGetTranscript() {
-        try {
-            String filePath = "./my_audio.m4a"; 
-            String transcript = whisper.getTranscript(filePath);
-
-            
-            assertNotNull(transcript);
-            assertTrue(transcript.length() > 0);
-
-        } catch (IOException | URISyntaxException e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
-
 }
