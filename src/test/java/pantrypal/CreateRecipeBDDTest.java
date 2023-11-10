@@ -15,7 +15,7 @@ public class CreateRecipeBDDTest {
         MockModel model = new MockModel();
         ChatGPT gpt = new ChatGPT(model);
 
-        String[] result = gpt.generateRecipe(prompt);
+        String[] result = gpt.generateRecipe(prompt, "Breakfast");
 
         // Then the app should recognize the ingredients
         assertEquals("Chicken", result[1]);
