@@ -26,9 +26,9 @@ public class ChatGPT {
         this.model = model;
     }
 
-    public String[] generateRecipe(String transcription) {
+    public String[] generateRecipe(String transcription, String mealType) {
         String[] ingredients = extractIngredients(transcription);
-        String recipe = createRecipe(ingredients);
+        String recipe = createRecipe(ingredients, mealType);
 
         String[] toRet = new String[ingredients.length + 1];
         toRet[0] = recipe;
@@ -49,7 +49,7 @@ public class ChatGPT {
         return model.callModel(createMealTypePrompt);
     }
 
-    public String createRecipe(String[] ingredients) {
+    public String createRecipe(String[] ingredients, String mealType) {
         if (ingredients == null)
             return null;
 
@@ -57,7 +57,7 @@ public class ChatGPT {
 
         String createRecipePrompt = "Given the following ingredients:\n" +
                 ingredList + "\n" +
-                "Find a recipe that can be made using the above ingredients. The create\n" +
+                "Genereate me a" + mealType + "recipe that can be made using the above ingredients. The create\n" +
                 "an in depth step by step guide detailing how to make the recipe. Each step \n" +
                 "should be easy to follow because it has so much detial.\n" +
                 "Display it in the following format:\n" +

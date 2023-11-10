@@ -246,6 +246,7 @@ class CreateRecipe extends VBox {
 
     private String mealType;
 
+    // Point B
     CreateRecipe(Stage primaryStage, String mealType) {
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #a7d6cc;");
@@ -291,6 +292,8 @@ class CreateRecipe extends VBox {
         this.setAlignment(Pos.CENTER); // Align the text to the Center
 
         audioFormat = getAudioFormat();
+
+        recordingLabel.setVisible(false);
 
         addListeners();
     }
@@ -388,7 +391,7 @@ class CreateRecipe extends VBox {
             String[] result;
             try {
                 recordingLabel.setText("Processing...");
-                result = getRecipeFromAudio("recording.wav");
+                result = getRecipeFromAudio("recording.wav", mealType);
                 recordingLabel.setText("Stop and Generate Recipe");
 
                 RecipeData recipe = new RecipeData(result);
@@ -408,11 +411,11 @@ class CreateRecipe extends VBox {
         });
     }
 
-    public static String[] getRecipeFromAudio(String filePath) throws IOException, URISyntaxException {
+    public static String[] getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
         OpenAI model = new OpenAI();
         ChatGPT gpt = new ChatGPT(model);
         String transcript = Whisper.getTranscript(filePath);
-        String[] recipe = gpt.generateRecipe(transcript);
+        String[] recipe = gpt.generateRecipe(transcript, mealType);
         return recipe;
     }
 
@@ -554,7 +557,6 @@ class AppFrame extends BorderPane {
     private Header header;
     // private Footer footer;
     private RecipeList recipeList;
-    private CreateRecipe createRecipe;
     private CreateMealType createMealType;
     private StackPane stackPane = new StackPane();
 
