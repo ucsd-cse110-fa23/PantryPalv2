@@ -57,7 +57,9 @@ public class ChatGPT {
 
         String createRecipePrompt = "Given the following ingredients:\n" +
                 ingredList + "\n" +
-                "Genereate me a" + mealType + "recipe that can be made using the above ingredients. The create\n" +
+                "Genereate me a" + mealType + "recipe that can be made using the above ingredients." +
+                "It is utterly crucial that the recipe is a" + mealType + "recipe!\n" +
+                "The create\n" +
                 "an in depth step by step guide detailing how to make the recipe. Each step \n" +
                 "should be easy to follow because it has so much detial.\n" +
                 "Display it in the following format:\n" +

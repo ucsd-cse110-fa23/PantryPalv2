@@ -642,14 +642,15 @@ class AppFrame extends BorderPane {
             try {
                 recordingLabel.setText("Processing...");
                 result = getMealTypeFromAudio("recording.wav");
-                recordingLabel.setText("Stop and Generate Recipe");
+                System.out.println(result);
+                recordingLabel.setText("Done with Saying Meal Type");
 
-                if (result.equals("None")) {
+                if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
                     return;
+                } else {
+                    Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
+                    primaryStage.setScene(scene);
                 }
-
-                Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
-                primaryStage.setScene(scene);
 
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
