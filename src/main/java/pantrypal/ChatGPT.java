@@ -38,6 +38,17 @@ public class ChatGPT {
         return toRet;
     }
 
+    public String generateMealType(String transcription) {
+        String createMealTypePrompt = "Given the following transcription:\n" +
+                transcription + "\n" +
+                "Find the meal type of the above transcription. The meal type should be one of the following:\n" +
+                "Breakfast, Lunch, Dinner, Snack, Dessert, or Drink.\n" +
+                "If there is no valid meal type, return None\n" +
+                "The meal type is:";
+
+        return model.callModel(createMealTypePrompt);
+    }
+
     public String createRecipe(String[] ingredients) {
         if (ingredients == null)
             return null;
