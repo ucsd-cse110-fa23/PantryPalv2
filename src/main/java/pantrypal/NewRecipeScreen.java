@@ -33,6 +33,8 @@ public class NewRecipeScreen extends BorderPane {
     private RecipeData recipe;
     private Stage primaryStage;
 
+    private boolean isEditing = false;
+
     public NewRecipeScreen(Stage primaryStage, RecipeData recipe) {
 
         this.response = recipe.title + "\n" + recipe.instructions;
@@ -59,30 +61,47 @@ public class NewRecipeScreen extends BorderPane {
 
         this.recipe = recipe;
         this.primaryStage = primaryStage;
-        
+
         // Call Event Listeners for the Buttons
         addListeners();
     }
-    
+
     public void addListeners() {
         cancelButton.setOnAction(e -> {
+            body.getDetails().setEditable(false);
+            editButton.setText("Edit Recipe");
+
             primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
         });
+
         saveButton.setOnAction(e -> {
             try {
-            FileWriter writer = new FileWriter("recipes.txt", true);
+                FileWriter writer = new FileWriter("recipes.txt", true);
 
-            String str = recipe.title + "\n" + recipe.instructions;
+                String str = recipe.title + "\n" + recipe.instructions;
 
-            writer.write(str);
-            writer.write("\n\n");
-            writer.close();
-            
-        } catch (IOException e1) {
-            System.out.println("An error occurred.");
-            e1.printStackTrace();
-        }
-            
+                writer.write(str);
+                writer.write("\n\n");
+                writer.close();
+
+            } catch (IOException e1) {
+                System.out.println("An error occurred.");
+                e1.printStackTrace();
+            }
+
+        });
+
+        editButton.setOnAction(e -> {
+            // do nothing for now
+            if (!isEditing) {
+                body.getDetails().setEditable(true);
+                editButton.setText("Done Editing");
+                isEditing = true;
+            } else {
+                body.getDetails().setEditable(false);
+                editButton.setText("Edit Recipe");
+                isEditing = false;
+            }
         });
     }
 }
@@ -102,17 +121,22 @@ class NewRecipeHeader extends HBox {
 
 class NewRecipeBody extends HBox {
 
+    private TextArea details = new TextArea();
+
     NewRecipeBody(String res) {
         this.setPrefSize(500, 120); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-        TextArea details = new TextArea();
         details.setText(res);
         details.setWrapText(true);
         details.setEditable(false);
 
         this.getChildren().add(details);
         this.setAlignment(Pos.CENTER); // Align the text to the Center
+    }
+
+    public TextArea getDetails() {
+        return details;
     }
 }
 
