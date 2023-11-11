@@ -4,3 +4,4 @@ keys.txt
 .vscode/launch.json
 build
 .gradle/*
+build.gradle
