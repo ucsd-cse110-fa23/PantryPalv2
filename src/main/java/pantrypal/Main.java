@@ -125,27 +125,6 @@ class Recipe extends HBox {
 
 }
 
-class Pair implements Comparable<Pair> {
-    private String one;
-    private boolean two;
-
-    public Pair(String str, boolean bool) {
-        one = str;
-        two = bool;
-    }
-
-    public String getOne() {
-        return one;
-    }
-
-    public boolean getTwo() {
-        return two;
-    }
-
-    public int compareTo(Pair compare) {
-        return (this.one).compareTo(compare.getOne());
-    }
-}
 
 class RecipeList extends VBox {
 
