@@ -2,6 +2,7 @@ lib/
 *.class
 keys.txt
 .vscode/launch.json
-build
-.gradle/*
-build.gradle
+build/
+.gradle/
+recording.wav
+recipes.txt
