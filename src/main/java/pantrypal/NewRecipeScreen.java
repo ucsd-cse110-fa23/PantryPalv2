@@ -118,6 +118,7 @@ public class NewRecipeScreen extends BorderPane {
             } else {
                 body.getDetails().setEditable(false);
                 editButton.setText("Edit Recipe");
+                this.recipe.instructions = body.getDetails().getText();
                 isEditing = false;
             }
         });

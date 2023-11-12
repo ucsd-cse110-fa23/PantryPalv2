@@ -35,6 +35,8 @@ class Recipe extends HBox {
     public Label index;
     public TextField recipeName;
     public TextField recipeDetails;
+
+    private Button viewButton;
     private Button deleteButton;
 
     private boolean markedDone;
@@ -57,6 +59,7 @@ class Recipe extends HBox {
         recipeName.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of texfield
         index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
+        recipeName.setEditable(false);
         this.getChildren().add(recipeName); // add textlabel to recipe
 
         // recipeDetails = new TextField(); // create recipe name text field
@@ -69,11 +72,17 @@ class Recipe extends HBox {
         // the text field
         // this.getChildren().add(recipeDetails); // add textlabel to recipe
 
+        viewButton = new Button("View"); // creates a button for marking the recipe as done
+        viewButton.setPrefSize(100, 20);
+        viewButton.setPrefHeight(Double.MAX_VALUE);
+        viewButton.setStyle("-fx-background-color: #00FF00; -fx-border-width: 0;"); // sets style of button
+
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
         deleteButton.setPrefHeight(Double.MAX_VALUE);
-        deleteButton.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // sets style of button
+        deleteButton.setStyle("-fx-background-color: #FF0000; -fx-border-width: 0;"); // sets style of button
 
+        this.getChildren().add(viewButton); // add button to recipe
         this.getChildren().add(deleteButton);
     }
 
@@ -102,33 +111,10 @@ class Recipe extends HBox {
         return this.markedDone;
     }
 
-    public void toggleDone() {
-        markedDone = !markedDone;
-        if (markedDone) {
-            this.setStyle("-fx-border-color: #000000; -fx-border-width: 0; -fx-font-weight: bold;"); // remove border of
-                                                                                                     // recipe
-            for (int i = 0; i < this.getChildren().size(); i++) {
-                this.getChildren().get(i).setStyle("-fx-background-color: #BCE29E; -fx-border-width: 0;"); // change
-                                                                                                           // color of
-                                                                                                           // recipe to
-                                                                                                           // green
-            }
-        } else {
-            this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // put back
-                                                                                                         // border
-            for (int i = 0; i < this.getChildren().size(); i++) {
-                this.getChildren().get(i).setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // change
-                                                                                                           // color of
-                                                                                                           // recipe to
-                                                                                                           // green
-            }
-        }
-    }
-
 }
 
 class RecipeList extends VBox {
-
+    // PointC
     RecipeList() throws IOException {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
@@ -137,26 +123,6 @@ class RecipeList extends VBox {
         ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes();
         // add the recipes to the recipelist
         loadRecipes(recipes);
-    }
-
-    /* call on opening page */
-    public void callOnOpen() {
-
-    }
-
-    public void updateRecipeIndices() {
-        int index = 1;
-        for (int i = 0; i < this.getChildren().size(); i++) {
-            if (this.getChildren().get(i) instanceof Recipe) {
-                ((Recipe) this.getChildren().get(i)).setRecipeIndex(index);
-                index++;
-            }
-        }
-    }
-
-    public void removeCompletedRecipes() {
-        this.getChildren().removeIf(recipe -> recipe instanceof Recipe && ((Recipe) recipe).isMarkedDone());
-        this.updateRecipeIndices();
     }
 
     /*
@@ -170,53 +136,7 @@ class RecipeList extends VBox {
             recipe.setRecipeName(recipeData.title);
             this.getChildren().add(recipe);
         }
-        /*
-         * try {
-         * File file = new File("recipes.txt");
-         * Scanner scan = new Scanner(file);
-         * while (scan.hasNextLine()) {
-         * String data = scan.nextLine();
-         * Recipe recipe = new Recipe();
-         * recipe.setRecipeName(data);
-         * // Add recipe to recipelist
-         * this.getChildren().add(recipe);
-         * Button doneButton = recipe.getDeleteButton();
-         * doneButton.setOnAction(e1 -> {
-         * // Call toggleDone on click
-         * recipe.toggleDone();
-         * });
-         * //this.updateRecipeIndices();
-         * System.out.println(data);
-         * }
-         * scan.close();
-         * } catch (FileNotFoundException e) {
-         * System.out.println("error: file not found ");
-         * }
-         */
     }
-
-    /*
-     * Save recipes to a file called "recipes.txt"
-     */
-    public void saveRecipes() {
-        // hint 1: use try-catch block
-        // hint 2: use FileWriter
-        // hint 3: this.getChildren() gets the list of recipes
-        try {
-            FileWriter writer = new FileWriter(
-                    "/Users/akuduvalli/Desktop/CSE-110/java/CSE110-Lab-1/src/TodoList/recipes.txt", false);
-            for (int i = 0; i < this.getChildren().size(); i++) {
-                String str = ((Recipe) this.getChildren().get(i)).getRecipeName().getText()
-                        + (i < this.getChildren().size() - 1 ? "\n" : "");
-                writer.write(str);
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
-
 }
 
 /**
@@ -535,15 +455,31 @@ class Footer extends HBox {
 }
 
 class Header extends HBox {
+    Button backButton;
+    Text titleText;
+    StackPane titleContainer;
 
     Header() {
         this.setPrefSize(500, 60); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-        Text titleText = new Text("PantryPal"); // Text of the Header
+        // Back Button
+        backButton = new Button("Back");
+        backButton.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(backButton, Priority.NEVER); // Prevents the back button from growing
+
+        // Title Text
+        titleText = new Text("PantryPal");
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
-        this.getChildren().add(titleText);
-        this.setAlignment(Pos.CENTER); // Align the text to the Center
+
+        // StackPane for centering the title
+        titleContainer = new StackPane();
+        titleContainer.getChildren().add(titleText);
+        HBox.setHgrow(titleContainer, Priority.ALWAYS); // Allows the title container to grow and center the title
+
+        // Add components to the HBox
+        this.getChildren().addAll(backButton, titleContainer);
+        this.backButton.setVisible(false);
     }
 }
 
@@ -565,12 +501,6 @@ class AppFrame extends BorderPane {
     private Thread t;
 
     private Label recordingLabel;
-
-    // private Button clearButton;
-    // private Button loadButton;
-    // private Button saveButton;
-
-    // private Button backButton;
     private ScrollPane scrollPane;
     private Stage primaryStage;
 
@@ -661,6 +591,13 @@ class AppFrame extends BorderPane {
             // switch to the list screen
             scrollPane.setVisible(true);
             createMealType.setVisible(false);
+            header.backButton.setVisible(true);
+        });
+
+        header.backButton.setOnAction(e -> {
+            scrollPane.setVisible(false);
+            createMealType.setVisible(true);
+            header.backButton.setVisible(false);
         });
 
     }
