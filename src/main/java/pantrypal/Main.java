@@ -26,6 +26,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
+import javax.swing.plaf.InsetsUIResource;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -50,6 +51,8 @@ class Recipe extends HBox {
         markedDone = false;
         this.primaryStage = primaryStage;
         this.recipeData = recipeData;
+
+        this.setSpacing(5); // sets spacing between recipes
 
         index = new Label();
         index.setText(""); // create index label
@@ -76,16 +79,20 @@ class Recipe extends HBox {
         // the text field
         // this.getChildren().add(recipeDetails); // add textlabel to recipe
 
-        viewButton = new Button("View"); // creates a button for marking the recipe as done
+        viewButton = new Button("View");
         viewButton.setPrefSize(100, 20);
         viewButton.setPrefHeight(Double.MAX_VALUE);
-        viewButton.setStyle("-fx-background-color: #00FF00; -fx-border-width: 0;"); // sets style of button
+        viewButton.setStyle("-fx-background-color: #9ad99a; -fx-border-width: 0; -fx-border-radius: 1em;"); // sets
+                                                                                                            // style of
+                                                                                                            // button
 
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
         deleteButton.setPrefHeight(Double.MAX_VALUE);
-        deleteButton.setStyle("-fx-background-color: #FF0000; -fx-border-width: 0;"); // sets style of button
-
+        deleteButton.setStyle("-fx-background-color: #e394b2; -fx-border-width: 0; -fx-border-radius: 1em;"); // sets
+                                                                                                              // style
+                                                                                                              // of
+                                                                                                              // button
         deleteButton.setOnAction(e -> {
             try {
                 primaryStage.setScene(
@@ -213,6 +220,7 @@ class CreateRecipe extends VBox {
         addButton.setPrefSize(150, 30);
         addButton.setStyle(
                 "-fx-background-radius: 5em; " +
+                        "-fx-background-color: #71e395;" +
                         "-fx-min-width: 90px; " +
                         "-fx-min-height: 90px; " +
                         "-fx-max-width: 90px; " +
@@ -225,9 +233,26 @@ class CreateRecipe extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
-        stopButton = new Button("Stop and Generate Recipe");
+        // stopButton = new Button("Stop and Generate Recipe");
+        stopButton = new Button();
+        stopButton.setStyle(defaultButtonStyle); // styling the buttonv
+        stopButton.setPrefSize(150, 30);
+        stopButton.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-background-color: #e37179;" +
+                        "-fx-min-width: 90px; " +
+                        "-fx-min-height: 90px; " +
+                        "-fx-max-width: 90px; " +
+                        "-fx-max-height: 90px;");
 
+        Image no_mic_img = new Image("file:src/resources/no_mic.png");
+        ImageView no_mic_img_view = new ImageView(no_mic_img);
+        no_mic_img_view.setFitHeight(35);
+        no_mic_img_view.setFitWidth(35);
+        stopButton.setStyle("-fx-background-color: #e37179; ");
         recordingLabel = new Label("Recording...");
+
+        stopButton.setGraphic(no_mic_img_view);
 
         // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
         // this.getChildren().addAll(backButton, addButton, recipeListButton);
@@ -390,6 +415,7 @@ class CreateMealType extends VBox {
         addButton.setPrefSize(150, 30);
         addButton.setStyle(
                 "-fx-background-radius: 5em; " +
+                        "-fx-background-color: #71e395;" +
                         "-fx-min-width: 90px; " +
                         "-fx-min-height: 90px; " +
                         "-fx-max-width: 90px; " +
@@ -402,13 +428,33 @@ class CreateMealType extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
-        stopButton = new Button("Stop and Generate Meal Type");
+        stopButton = new Button();
+        stopButton.setStyle(defaultButtonStyle); // styling the buttonv
+        stopButton.setPrefSize(150, 30);
+        stopButton.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-background-color: #e37179;" +
+                        "-fx-min-width: 90px; " +
+                        "-fx-min-height: 90px; " +
+                        "-fx-max-width: 90px; " +
+                        "-fx-max-height: 90px;");
+
+        Image no_mic_img = new Image("file:src/resources/no_mic.png");
+        ImageView no_mic_img_view = new ImageView(no_mic_img);
+        no_mic_img_view.setFitHeight(35);
+        no_mic_img_view.setFitWidth(35);
+
+        stopButton.setGraphic(no_mic_img_view);
 
         recordingLabel = new Label("Recording...");
 
         recipeListButton = new Button("View Recipe List"); // text displayed on add button
         recipeListButton.setStyle(defaultButtonStyle); // styling the buttonv
         recipeListButton.setPrefSize(150, 30);
+
+        recipeListButton.setStyle(
+                // "-fx-background-radius: 5em; " +
+                "-fx-background-color: #e6f5f3;");
 
         // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
         // this.getChildren().addAll(backButton, addButton, recipeListButton);
@@ -495,6 +541,10 @@ class Header extends HBox {
 
         // Back Button
         backButton = new Button("Back");
+        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
+        backButton.setStyle(defaultButtonStyle);
+        backButton.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
+
         backButton.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(backButton, Priority.NEVER); // Prevents the back button from growing
 
