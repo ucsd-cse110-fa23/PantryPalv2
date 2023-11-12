@@ -40,12 +40,14 @@ class Recipe extends HBox {
     private Button deleteButton;
 
     private boolean markedDone;
+    private Stage primaryStage;
 
-    Recipe() {
+    Recipe(Stage primaryStage) {
         this.setPrefSize(500, 20); // sets size of recipe
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // sets background
                                                                                                      // color of recipe
         markedDone = false;
+        this.primaryStage = primaryStage;
 
         index = new Label();
         index.setText(""); // create index label
@@ -82,6 +84,17 @@ class Recipe extends HBox {
         deleteButton.setPrefHeight(Double.MAX_VALUE);
         deleteButton.setStyle("-fx-background-color: #FF0000; -fx-border-width: 0;"); // sets style of button
 
+        deleteButton.setOnAction(e -> {
+            try {
+                primaryStage.setScene(
+                        new Scene(new ConfirmDelete(primaryStage, CRUDRecipes.getRecipe(recipeName.getText())), 500,
+                                600));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+
         this.getChildren().add(viewButton); // add button to recipe
         this.getChildren().add(deleteButton);
     }
@@ -115,10 +128,13 @@ class Recipe extends HBox {
 
 class RecipeList extends VBox {
     // PointC
-    RecipeList() throws IOException {
+    Stage primaryStage;
+
+    RecipeList(Stage primaryStage) throws IOException {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
+        this.primaryStage = primaryStage;
         // get the current recipe data (from JSON file)
         ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes();
         // add the recipes to the recipelist
@@ -132,7 +148,7 @@ class RecipeList extends VBox {
     public void loadRecipes(ArrayList<RecipeData> recipes) {
         for (RecipeData recipeData : recipes) {
             // create Recipe object for each recipe data
-            Recipe recipe = new Recipe();
+            Recipe recipe = new Recipe(primaryStage);
             recipe.setRecipeName(recipeData.title);
             this.getChildren().add(recipe);
         }
@@ -509,7 +525,7 @@ class AppFrame extends BorderPane {
         header = new Header();
 
         // Create a recipelist Object to hold the recipes
-        recipeList = new RecipeList();
+        recipeList = new RecipeList(primaryStage);
 
         // Initialise the Footer Object
         // footer = new Footer();
