@@ -314,6 +314,7 @@ class CreateRecipe extends VBox {
         return recordingLabel;
     }
 
+    // Initialize audio format
     private AudioFormat getAudioFormat() {
         // the number of samples of audio per second.
         // 44100 represents the typical sample rate for CD-quality audio.
@@ -339,6 +340,7 @@ class CreateRecipe extends VBox {
                 bigEndian);
     }
 
+    // Initialize and start thread for recording ingredients list
     private void startRecording() {
         t = new Thread(
                 new Runnable() {
@@ -374,18 +376,19 @@ class CreateRecipe extends VBox {
         t.start();
     }
 
+    // Stop the recording process
     private void stopRecording() {
         targetDataLine.stop();
         targetDataLine.close();
     }
 
     public void addListeners() {
-        // Start Button
+        // Start Recording Button
         addButton.setOnAction(e -> {
             startRecording();
         });
 
-        // Stop Button
+        // Stop Recording Button and show the new recipe that was generated
         stopButton.setOnAction(e -> {
             stopRecording();
             String[] result;
@@ -401,10 +404,8 @@ class CreateRecipe extends VBox {
 
                 System.out.println(result[0]);
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             } catch (URISyntaxException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
 
@@ -630,12 +631,12 @@ class AppFrame extends BorderPane {
     }
 
     public void addListeners() {
-        // Start Button
+        // Start Recording Button
         addButton.setOnAction(e -> {
             startRecording();
         });
 
-        // Stop Button
+        // Stop Recording Button and load CreateRecipe scene with wanted recipe type
         stopButton.setOnAction(e -> {
             stopRecording();
             String result;
@@ -663,6 +664,7 @@ class AppFrame extends BorderPane {
         });
     }
 
+    // Given an audio file path, create a transcription, then generate the wanted meal type
     public static String getMealTypeFromAudio(String filePath) throws IOException, URISyntaxException {
         OpenAI model = new OpenAI();
         ChatGPT gpt = new ChatGPT(model);
@@ -671,6 +673,7 @@ class AppFrame extends BorderPane {
         return mealType;
     }
 
+    // Initialize audio format
     private AudioFormat getAudioFormat() {
         // the number of samples of audio per second.
         // 44100 represents the typical sample rate for CD-quality audio.
@@ -696,6 +699,7 @@ class AppFrame extends BorderPane {
                 bigEndian);
     }
 
+    // Initiate a thread that starts the recording for meal type
     private void startRecording() {
         t = new Thread(
                 new Runnable() {
@@ -731,6 +735,7 @@ class AppFrame extends BorderPane {
         t.start();
     }
 
+    // Stop the recording for selection of meal type
     private void stopRecording() {
         targetDataLine.stop();
         targetDataLine.close();
