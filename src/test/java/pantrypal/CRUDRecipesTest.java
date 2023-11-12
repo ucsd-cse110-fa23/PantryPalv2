@@ -2,6 +2,7 @@ package pantrypal;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -68,6 +69,58 @@ public class CRUDRecipesTest {
         try {
             CRUDRecipes.createRecipe(recipe1);
             assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testRecipeExists() {
+        String[] ingredients1 = {"Chicken"};
+        RecipeData recipe1 = new RecipeData("", ingredients1, "Nadada");
+
+        try {
+            CRUDRecipes.createRecipe(recipe1);
+            assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testRecipeExistsNoIngredients() {
+        String[] ingredients1 = {};
+        RecipeData recipe1 = new RecipeData("", ingredients1, "Nadada");
+
+        try {
+            CRUDRecipes.createRecipe(recipe1);
+            assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testRecipeExistsNoInstructions() {
+        String[] ingredients1 = {};
+        RecipeData recipe1 = new RecipeData("", ingredients1, "");
+
+        try {
+            CRUDRecipes.createRecipe(recipe1);
+            assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testRecipeExistsForWrongRecipe() {
+        String[] ingredients1 = {};
+        RecipeData recipe1 = new RecipeData("", ingredients1, "");
+
+        try {
+            CRUDRecipes.createRecipe(recipe1);
+            assertFalse(CRUDRecipes.recipeExists("NOT A RECIPE"));
         } catch (IOException e) {
             e.printStackTrace();
         }
