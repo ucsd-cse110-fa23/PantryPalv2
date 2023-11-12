@@ -125,27 +125,6 @@ class Recipe extends HBox {
 
 }
 
-class Pair implements Comparable<Pair> {
-    private String one;
-    private boolean two;
-
-    public Pair(String str, boolean bool) {
-        one = str;
-        two = bool;
-    }
-
-    public String getOne() {
-        return one;
-    }
-
-    public boolean getTwo() {
-        return two;
-    }
-
-    public int compareTo(Pair compare) {
-        return (this.one).compareTo(compare.getOne());
-    }
-}
 
 class RecipeList extends VBox {
 
@@ -153,6 +132,15 @@ class RecipeList extends VBox {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
+    // get the current recipe data (from JSON file) 
+        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes(); 
+        // add the recipes to the recipelist 
+        loadRecipes(recipes);
+    }
+
+    /* call on opening page */
+    public void callOnOpen() {
+        
     }
 
     public void updateRecipeIndices() {
@@ -170,16 +158,20 @@ class RecipeList extends VBox {
         this.updateRecipeIndices();
     }
 
+    
     /*
-     * Load recipes from a file called "recipes.txt"
+     * Load recipes from a file called "recipes.json"
      * Add the recipes to the children of recipelist component
      */
-    public void loadRecipes() {
-        // hint 1: use try-catch block
-        // hint 2: use BufferedReader and FileReader
-        // hint 3: recipe.getRecipeName().setText() sets the text of the recipe
-        try {
-            File file = new File("/Users/akuduvalli/Desktop/CSE-110/java/CSE110-Lab-1/src/TodoList/recipes.txt");
+    public void loadRecipes(ArrayList<RecipeData> recipes) {
+        for (RecipeData recipeData: recipes) {
+            // create Recipe object for each recipe data 
+            Recipe recipe = new Recipe();
+            recipe.setRecipeName(recipeData.title);
+            this.getChildren().add(recipe);
+        }
+        /*try {
+            File file = new File("recipes.txt");
             Scanner scan = new Scanner(file);
             while (scan.hasNextLine()) {
                 String data = scan.nextLine();
@@ -192,13 +184,13 @@ class RecipeList extends VBox {
                     // Call toggleDone on click
                     recipe.toggleDone();
                 });
-                // this.updateRecipeIndices();
+                //this.updateRecipeIndices();
                 System.out.println(data);
             }
             scan.close();
         } catch (FileNotFoundException e) {
             System.out.println("error: file not found ");
-        }
+        } */
     }
 
     /*
@@ -599,8 +591,8 @@ class AppFrame extends BorderPane {
         // add the cards to the stackPane
         // TODO: create a pane for the detailed view of each recipe
 
-        stackPane.getChildren().addAll(createMealType);
-        scrollPane.setVisible(true);
+        stackPane.getChildren().addAll(scrollPane,createMealType);
+        scrollPane.setVisible(false);
         createMealType.setVisible(true);
 
         this.primaryStage = primaryStage;
@@ -662,6 +654,13 @@ class AppFrame extends BorderPane {
             }
 
         });
+
+        recipeListButton.setOnAction(e -> {
+            // switch to the list screen 
+            scrollPane.setVisible(true);
+            createMealType.setVisible(false);
+        });
+
     }
 
     // Given an audio file path, create a transcription, then generate the wanted meal type
