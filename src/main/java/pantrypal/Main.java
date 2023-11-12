@@ -239,10 +239,6 @@ class CreateRecipe extends VBox {
     private Label recordingLabel;
 
     private Stage primaryStage;
-
-    private AudioFormat audioFormat;
-    private TargetDataLine targetDataLine;
-    private Thread t;
     private AudioRecorder ar;
 
     private String mealType;
