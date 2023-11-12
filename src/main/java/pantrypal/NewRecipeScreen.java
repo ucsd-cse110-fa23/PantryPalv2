@@ -75,20 +75,16 @@ public class NewRecipeScreen extends BorderPane {
         });
 
         saveButton.setOnAction(e -> {
-            try {
-                FileWriter writer = new FileWriter("recipes.txt", true);
-
-                String str = recipe.title + "\n" + recipe.instructions;
-
-                writer.write(str);
-                writer.write("\n\n");
-                writer.close();
-
-            } catch (IOException e1) {
-                System.out.println("An error occurred.");
-                e1.printStackTrace();
+            if (CRUDRecipes.recipeExists(recipe.title)) {
+                CRUDRecipes.updateRecipeContents(recipe.title, recipe.ingredients, body.getDetails().getText());
+            } else {
+                try {
+                    CRUDRecipes.writeRecipe(recipe);
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
             }
-
         });
 
         editButton.setOnAction(e -> {
