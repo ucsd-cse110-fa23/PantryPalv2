@@ -19,13 +19,22 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.TargetDataLine;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 class Recipe extends HBox {
 
-    private Label index;
-    private TextField recipeName;
+    public Label index;
+    public TextField recipeName;
+    public TextField recipeDetails;
     private Button deleteButton;
 
     private boolean markedDone;
@@ -50,6 +59,14 @@ class Recipe extends HBox {
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
         this.getChildren().add(recipeName); // add textlabel to recipe
 
+        recipeDetails = new TextField(); // create recipe name text field
+        recipeDetails.setPrefSize(380, 20); // set size of text field
+        recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of
+                                                                                       // texfield
+        index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
+        this.getChildren().add(recipeDetails); // add textlabel to recipe
+
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
         deleteButton.setPrefHeight(Double.MAX_VALUE);
@@ -60,11 +77,15 @@ class Recipe extends HBox {
 
     public void setRecipeIndex(int num) {
         this.index.setText(num + ""); // num to String
-        this.recipeName.setPromptText("Recipe " + num);
+        // this.recipeName.setPromptText("Recipe " + num);
     }
 
     public void setRecipeName(String name) {
         this.recipeName.setText(name);
+    }
+
+    public void setRecipeDetails(String details) {
+        this.recipeDetails.setText(details);
     }
 
     public TextField getRecipeName() {
@@ -104,27 +125,6 @@ class Recipe extends HBox {
 
 }
 
-class Pair implements Comparable<Pair> {
-    private String one;
-    private boolean two;
-
-    public Pair(String str, boolean bool) {
-        one = str;
-        two = bool;
-    }
-
-    public String getOne() {
-        return one;
-    }
-
-    public boolean getTwo() {
-        return two;
-    }
-
-    public int compareTo(Pair compare) {
-        return (this.one).compareTo(compare.getOne());
-    }
-}
 
 class RecipeList extends VBox {
 
@@ -132,6 +132,15 @@ class RecipeList extends VBox {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
+    // get the current recipe data (from JSON file) 
+        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes(); 
+        // add the recipes to the recipelist 
+        loadRecipes(recipes);
+    }
+
+    /* call on opening page */
+    public void callOnOpen() {
+        
     }
 
     public void updateRecipeIndices() {
@@ -149,16 +158,20 @@ class RecipeList extends VBox {
         this.updateRecipeIndices();
     }
 
+    
     /*
-     * Load recipes from a file called "recipes.txt"
+     * Load recipes from a file called "recipes.json"
      * Add the recipes to the children of recipelist component
      */
-    public void loadRecipes() {
-        // hint 1: use try-catch block
-        // hint 2: use BufferedReader and FileReader
-        // hint 3: recipe.getRecipeName().setText() sets the text of the recipe
-        try {
-            File file = new File("/Users/akuduvalli/Desktop/CSE-110/java/CSE110-Lab-1/src/TodoList/recipes.txt");
+    public void loadRecipes(ArrayList<RecipeData> recipes) {
+        for (RecipeData recipeData: recipes) {
+            // create Recipe object for each recipe data 
+            Recipe recipe = new Recipe();
+            recipe.setRecipeName(recipeData.title);
+            this.getChildren().add(recipe);
+        }
+        /*try {
+            File file = new File("recipes.txt");
             Scanner scan = new Scanner(file);
             while (scan.hasNextLine()) {
                 String data = scan.nextLine();
@@ -171,13 +184,13 @@ class RecipeList extends VBox {
                     // Call toggleDone on click
                     recipe.toggleDone();
                 });
-                this.updateRecipeIndices();
+                //this.updateRecipeIndices();
                 System.out.println(data);
             }
             scan.close();
         } catch (FileNotFoundException e) {
             System.out.println("error: file not found ");
-        }
+        } */
     }
 
     /*
@@ -210,12 +223,205 @@ class RecipeList extends VBox {
  * of the creating recipe
  */
 class CreateRecipe extends VBox {
+    // Point A
+    // private Button backButton;
+    private Label mealTypeLabel;
+    private Button addButton;
+    private Button stopButton;
+    private Label recordingLabel;
 
+    private Stage primaryStage;
+
+    private AudioFormat audioFormat;
+    private TargetDataLine targetDataLine;
+    private Thread t;
+
+    private String mealType;
+
+    // Point B
+    CreateRecipe(Stage primaryStage, String mealType) {
+        this.setPrefSize(500, 560);
+        this.setStyle("-fx-background-color: #a7d6cc;");
+        this.setSpacing(15);
+
+        // backButton = new Button("Back");
+        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 15 arial;";
+
+        // backButton.setPadding(new Insets(0, 0, 0, 0));
+        // backButton.setStyle(defaultButtonStyle); // styling the button
+        // backButton.setPrefSize(90, 30);
+
+        this.primaryStage = primaryStage;
+        this.mealType = mealType;
+
+        mealTypeLabel = new Label("Meal Type: " + mealType);
+
+        addButton = new Button(); // text displayed on add button
+        addButton.setStyle(defaultButtonStyle); // styling the buttonv
+        addButton.setPrefSize(150, 30);
+        addButton.setStyle(
+                "-fx-background-radius: 5em; " +
+                        "-fx-min-width: 90px; " +
+                        "-fx-min-height: 90px; " +
+                        "-fx-max-width: 90px; " +
+                        "-fx-max-height: 90px;");
+
+        Image mic_img = new Image("file:src/resources/mic.png");
+        ImageView mic_img_view = new ImageView(mic_img);
+        mic_img_view.setFitHeight(45);
+        mic_img_view.setFitWidth(45);
+
+        addButton.setGraphic(mic_img_view);
+
+        stopButton = new Button("Stop and Generate Recipe");
+
+        recordingLabel = new Label("Recording...");
+
+        // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
+        // this.getChildren().addAll(backButton, addButton, recipeListButton);
+        this.getChildren().addAll(mealTypeLabel, addButton, stopButton, recordingLabel);
+
+        this.setAlignment(Pos.CENTER); // Align the text to the Center
+
+        audioFormat = getAudioFormat();
+
+        recordingLabel.setVisible(false);
+
+        addListeners();
+    }
+
+    // public Button getBackButton() {
+    // return backButton;
+    // }
+
+    public Button getAddButton() {
+        return addButton;
+    }
+
+    public Button getStopButton() {
+        return stopButton;
+    }
+
+    public Label getRecordingLabel() {
+        return recordingLabel;
+    }
+
+    // Initialize audio format
+    private AudioFormat getAudioFormat() {
+        // the number of samples of audio per second.
+        // 44100 represents the typical sample rate for CD-quality audio.
+        float sampleRate = 44100;
+
+        // the number of bits in each sample of a sound that has been digitized.
+        int sampleSizeInBits = 16;
+
+        // the number of audio channels in this format (1 for mono, 2 for stereo).
+        int channels = 2;
+
+        // whether the data is signed or unsigned.
+        boolean signed = true;
+
+        // whether the audio data is stored in big-endian or little-endian order.
+        boolean bigEndian = false;
+
+        return new AudioFormat(
+                sampleRate,
+                sampleSizeInBits,
+                channels,
+                signed,
+                bigEndian);
+    }
+
+    // Initialize and start thread for recording ingredients list
+    private void startRecording() {
+        t = new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // the format of the TargetDataLine
+                            DataLine.Info dataLineInfo = new DataLine.Info(
+                                    TargetDataLine.class,
+                                    audioFormat);
+                            // the TargetDataLine used to capture audio data from the microphone
+                            targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
+                            targetDataLine.open(audioFormat);
+                            targetDataLine.start();
+                            recordingLabel.setVisible(true);
+
+                            // the AudioInputStream that will be used to write the audio data to a file
+                            AudioInputStream audioInputStream = new AudioInputStream(
+                                    targetDataLine);
+
+                            // the file that will contain the audio data
+                            File audioFile = new File("recording.wav");
+                            AudioSystem.write(
+                                    audioInputStream,
+                                    AudioFileFormat.Type.WAVE,
+                                    audioFile);
+                            recordingLabel.setVisible(false);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+        t.start();
+    }
+
+    // Stop the recording process
+    private void stopRecording() {
+        targetDataLine.stop();
+        targetDataLine.close();
+    }
+
+    public void addListeners() {
+        // Start Recording Button
+        addButton.setOnAction(e -> {
+            startRecording();
+        });
+
+        // Stop Recording Button and show the new recipe that was generated
+        stopButton.setOnAction(e -> {
+            stopRecording();
+            String[] result;
+            try {
+                recordingLabel.setText("Processing...");
+                result = getRecipeFromAudio("recording.wav", mealType);
+                recordingLabel.setText("Stop and Generate Recipe");
+
+                RecipeData recipe = new RecipeData(result);
+
+                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
+                primaryStage.setScene(scene);
+
+                System.out.println(result[0]);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (URISyntaxException e1) {
+                e1.printStackTrace();
+            }
+
+        });
+    }
+
+    public static String[] getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
+        OpenAI model = new OpenAI();
+        ChatGPT gpt = new ChatGPT(model);
+        String transcript = Whisper.getTranscript(filePath);
+        String[] recipe = gpt.generateRecipe(transcript, mealType);
+        return recipe;
+    }
+
+}
+
+class CreateMealType extends VBox {
     // private Button backButton;
     private Button addButton;
+    private Button stopButton;
+    private Label recordingLabel;
     private Button recipeListButton;
 
-    CreateRecipe() {
+    CreateMealType() {
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #a7d6cc;");
         this.setSpacing(15);
@@ -244,13 +450,17 @@ class CreateRecipe extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
+        stopButton = new Button("Stop and Generate Recipe");
+
+        recordingLabel = new Label("Recording...");
+
         recipeListButton = new Button("View Recipe List"); // text displayed on add button
         recipeListButton.setStyle(defaultButtonStyle); // styling the buttonv
         recipeListButton.setPrefSize(150, 30);
 
         // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
         // this.getChildren().addAll(backButton, addButton, recipeListButton);
-        this.getChildren().addAll(addButton, recipeListButton);
+        this.getChildren().addAll(addButton, stopButton, recordingLabel, recipeListButton);
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
     }
@@ -263,10 +473,17 @@ class CreateRecipe extends VBox {
         return addButton;
     }
 
+    public Button getStopButton() {
+        return stopButton;
+    }
+
     public Button getRecipeListButton() {
         return recipeListButton;
     }
 
+    public Label getRecordingLabel() {
+        return recordingLabel;
+    }
 }
 
 class Footer extends HBox {
@@ -333,11 +550,19 @@ class AppFrame extends BorderPane {
     private Header header;
     // private Footer footer;
     private RecipeList recipeList;
-    private CreateRecipe createRecipe;
+    private CreateMealType createMealType;
     private StackPane stackPane = new StackPane();
 
-    private Button addButton;
     private Button recipeListButton;
+
+    private Button addButton;
+    private Button stopButton;
+
+    private AudioFormat audioFormat;
+    private TargetDataLine targetDataLine;
+    private Thread t;
+
+    private Label recordingLabel;
 
     // private Button clearButton;
     // private Button loadButton;
@@ -345,8 +570,9 @@ class AppFrame extends BorderPane {
 
     // private Button backButton;
     private ScrollPane scrollPane;
+    private Stage primaryStage;
 
-    AppFrame() {
+    AppFrame(Stage primaryStage) {
         // Initialise the header Object
         header = new Header();
 
@@ -356,7 +582,7 @@ class AppFrame extends BorderPane {
         // Initialise the Footer Object
         // footer = new Footer();
 
-        createRecipe = new CreateRecipe();
+        createMealType = new CreateMealType();
 
         scrollPane = new ScrollPane(recipeList);
         scrollPane.setFitToWidth(true);
@@ -365,9 +591,11 @@ class AppFrame extends BorderPane {
         // add the cards to the stackPane
         // TODO: create a pane for the detailed view of each recipe
 
-        stackPane.getChildren().addAll(scrollPane, createRecipe);
-        scrollPane.setVisible(true);
-        createRecipe.setVisible(true);
+        stackPane.getChildren().addAll(scrollPane,createMealType);
+        scrollPane.setVisible(false);
+        createMealType.setVisible(true);
+
+        this.primaryStage = primaryStage;
 
         // Add header to the top of the BorderPane
         this.setTop(header);
@@ -377,68 +605,193 @@ class AppFrame extends BorderPane {
         // this.setBottom(footer);
 
         // Initialise Button Variables through the getters in Footer
-        addButton = createRecipe.getAddButton();
-        recipeListButton = createRecipe.getRecipeListButton();
+        addButton = createMealType.getAddButton();
+        stopButton = createMealType.getStopButton();
+        recordingLabel = createMealType.getRecordingLabel();
+        recipeListButton = createMealType.getRecipeListButton();
+
+        recordingLabel.setVisible(false);
 
         // clearButton = footer.getClearButton();
         // loadButton = footer.getLoadButton();
         // saveButton = footer.getSaveButton();
         // backButton = createRecipe.getBackButton();
         // Call Event Listeners for the Buttons
+        audioFormat = getAudioFormat();
+
         addListeners();
     }
 
     public void addListeners() {
-
-        // Add button functionality
+        // Start Recording Button
         addButton.setOnAction(e -> {
-            // Create a new recipe
-            /*
-             * Recipe recipe = new Recipe();
-             * // Add recipe to recipelist
-             * recipeList.getChildren().add(recipe);
-             * // Add doneButtonToggle to the Done button
-             * Button deleteButton = recipe.getDeleteButton();
-             * deleteButton.setOnAction(e1 -> {
-             * // Call toggleDone on click
-             * recipe.toggleDone();
-             * });
-             * // Update recipe indices
-             * recipeList.updateRecipeIndices();
-             */
-
-            // open next page in the card layout
-            // scrollPane.setVisible(false);
-            // createRecipe.setVisible(true);
-
-            // CALL WHISPER HERE + TAKE MIC INPUT
+            startRecording();
         });
 
-        // backButton.setOnAction(e -> {
-        // scrollPane.setVisible(true);
-        // createRecipe.setVisible(false);
-        // });
+        // Stop Recording Button and load CreateRecipe scene with wanted recipe type
+        stopButton.setOnAction(e -> {
+            stopRecording();
+            String result;
+            try {
+                recordingLabel.setText("Processing...");
+                result = getMealTypeFromAudio("recording.wav");
+                System.out.println(result);
+                recordingLabel.setText("Done with Saying Meal Type");
+
+                if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
+                    return;
+                } else {
+                    Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
+                    primaryStage.setScene(scene);
+                }
+
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (URISyntaxException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+        });
 
         recipeListButton.setOnAction(e -> {
-            // TODO: Open up the list of all recipes, and allow user to select one
+            // switch to the list screen 
+            scrollPane.setVisible(true);
+            createMealType.setVisible(false);
         });
 
-        // Clear finished recipes
-        // clearButton.setOnAction(e -> {
-        // recipeList.removeCompletedRecipes();
-        // });
-
-        // load recipes from file
-        // loadButton.setOnAction(e -> {
-        // recipeList.loadRecipes();
-        // });
-
-        // save current recipe list
-        // saveButton.setOnAction(e -> {
-        // recipeList.saveRecipes();
-        // });
-
     }
+
+    // Given an audio file path, create a transcription, then generate the wanted meal type
+    public static String getMealTypeFromAudio(String filePath) throws IOException, URISyntaxException {
+        OpenAI model = new OpenAI();
+        ChatGPT gpt = new ChatGPT(model);
+        String transcript = Whisper.getTranscript(filePath);
+        String mealType = gpt.generateMealType(transcript);
+        return mealType;
+    }
+
+    // Initialize audio format
+    private AudioFormat getAudioFormat() {
+        // the number of samples of audio per second.
+        // 44100 represents the typical sample rate for CD-quality audio.
+        float sampleRate = 44100;
+
+        // the number of bits in each sample of a sound that has been digitized.
+        int sampleSizeInBits = 16;
+
+        // the number of audio channels in this format (1 for mono, 2 for stereo).
+        int channels = 2;
+
+        // whether the data is signed or unsigned.
+        boolean signed = true;
+
+        // whether the audio data is stored in big-endian or little-endian order.
+        boolean bigEndian = false;
+
+        return new AudioFormat(
+                sampleRate,
+                sampleSizeInBits,
+                channels,
+                signed,
+                bigEndian);
+    }
+
+    // Initiate a thread that starts the recording for meal type
+    private void startRecording() {
+        t = new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // the format of the TargetDataLine
+                            DataLine.Info dataLineInfo = new DataLine.Info(
+                                    TargetDataLine.class,
+                                    audioFormat);
+                            // the TargetDataLine used to capture audio data from the microphone
+                            targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
+                            targetDataLine.open(audioFormat);
+                            targetDataLine.start();
+                            recordingLabel.setVisible(true);
+
+                            // the AudioInputStream that will be used to write the audio data to a file
+                            AudioInputStream audioInputStream = new AudioInputStream(
+                                    targetDataLine);
+
+                            // the file that will contain the audio data
+                            File audioFile = new File("recording.wav");
+                            AudioSystem.write(
+                                    audioInputStream,
+                                    AudioFileFormat.Type.WAVE,
+                                    audioFile);
+                            recordingLabel.setVisible(false);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+        t.start();
+    }
+
+    // Stop the recording for selection of meal type
+    private void stopRecording() {
+        targetDataLine.stop();
+        targetDataLine.close();
+    }
+
+    // public void addListeners() {
+
+    // // Add button functionality
+    // addButton.setOnAction(e -> {
+    // // Create a new recipe
+    // /*
+    // * Recipe recipe = new Recipe();
+    // * // Add recipe to recipelist
+    // * recipeList.getChildren().add(recipe);
+    // * // Add doneButtonToggle to the Done button
+    // * Button deleteButton = recipe.getDeleteButton();
+    // * deleteButton.setOnAction(e1 -> {
+    // * // Call toggleDone on click
+    // * recipe.toggleDone();
+    // * });
+    // * // Update recipe indices
+    // * recipeList.updateRecipeIndices();
+    // */
+
+    // // open next page in the card layout
+    // // scrollPane.setVisible(false);
+    // // createRecipe.setVisible(true);
+
+    // // CALL WHISPER HERE + TAKE MIC INPUT
+    // });
+
+    // // backButton.setOnAction(e -> {
+    // // scrollPane.setVisible(true);
+    // // createRecipe.setVisible(false);
+    // // });
+
+    // recipeListButton.setOnAction(e -> {
+    // // TODO: Open up the list of all recipes, and allow user to select one
+    // });
+
+    // // Clear finished recipes
+    // // clearButton.setOnAction(e -> {
+    // // recipeList.removeCompletedRecipes();
+    // // });
+
+    // // load recipes from file
+    // // loadButton.setOnAction(e -> {
+    // // recipeList.loadRecipes();
+    // // });
+
+    // // save current recipe list
+    // // saveButton.setOnAction(e -> {
+    // // recipeList.saveRecipes();
+    // // });
+
+    // }
+    // }
 }
 
 public class Main extends Application {
@@ -448,7 +801,7 @@ public class Main extends Application {
 
         // Setting the Layout of the Window- Should contain a Header, Footer and the
         // RecipeList
-        AppFrame root = new AppFrame();
+        AppFrame root = new AppFrame(primaryStage);
 
         // Set the title of the app
         primaryStage.setTitle("Pantry Pal");
@@ -461,8 +814,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-        String[] result = OpenAI.getRecipeFromAudio("my_audio.m4a");
-        System.out.println(result);
         launch(args);
     }
 }

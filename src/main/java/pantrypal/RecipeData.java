@@ -20,4 +20,13 @@ public class RecipeData {
             this.ingredients[i] = gptResponse[i + 1];
         }
     }
+
+    /*
+     * Overloaded constructor for database operations
+     */
+    public RecipeData(String title, String[] ingredients, String instructions) {
+        this.title = title;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
+    }
 }
