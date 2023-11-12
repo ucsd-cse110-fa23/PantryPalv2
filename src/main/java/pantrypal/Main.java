@@ -59,13 +59,15 @@ class Recipe extends HBox {
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
         this.getChildren().add(recipeName); // add textlabel to recipe
 
-        recipeDetails = new TextField(); // create recipe name text field
-        recipeDetails.setPrefSize(380, 20); // set size of text field
-        recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of
-                                                                                       // texfield
-        index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
-        recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
-        this.getChildren().add(recipeDetails); // add textlabel to recipe
+        // recipeDetails = new TextField(); // create recipe name text field
+        // recipeDetails.setPrefSize(380, 20); // set size of text field
+        // recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:
+        // 0;"); // set background color of
+        // // texfield
+        // index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        // recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to
+        // the text field
+        // this.getChildren().add(recipeDetails); // add textlabel to recipe
 
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
@@ -125,22 +127,21 @@ class Recipe extends HBox {
 
 }
 
-
 class RecipeList extends VBox {
 
-    RecipeList() {
+    RecipeList() throws IOException {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
-    // get the current recipe data (from JSON file) 
-        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes(); 
-        // add the recipes to the recipelist 
+        // get the current recipe data (from JSON file)
+        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes();
+        // add the recipes to the recipelist
         loadRecipes(recipes);
     }
 
     /* call on opening page */
     public void callOnOpen() {
-        
+
     }
 
     public void updateRecipeIndices() {
@@ -158,39 +159,40 @@ class RecipeList extends VBox {
         this.updateRecipeIndices();
     }
 
-    
     /*
      * Load recipes from a file called "recipes.json"
      * Add the recipes to the children of recipelist component
      */
     public void loadRecipes(ArrayList<RecipeData> recipes) {
-        for (RecipeData recipeData: recipes) {
-            // create Recipe object for each recipe data 
+        for (RecipeData recipeData : recipes) {
+            // create Recipe object for each recipe data
             Recipe recipe = new Recipe();
             recipe.setRecipeName(recipeData.title);
             this.getChildren().add(recipe);
         }
-        /*try {
-            File file = new File("recipes.txt");
-            Scanner scan = new Scanner(file);
-            while (scan.hasNextLine()) {
-                String data = scan.nextLine();
-                Recipe recipe = new Recipe();
-                recipe.setRecipeName(data);
-                // Add recipe to recipelist
-                this.getChildren().add(recipe);
-                Button doneButton = recipe.getDeleteButton();
-                doneButton.setOnAction(e1 -> {
-                    // Call toggleDone on click
-                    recipe.toggleDone();
-                });
-                //this.updateRecipeIndices();
-                System.out.println(data);
-            }
-            scan.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("error: file not found ");
-        } */
+        /*
+         * try {
+         * File file = new File("recipes.txt");
+         * Scanner scan = new Scanner(file);
+         * while (scan.hasNextLine()) {
+         * String data = scan.nextLine();
+         * Recipe recipe = new Recipe();
+         * recipe.setRecipeName(data);
+         * // Add recipe to recipelist
+         * this.getChildren().add(recipe);
+         * Button doneButton = recipe.getDeleteButton();
+         * doneButton.setOnAction(e1 -> {
+         * // Call toggleDone on click
+         * recipe.toggleDone();
+         * });
+         * //this.updateRecipeIndices();
+         * System.out.println(data);
+         * }
+         * scan.close();
+         * } catch (FileNotFoundException e) {
+         * System.out.println("error: file not found ");
+         * }
+         */
     }
 
     /*
@@ -572,7 +574,7 @@ class AppFrame extends BorderPane {
     private ScrollPane scrollPane;
     private Stage primaryStage;
 
-    AppFrame(Stage primaryStage) {
+    AppFrame(Stage primaryStage) throws IOException {
         // Initialise the header Object
         header = new Header();
 
@@ -591,7 +593,7 @@ class AppFrame extends BorderPane {
         // add the cards to the stackPane
         // TODO: create a pane for the detailed view of each recipe
 
-        stackPane.getChildren().addAll(scrollPane,createMealType);
+        stackPane.getChildren().addAll(scrollPane, createMealType);
         scrollPane.setVisible(false);
         createMealType.setVisible(true);
 
@@ -656,14 +658,15 @@ class AppFrame extends BorderPane {
         });
 
         recipeListButton.setOnAction(e -> {
-            // switch to the list screen 
+            // switch to the list screen
             scrollPane.setVisible(true);
             createMealType.setVisible(false);
         });
 
     }
 
-    // Given an audio file path, create a transcription, then generate the wanted meal type
+    // Given an audio file path, create a transcription, then generate the wanted
+    // meal type
     public static String getMealTypeFromAudio(String filePath) throws IOException, URISyntaxException {
         OpenAI model = new OpenAI();
         ChatGPT gpt = new ChatGPT(model);
