@@ -41,13 +41,15 @@ class Recipe extends HBox {
 
     private boolean markedDone;
     private Stage primaryStage;
+    private RecipeData recipeData;
 
-    Recipe(Stage primaryStage) {
+    Recipe(Stage primaryStage, RecipeData recipeData) {
         this.setPrefSize(500, 20); // sets size of recipe
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // sets background
                                                                                                      // color of recipe
         markedDone = false;
         this.primaryStage = primaryStage;
+        this.recipeData = recipeData;
 
         index = new Label();
         index.setText(""); // create index label
@@ -89,6 +91,16 @@ class Recipe extends HBox {
                 primaryStage.setScene(
                         new Scene(new ConfirmDelete(primaryStage, CRUDRecipes.getRecipe(recipeName.getText())), 500,
                                 600));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+
+        viewButton.setOnAction(e -> {
+            try {
+                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipeData), 500, 600);
+                primaryStage.setScene(scene);
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -146,12 +158,14 @@ class RecipeList extends VBox {
      * Add the recipes to the children of recipelist component
      */
     public void loadRecipes(ArrayList<RecipeData> recipes) {
+        Collections.reverse(recipes);
         for (RecipeData recipeData : recipes) {
             // create Recipe object for each recipe data
-            Recipe recipe = new Recipe(primaryStage);
+            Recipe recipe = new Recipe(primaryStage, recipeData);
             recipe.setRecipeName(recipeData.title);
             this.getChildren().add(recipe);
         }
+        Collections.reverse(recipes);
     }
 }
 
