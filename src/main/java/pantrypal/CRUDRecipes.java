@@ -78,39 +78,7 @@ public class CRUDRecipes {
     }
 
     public static void overwriteRecipes(ArrayList<RecipeData> recipes) {
-        // write list to json file
-        try {
-            FileWriter writer = new FileWriter("recipes.json", false);
 
-            String str = "[";
-            for (int i = 0; i < recipes.size(); i++) {
-                RecipeData recipeData = recipes.get(i);
-                str += "{\n";
-                str += "    \"name\": \"" + recipeData.title + "\",\n";
-                str += "    \"ingredients\": [\n";
-                for (int j = 0; j < recipeData.ingredients.length; j++) {
-                    str += "        \"" + recipeData.ingredients[j] + "\"";
-                    if (j != recipeData.ingredients.length - 1) {
-                        str += ",";
-                    }
-                    str += "\n";
-                }
-                str += "    ],\n";
-                str += "    \"instructions\": \"" + recipeData.instructions + "\"\n";
-                str += "}";
-                if (i != recipes.size() - 1) {
-                    str += ",";
-                }
-                str += "\n";
-            }
-            str += "]";
-
-            writer.write(str);
-            writer.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void writeRecipe(RecipeData recipe) throws IOException {
