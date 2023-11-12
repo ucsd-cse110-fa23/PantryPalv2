@@ -25,4 +25,24 @@ public class CreateRecipeBDDTest {
         assertEquals("Proper recipe here", result[0]);
 
     }
+
+    @Test
+    void testBDDCreateRecipeInvalidMealType() {
+        // Given the user is using the recipe app
+        // When the user provides voice input for available ingredients, saying "I want to have brunch
+
+        String prompt = "I want to have brunch";
+
+        MockModel model = new MockModel();
+        ChatGPT gpt = new ChatGPT(model);
+
+        //Then the app should recognize the voice input
+        String test = gpt.generateMealType(prompt);
+        
+        //And the app should return an error message “Wrong meal type!”
+        String output = "Wrong meal type!";
+
+        assertEquals(test, output);
+
+    }
 }

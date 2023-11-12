@@ -45,7 +45,9 @@ public class ChatGPT {
                 "Breakfast, Lunch, Dinner, Snack, Dessert, or Drink.\n" +
                 "If there is no valid meal type, return None\n" +
                 "The meal type is:";
-
+        if (!transcription.contains(" breakfast") && !transcription.contains(" lunch") && !transcription.contains(" dinner")){
+            return "Wrong meal type!";
+        }
         return model.callModel(createMealTypePrompt);
     }
 
