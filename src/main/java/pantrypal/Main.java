@@ -243,6 +243,7 @@ class CreateRecipe extends VBox {
     private AudioFormat audioFormat;
     private TargetDataLine targetDataLine;
     private Thread t;
+    private AudioRecorder ar;
 
     private String mealType;
 
@@ -291,7 +292,7 @@ class CreateRecipe extends VBox {
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
 
-        audioFormat = getAudioFormat();
+        ar = new AudioRecorder();
 
         recordingLabel.setVisible(false);
 
@@ -314,102 +315,39 @@ class CreateRecipe extends VBox {
         return recordingLabel;
     }
 
-    // Initialize audio format
-    private AudioFormat getAudioFormat() {
-        // the number of samples of audio per second.
-        // 44100 represents the typical sample rate for CD-quality audio.
-        float sampleRate = 44100;
-
-        // the number of bits in each sample of a sound that has been digitized.
-        int sampleSizeInBits = 16;
-
-        // the number of audio channels in this format (1 for mono, 2 for stereo).
-        int channels = 2;
-
-        // whether the data is signed or unsigned.
-        boolean signed = true;
-
-        // whether the audio data is stored in big-endian or little-endian order.
-        boolean bigEndian = false;
-
-        return new AudioFormat(
-                sampleRate,
-                sampleSizeInBits,
-                channels,
-                signed,
-                bigEndian);
-    }
-
-    // Initialize and start thread for recording ingredients list
-    private void startRecording() {
-        t = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            // the format of the TargetDataLine
-                            DataLine.Info dataLineInfo = new DataLine.Info(
-                                    TargetDataLine.class,
-                                    audioFormat);
-                            // the TargetDataLine used to capture audio data from the microphone
-                            targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
-                            targetDataLine.open(audioFormat);
-                            targetDataLine.start();
-                            recordingLabel.setVisible(true);
-
-                            // the AudioInputStream that will be used to write the audio data to a file
-                            AudioInputStream audioInputStream = new AudioInputStream(
-                                    targetDataLine);
-
-                            // the file that will contain the audio data
-                            File audioFile = new File("recording.wav");
-                            AudioSystem.write(
-                                    audioInputStream,
-                                    AudioFileFormat.Type.WAVE,
-                                    audioFile);
-                            recordingLabel.setVisible(false);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-        t.start();
-    }
-
-    // Stop the recording process
-    private void stopRecording() {
-        targetDataLine.stop();
-        targetDataLine.close();
-    }
-
     public void addListeners() {
         // Start Recording Button
         addButton.setOnAction(e -> {
-            startRecording();
+            recordingLabel.setVisible(true);
+            ar.startRecording();
         });
 
         // Stop Recording Button and show the new recipe that was generated
         stopButton.setOnAction(e -> {
-            stopRecording();
-            String[] result;
-            try {
-                recordingLabel.setText("Processing...");
-                result = getRecipeFromAudio("recording.wav", mealType);
-                recordingLabel.setText("Stop and Generate Recipe");
-
-                RecipeData recipe = new RecipeData(result);
-
-                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
-                primaryStage.setScene(scene);
-
-                System.out.println(result[0]);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                e1.printStackTrace();
-            }
-
+            ar.stopRecording();
+            recordingLabel.setVisible(false);
+            processIngredientRecording();
         });
+    }
+
+    private void processIngredientRecording() {
+        String[] result;
+        try {
+            recordingLabel.setText("Processing...");
+            result = getRecipeFromAudio("recording.wav", mealType);
+            recordingLabel.setText("Stop and Generate Recipe");
+
+            RecipeData recipe = new RecipeData(result);
+
+            Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
+            primaryStage.setScene(scene);
+
+            System.out.println(result[0]);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
+        }
     }
 
     public static String[] getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
@@ -566,9 +504,7 @@ class AppFrame extends BorderPane {
     private Button addButton;
     private Button stopButton;
 
-    private AudioFormat audioFormat;
-    private TargetDataLine targetDataLine;
-    private Thread t;
+    private AudioRecorder ar;
 
     private Label recordingLabel;
 
@@ -625,7 +561,7 @@ class AppFrame extends BorderPane {
         // saveButton = footer.getSaveButton();
         // backButton = createRecipe.getBackButton();
         // Call Event Listeners for the Buttons
-        audioFormat = getAudioFormat();
+        ar = new AudioRecorder();
 
         addListeners();
     }
@@ -633,35 +569,37 @@ class AppFrame extends BorderPane {
     public void addListeners() {
         // Start Recording Button
         addButton.setOnAction(e -> {
-            startRecording();
+            recordingLabel.setVisible(true);
+            ar.startRecording();
         });
 
         // Stop Recording Button and load CreateRecipe scene with wanted recipe type
         stopButton.setOnAction(e -> {
-            stopRecording();
-            String result;
-            try {
-                recordingLabel.setText("Processing...");
-                result = getMealTypeFromAudio("recording.wav");
-                System.out.println(result);
-                recordingLabel.setText("Done with Saying Meal Type");
-
-                if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
-                    return;
-                } else {
-                    Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
-                    primaryStage.setScene(scene);
-                }
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-
+            ar. stopRecording();
+            recordingLabel.setVisible(false);
+            processMealTypeRecording();
         });
+    }
+
+    // Process recording, if meal type exists go into next step of creating recipe with CreateRecipe()
+    private void processMealTypeRecording() {
+        String result;
+        try {
+            recordingLabel.setText("Processing...");
+            result = getMealTypeFromAudio("recording.wav");
+            recordingLabel.setText("Done with Saying Meal Type");
+
+            if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
+                return;
+            } else {
+                Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
+                primaryStage.setScene(scene);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (URISyntaxException e1) {
+            e1.printStackTrace();
+        }
     }
 
     // Given an audio file path, create a transcription, then generate the wanted meal type
@@ -671,74 +609,6 @@ class AppFrame extends BorderPane {
         String transcript = Whisper.getTranscript(filePath);
         String mealType = gpt.generateMealType(transcript);
         return mealType;
-    }
-
-    // Initialize audio format
-    private AudioFormat getAudioFormat() {
-        // the number of samples of audio per second.
-        // 44100 represents the typical sample rate for CD-quality audio.
-        float sampleRate = 44100;
-
-        // the number of bits in each sample of a sound that has been digitized.
-        int sampleSizeInBits = 16;
-
-        // the number of audio channels in this format (1 for mono, 2 for stereo).
-        int channels = 2;
-
-        // whether the data is signed or unsigned.
-        boolean signed = true;
-
-        // whether the audio data is stored in big-endian or little-endian order.
-        boolean bigEndian = false;
-
-        return new AudioFormat(
-                sampleRate,
-                sampleSizeInBits,
-                channels,
-                signed,
-                bigEndian);
-    }
-
-    // Initiate a thread that starts the recording for meal type
-    private void startRecording() {
-        t = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            // the format of the TargetDataLine
-                            DataLine.Info dataLineInfo = new DataLine.Info(
-                                    TargetDataLine.class,
-                                    audioFormat);
-                            // the TargetDataLine used to capture audio data from the microphone
-                            targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
-                            targetDataLine.open(audioFormat);
-                            targetDataLine.start();
-                            recordingLabel.setVisible(true);
-
-                            // the AudioInputStream that will be used to write the audio data to a file
-                            AudioInputStream audioInputStream = new AudioInputStream(
-                                    targetDataLine);
-
-                            // the file that will contain the audio data
-                            File audioFile = new File("recording.wav");
-                            AudioSystem.write(
-                                    audioInputStream,
-                                    AudioFileFormat.Type.WAVE,
-                                    audioFile);
-                            recordingLabel.setVisible(false);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-        t.start();
-    }
-
-    // Stop the recording for selection of meal type
-    private void stopRecording() {
-        targetDataLine.stop();
-        targetDataLine.close();
     }
 
     // public void addListeners() {
