@@ -64,9 +64,10 @@ class Recipe extends HBox {
         // recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:
         // 0;"); // set background color of
         // // texfield
-        index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
-        recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
-        this.getChildren().add(recipeDetails); // add textlabel to recipe
+        // index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        // recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to
+        // the text field
+        // this.getChildren().add(recipeDetails); // add textlabel to recipe
 
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
@@ -128,7 +129,7 @@ class Recipe extends HBox {
 
 class RecipeList extends VBox {
 
-    RecipeList() {
+    RecipeList() throws IOException {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
@@ -573,7 +574,7 @@ class AppFrame extends BorderPane {
     private ScrollPane scrollPane;
     private Stage primaryStage;
 
-    AppFrame(Stage primaryStage) {
+    AppFrame(Stage primaryStage) throws IOException {
         // Initialise the header Object
         header = new Header();
 

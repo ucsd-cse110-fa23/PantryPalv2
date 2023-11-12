@@ -2,6 +2,7 @@ package pantrypal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,112 +10,82 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.lang.reflect.Type;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 public class CRUDRecipes {
 
-    /**
-     * @return a list of RecipeData objects from the RecipeData class
-     */
-    public static ArrayList<RecipeData> readRecipes() {
-        // load json data from recipes.json
-        ArrayList<RecipeData> recipes = new ArrayList<RecipeData>();
-        try {
-            // Read the entire file content into a string
-            String content = new String(Files.readAllBytes(Paths.get("recipes.json")));
+    private static final String FILE_PATH = "recipes.json";
+    private static final Gson gson = new Gson();
 
-            // Parse the JSON content
-            JSONArray jsonArray = new JSONArray(content);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                // Access the data from the JSON object
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                // parse ingredients as string array
-                JSONArray jsonIngredients = jsonObject.getJSONArray("ingredients");
-                String[] ingredients = new String[jsonIngredients.length()];
-                for (int j = 0; j < jsonIngredients.length(); j++) {
-                    ingredients[j] = jsonIngredients.getString(j);
-                }
-
-                String name = jsonObject.getString("name");
-                String instructions = jsonObject.getString("instructions");
-
-                // Use the extracted data as needed
-                System.out.println("Recipe Name: " + name);
-                System.out.println("Recipe Details: " + instructions);
-
-                RecipeData recipe = new RecipeData(name, ingredients, instructions);
-                recipes.add(recipe);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    // Reads the existing recipes from the JSON file
+    public static ArrayList<RecipeData> readRecipes() throws IOException {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return new ArrayList<>();
         }
 
-        return recipes;
-    }
-
-    public static boolean recipeExists(String key) {
-        ArrayList<RecipeData> recipes = readRecipes();
-        for (RecipeData recipe : recipes) {
-            if (recipe.title.equals(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static void updateRecipeContents(String key, String[] ingredients, String instructions) {
-        ArrayList<RecipeData> recipes = readRecipes();
-        for (RecipeData recipe : recipes) {
-            if (recipe.title.equals(key)) {
-                recipe.ingredients = ingredients;
-                recipe.instructions = instructions;
-            }
-        }
-        overwriteRecipes(recipes);
-    }
-
-    public static void overwriteRecipes(ArrayList<RecipeData> recipes) {
-
-    }
-
-    public static void writeRecipe(RecipeData recipe) throws IOException {
-        // Step 1: Read existing JSON file
-        BufferedReader reader = new BufferedReader(new FileReader("recipes.json"));
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        Type listType = new TypeToken<ArrayList<RecipeData>>() {
+        }.getType();
+        ArrayList<RecipeData> recipes = gson.fromJson(reader, listType);
         reader.close();
 
-        // Step 2: Convert RecipeData to JSON String
-        StringBuilder recipeJsonBuilder = new StringBuilder();
-        recipeJsonBuilder.append("{");
-        recipeJsonBuilder.append("\"name\": \"").append(recipe.title).append("\",");
-        recipeJsonBuilder.append("\"ingredients\": [");
-        for (int i = 0; i < recipe.ingredients.length; i++) {
-            recipeJsonBuilder.append("\"").append(recipe.ingredients[i]).append("\"");
-            if (i < recipe.ingredients.length - 1) {
-                recipeJsonBuilder.append(",");
+        return recipes != null ? recipes : new ArrayList<>();
+    }
+
+    // Writes the updated recipes to the JSON file
+    private static void writeRecipes(List<RecipeData> recipes) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH));
+        gson.toJson(recipes, writer);
+        writer.close();
+    }
+
+    // Adds a new recipe
+    public static void createRecipe(RecipeData newRecipe) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        recipes.add(newRecipe);
+        writeRecipes(recipes);
+    }
+
+    public static boolean recipeExists(String title) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        return recipes.stream()
+                .anyMatch(recipe -> recipe.title.equals(title));
+    }
+
+    // Retrieves a specific recipe based on its title
+    public static RecipeData getRecipe(String title) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        return recipes.stream()
+                .filter(recipe -> recipe.title.equals(title))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Updates an existing recipe
+    public static void updateRecipe(RecipeData updatedRecipe) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        for (int i = 0; i < recipes.size(); i++) {
+            if (recipes.get(i).title.equals(updatedRecipe.title)) {
+                recipes.set(i, updatedRecipe);
+                break;
             }
         }
-        recipeJsonBuilder.append("],");
-        recipeJsonBuilder.append("\"instructions\": \"").append(recipe.instructions).append("\"");
-        recipeJsonBuilder.append("}");
+        writeRecipes(recipes);
+    }
 
-        // Step 3: Append the new JSON object to the existing JSON array
-        String jsonArray = jsonBuilder.toString();
-        String updatedJsonArray = jsonArray.substring(0, jsonArray.length() - 1) + "," + recipeJsonBuilder.toString()
-                + "]";
-
-        // Step 4: Write updated JSON back to the file
-        BufferedWriter writer = new BufferedWriter(new FileWriter("recipes.json"));
-        writer.write(updatedJsonArray);
-        writer.close();
+    // Deletes a recipe
+    public static void deleteRecipe(String title) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        recipes.removeIf(recipe -> recipe.title.equals(title));
+        writeRecipes(recipes);
     }
 
 }
