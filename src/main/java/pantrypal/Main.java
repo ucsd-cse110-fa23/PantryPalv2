@@ -372,7 +372,7 @@ class CreateMealType extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
-        stopButton = new Button("Stop and Generate Recipe");
+        stopButton = new Button("Stop and Generate Meal Type");
 
         recordingLabel = new Label("Recording...");
 
@@ -557,6 +557,7 @@ class AppFrame extends BorderPane {
     public void addListeners() {
         // Start Recording Button
         addButton.setOnAction(e -> {
+            recordingLabel.setText("Recording...");
             startRecording();
         });
 
@@ -568,9 +569,9 @@ class AppFrame extends BorderPane {
                 recordingLabel.setText("Processing...");
                 result = getMealTypeFromAudio("recording.wav");
                 System.out.println(result);
-                recordingLabel.setText("Done with Saying Meal Type");
 
                 if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
+                    recordingLabel.setText("Invalid meal type generated, please try again");
                     return;
                 } else {
                     Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
@@ -665,7 +666,7 @@ class AppFrame extends BorderPane {
                                     audioInputStream,
                                     AudioFileFormat.Type.WAVE,
                                     audioFile);
-                            recordingLabel.setVisible(false);
+                            // recordingLabel.setVisible(false);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
