@@ -99,7 +99,7 @@ class Recipe extends HBox {
 
         viewButton.setOnAction(e -> {
             try {
-                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipeData), 500, 600);
+                Scene scene = new Scene(new ViewRecipe(primaryStage, recipeData), 500, 600);
                 primaryStage.setScene(scene);
             } catch (IOException e1) {
                 // TODO Auto-generated catch block

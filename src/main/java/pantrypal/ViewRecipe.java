@@ -20,44 +20,46 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class NewRecipeScreen extends BorderPane {
+public class ViewRecipe extends BorderPane {
 
-    private NewRecipeHeader header;
-    private NewRecipeFooter newfooter;
-    private NewRecipeBody body;
+    private ViewRecipeHeader header;
+    private ViewRecipeFooter footer;
+    private ViewRecipeBody body;
 
+    private Button backButton;
     private Button editButton;
     private Button saveButton;
-    private Button cancelButton;
+    private Button deleteButton;
+
     private String response;
     private RecipeData recipe;
     private Stage primaryStage;
-
+    // private MainMenuController test;
     private boolean isEditing = false;
 
-    public NewRecipeScreen(Stage primaryStage, RecipeData recipe) throws IOException {
-
+    public ViewRecipe(Stage primaryStage, RecipeData recipe) throws IOException {
         this.response = recipe.title + "\n" + recipe.instructions;
         // Initialise the header Object
-        header = new NewRecipeHeader(recipe.title);
+        header = new ViewRecipeHeader(recipe.title);
 
         // Initialise the body Object
-        body = new NewRecipeBody(response);
+        body = new ViewRecipeBody(response);
 
         // Initialise the Footer Object
-        newfooter = new NewRecipeFooter();
+        footer = new ViewRecipeFooter();
 
         // Add header to the top of the BorderPane
         this.setTop(header);
         this.setCenter(body);
-        ;
         // Add footer to the bottom of the BorderPane
-        this.setBottom(newfooter);
+        this.setBottom(footer);
+
+        backButton = header.getBackButton();
 
         // Initialise Button Variables through the getters in Footer
-        editButton = newfooter.getEditButton();
-        saveButton = newfooter.getSaveButton();
-        cancelButton = newfooter.getCancelButton();
+        editButton = footer.getEditButton();
+        saveButton = footer.getSaveButton();
+        deleteButton = footer.getDeleteButton();
 
         this.recipe = recipe;
         this.primaryStage = primaryStage;
@@ -66,17 +68,18 @@ public class NewRecipeScreen extends BorderPane {
         addListeners();
     }
 
-    public void addListeners() throws IOException {
-        cancelButton.setOnAction(e -> {
-            body.getDetails().setEditable(false);
-            editButton.setText("Edit Recipe");
-
-            try {
-                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+    public void addListeners() {
+        editButton.setOnAction(e -> {
+            if (!isEditing) {
+                body.getDetails().setEditable(true);
+                editButton.setText("Done Editing");
+                isEditing = true;
+            } else {
+                body.getDetails().setEditable(false);
+                editButton.setText("Edit Recipe");
+                isEditing = false;
             }
+
         });
 
         saveButton.setOnAction(e -> {
@@ -109,43 +112,71 @@ public class NewRecipeScreen extends BorderPane {
             }
         });
 
-        editButton.setOnAction(e -> {
-            // switchEditable(isEditing);
-            if (!isEditing) {
-                body.getDetails().setEditable(true);
-                editButton.setText("Done Editing");
-                isEditing = true;
-            } else {
-                body.getDetails().setEditable(false);
-                editButton.setText("Edit Recipe");
-                this.recipe.instructions = body.getDetails().getText();
-                isEditing = false;
+        deleteButton.setOnAction(e -> {
+            // TODO::deletion
+            try {
+                primaryStage.setScene(
+                        new Scene(new ConfirmDelete(primaryStage, CRUDRecipes.getRecipe(recipe.title)), 500,
+                                600));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
         });
+
+        backButton.setOnAction(e -> {
+            try {
+                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            
+        });
+
     }
 }
 
-class NewRecipeHeader extends HBox {
+class ViewRecipeHeader extends HBox {
 
-    NewRecipeHeader(String title) {
+    private Button backButton;
+
+    ViewRecipeHeader(String title) {
+        
+        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF; -fx-font-weight: bold; -fx-font: 11 arial;";
+        backButton = new Button("Back");
+        backButton.setStyle(defaultButtonStyle);
+
         this.setPrefSize(500, 60); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-        Text titleText = new Text(title); // Text of the Header
+        Text titleText = new Text(title);
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
-        this.getChildren().add(titleText);
-        this.setAlignment(Pos.CENTER); // Align the text to the Center
+
+        // VBox for centering titleText
+        VBox titleVBox = new VBox(titleText);
+        titleVBox.setAlignment(Pos.CENTER);
+
+        this.getChildren().addAll(titleVBox, backButton);
+        HBox.setHgrow(backButton, Priority.ALWAYS);
+        this.setAlignment(Pos.CENTER_RIGHT); // Align the whole content to the right
+        this.setSpacing(50);
+    }
+
+    public Button getBackButton() {
+        return backButton;
     }
 }
 
-class NewRecipeBody extends HBox {
+class ViewRecipeBody extends HBox {
+    TextArea details;
 
-    private TextArea details = new TextArea();
-
-    NewRecipeBody(String res) {
+    ViewRecipeBody(String res) {
         this.setPrefSize(500, 120); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
+        details = new TextArea();
         details.setText(res);
         details.setWrapText(true);
         details.setEditable(false);
@@ -155,16 +186,16 @@ class NewRecipeBody extends HBox {
     }
 
     public TextArea getDetails() {
-        return details;
+        return this.details;
     }
 }
 
-class NewRecipeFooter extends HBox {
+class ViewRecipeFooter extends HBox {
     private Button editButton;
+    private Button deleteButton;
     private Button saveButton;
-    private Button cancelButton;
 
-    NewRecipeFooter() {
+    ViewRecipeFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
         this.setPrefSize(500, 60);
         this.setSpacing(15);
@@ -172,11 +203,12 @@ class NewRecipeFooter extends HBox {
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
         editButton = new Button("Edit Recipe"); // text displayed on clear recipes button
         editButton.setStyle(defaultButtonStyle);
-        saveButton = new Button("Save Recipe"); // text displayed on clear recipes button
+        saveButton = new Button("Save Recipe"); // text displayed on clear recipes
         saveButton.setStyle(defaultButtonStyle);
-        cancelButton = new Button("Cancel"); // text displayed on clear recipes button
-        cancelButton.setStyle(defaultButtonStyle);
-        this.getChildren().addAll(editButton, saveButton, cancelButton); // adding buttons to footer
+        deleteButton = new Button("Delete Recipe"); // text displayed on clear recipes button
+        deleteButton.setStyle(defaultButtonStyle);
+        
+        this.getChildren().addAll(editButton,saveButton, deleteButton); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -189,8 +221,8 @@ class NewRecipeFooter extends HBox {
         return saveButton;
     }
 
-    public Button getCancelButton() {
-        return cancelButton;
+    public Button getDeleteButton() {
+        return deleteButton;
     }
 
 }
