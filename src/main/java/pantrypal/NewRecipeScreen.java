@@ -35,7 +35,7 @@ public class NewRecipeScreen extends BorderPane {
 
     private boolean isEditing = false;
 
-    public NewRecipeScreen(Stage primaryStage, RecipeData recipe) {
+    public NewRecipeScreen(Stage primaryStage, RecipeData recipe) throws IOException {
 
         this.response = recipe.title + "\n" + recipe.instructions;
         // Initialise the header Object
@@ -66,29 +66,47 @@ public class NewRecipeScreen extends BorderPane {
         addListeners();
     }
 
-    public void addListeners() {
+    public void addListeners() throws IOException {
         cancelButton.setOnAction(e -> {
             body.getDetails().setEditable(false);
             editButton.setText("Edit Recipe");
 
-            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            try {
+                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
 
         saveButton.setOnAction(e -> {
             try {
-                FileWriter writer = new FileWriter("recipes.txt", true);
-
-                String str = recipe.title + "\n" + recipe.instructions;
-
-                writer.write(str);
-                writer.write("\n\n");
-                writer.close();
-
+                System.out.println(CRUDRecipes.recipeExists(recipe.title));
             } catch (IOException e1) {
-                System.out.println("An error occurred.");
+                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            try {
+                if (CRUDRecipes.recipeExists(recipe.title)) {
 
+                    try {
+                        CRUDRecipes.updateRecipe(recipe);
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                } else {
+                    try {
+                        CRUDRecipes.createRecipe(recipe);
+                    } catch (IOException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                }
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
 
         editButton.setOnAction(e -> {
@@ -100,6 +118,7 @@ public class NewRecipeScreen extends BorderPane {
             } else {
                 body.getDetails().setEditable(false);
                 editButton.setText("Edit Recipe");
+                this.recipe.instructions = body.getDetails().getText();
                 isEditing = false;
             }
         });

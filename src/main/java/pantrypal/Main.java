@@ -35,15 +35,21 @@ class Recipe extends HBox {
     public Label index;
     public TextField recipeName;
     public TextField recipeDetails;
+
+    private Button viewButton;
     private Button deleteButton;
 
     private boolean markedDone;
+    private Stage primaryStage;
+    private RecipeData recipeData;
 
-    Recipe() {
+    Recipe(Stage primaryStage, RecipeData recipeData) {
         this.setPrefSize(500, 20); // sets size of recipe
         this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // sets background
                                                                                                      // color of recipe
         markedDone = false;
+        this.primaryStage = primaryStage;
+        this.recipeData = recipeData;
 
         index = new Label();
         index.setText(""); // create index label
@@ -57,21 +63,51 @@ class Recipe extends HBox {
         recipeName.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of texfield
         index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
+        recipeName.setEditable(false);
         this.getChildren().add(recipeName); // add textlabel to recipe
 
-        recipeDetails = new TextField(); // create recipe name text field
-        recipeDetails.setPrefSize(380, 20); // set size of text field
-        recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of
-                                                                                       // texfield
-        index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
-        recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
-        this.getChildren().add(recipeDetails); // add textlabel to recipe
+        // recipeDetails = new TextField(); // create recipe name text field
+        // recipeDetails.setPrefSize(380, 20); // set size of text field
+        // recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:
+        // 0;"); // set background color of
+        // // texfield
+        // index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
+        // recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to
+        // the text field
+        // this.getChildren().add(recipeDetails); // add textlabel to recipe
+
+        viewButton = new Button("View"); // creates a button for marking the recipe as done
+        viewButton.setPrefSize(100, 20);
+        viewButton.setPrefHeight(Double.MAX_VALUE);
+        viewButton.setStyle("-fx-background-color: #00FF00; -fx-border-width: 0;"); // sets style of button
 
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
         deleteButton.setPrefSize(100, 20);
         deleteButton.setPrefHeight(Double.MAX_VALUE);
-        deleteButton.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // sets style of button
+        deleteButton.setStyle("-fx-background-color: #FF0000; -fx-border-width: 0;"); // sets style of button
 
+        deleteButton.setOnAction(e -> {
+            try {
+                primaryStage.setScene(
+                        new Scene(new ConfirmDelete(primaryStage, CRUDRecipes.getRecipe(recipeName.getText())), 500,
+                                600));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+
+        viewButton.setOnAction(e -> {
+            try {
+                Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipeData), 500, 600);
+                primaryStage.setScene(scene);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
+
+        this.getChildren().add(viewButton); // add button to recipe
         this.getChildren().add(deleteButton);
     }
 
@@ -100,121 +136,37 @@ class Recipe extends HBox {
         return this.markedDone;
     }
 
-    public void toggleDone() {
-        markedDone = !markedDone;
-        if (markedDone) {
-            this.setStyle("-fx-border-color: #000000; -fx-border-width: 0; -fx-font-weight: bold;"); // remove border of
-                                                                                                     // recipe
-            for (int i = 0; i < this.getChildren().size(); i++) {
-                this.getChildren().get(i).setStyle("-fx-background-color: #BCE29E; -fx-border-width: 0;"); // change
-                                                                                                           // color of
-                                                                                                           // recipe to
-                                                                                                           // green
-            }
-        } else {
-            this.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0; -fx-font-weight: bold;"); // put back
-                                                                                                         // border
-            for (int i = 0; i < this.getChildren().size(); i++) {
-                this.getChildren().get(i).setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // change
-                                                                                                           // color of
-                                                                                                           // recipe to
-                                                                                                           // green
-            }
-        }
-    }
-
 }
 
-
 class RecipeList extends VBox {
+    // PointC
+    Stage primaryStage;
 
-    RecipeList() {
+    RecipeList(Stage primaryStage) throws IOException {
         this.setSpacing(5); // sets spacing between recipes
         this.setPrefSize(500, 560);
         this.setStyle("-fx-background-color: #F0F8FF;");
-    // get the current recipe data (from JSON file) 
-        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes(); 
-        // add the recipes to the recipelist 
+        this.primaryStage = primaryStage;
+        // get the current recipe data (from JSON file)
+        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes();
+        // add the recipes to the recipelist
         loadRecipes(recipes);
     }
 
-    /* call on opening page */
-    public void callOnOpen() {
-        
-    }
-
-    public void updateRecipeIndices() {
-        int index = 1;
-        for (int i = 0; i < this.getChildren().size(); i++) {
-            if (this.getChildren().get(i) instanceof Recipe) {
-                ((Recipe) this.getChildren().get(i)).setRecipeIndex(index);
-                index++;
-            }
-        }
-    }
-
-    public void removeCompletedRecipes() {
-        this.getChildren().removeIf(recipe -> recipe instanceof Recipe && ((Recipe) recipe).isMarkedDone());
-        this.updateRecipeIndices();
-    }
-
-    
     /*
      * Load recipes from a file called "recipes.json"
      * Add the recipes to the children of recipelist component
      */
     public void loadRecipes(ArrayList<RecipeData> recipes) {
-        for (RecipeData recipeData: recipes) {
-            // create Recipe object for each recipe data 
-            Recipe recipe = new Recipe();
+        Collections.reverse(recipes);
+        for (RecipeData recipeData : recipes) {
+            // create Recipe object for each recipe data
+            Recipe recipe = new Recipe(primaryStage, recipeData);
             recipe.setRecipeName(recipeData.title);
             this.getChildren().add(recipe);
         }
-        /*try {
-            File file = new File("recipes.txt");
-            Scanner scan = new Scanner(file);
-            while (scan.hasNextLine()) {
-                String data = scan.nextLine();
-                Recipe recipe = new Recipe();
-                recipe.setRecipeName(data);
-                // Add recipe to recipelist
-                this.getChildren().add(recipe);
-                Button doneButton = recipe.getDeleteButton();
-                doneButton.setOnAction(e1 -> {
-                    // Call toggleDone on click
-                    recipe.toggleDone();
-                });
-                //this.updateRecipeIndices();
-                System.out.println(data);
-            }
-            scan.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("error: file not found ");
-        } */
+        Collections.reverse(recipes);
     }
-
-    /*
-     * Save recipes to a file called "recipes.txt"
-     */
-    public void saveRecipes() {
-        // hint 1: use try-catch block
-        // hint 2: use FileWriter
-        // hint 3: this.getChildren() gets the list of recipes
-        try {
-            FileWriter writer = new FileWriter(
-                    "/Users/akuduvalli/Desktop/CSE-110/java/CSE110-Lab-1/src/TodoList/recipes.txt", false);
-            for (int i = 0; i < this.getChildren().size(); i++) {
-                String str = ((Recipe) this.getChildren().get(i)).getRecipeName().getText()
-                        + (i < this.getChildren().size() - 1 ? "\n" : "");
-                writer.write(str);
-            }
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
-
 }
 
 /**
@@ -450,7 +402,7 @@ class CreateMealType extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
-        stopButton = new Button("Stop and Generate Recipe");
+        stopButton = new Button("Stop and Generate Meal Type");
 
         recordingLabel = new Label("Recording...");
 
@@ -533,15 +485,31 @@ class Footer extends HBox {
 }
 
 class Header extends HBox {
+    Button backButton;
+    Text titleText;
+    StackPane titleContainer;
 
     Header() {
         this.setPrefSize(500, 60); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-        Text titleText = new Text("PantryPal"); // Text of the Header
+        // Back Button
+        backButton = new Button("Back");
+        backButton.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(backButton, Priority.NEVER); // Prevents the back button from growing
+
+        // Title Text
+        titleText = new Text("PantryPal");
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
-        this.getChildren().add(titleText);
-        this.setAlignment(Pos.CENTER); // Align the text to the Center
+
+        // StackPane for centering the title
+        titleContainer = new StackPane();
+        titleContainer.getChildren().add(titleText);
+        HBox.setHgrow(titleContainer, Priority.ALWAYS); // Allows the title container to grow and center the title
+
+        // Add components to the HBox
+        this.getChildren().addAll(backButton, titleContainer);
+        this.backButton.setVisible(false);
     }
 }
 
@@ -563,21 +531,15 @@ class AppFrame extends BorderPane {
     private Thread t;
 
     private Label recordingLabel;
-
-    // private Button clearButton;
-    // private Button loadButton;
-    // private Button saveButton;
-
-    // private Button backButton;
     private ScrollPane scrollPane;
     private Stage primaryStage;
 
-    AppFrame(Stage primaryStage) {
+    AppFrame(Stage primaryStage) throws IOException {
         // Initialise the header Object
         header = new Header();
 
         // Create a recipelist Object to hold the recipes
-        recipeList = new RecipeList();
+        recipeList = new RecipeList(primaryStage);
 
         // Initialise the Footer Object
         // footer = new Footer();
@@ -591,7 +553,7 @@ class AppFrame extends BorderPane {
         // add the cards to the stackPane
         // TODO: create a pane for the detailed view of each recipe
 
-        stackPane.getChildren().addAll(scrollPane,createMealType);
+        stackPane.getChildren().addAll(scrollPane, createMealType);
         scrollPane.setVisible(false);
         createMealType.setVisible(true);
 
@@ -625,6 +587,7 @@ class AppFrame extends BorderPane {
     public void addListeners() {
         // Start Recording Button
         addButton.setOnAction(e -> {
+            recordingLabel.setText("Recording...");
             startRecording();
         });
 
@@ -636,9 +599,9 @@ class AppFrame extends BorderPane {
                 recordingLabel.setText("Processing...");
                 result = getMealTypeFromAudio("recording.wav");
                 System.out.println(result);
-                recordingLabel.setText("Done with Saying Meal Type");
 
                 if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
+                    recordingLabel.setText("Invalid meal type generated, please try again");
                     return;
                 } else {
                     Scene scene = new Scene(new CreateRecipe(primaryStage, result), 500, 600);
@@ -656,14 +619,22 @@ class AppFrame extends BorderPane {
         });
 
         recipeListButton.setOnAction(e -> {
-            // switch to the list screen 
+            // switch to the list screen
             scrollPane.setVisible(true);
             createMealType.setVisible(false);
+            header.backButton.setVisible(true);
+        });
+
+        header.backButton.setOnAction(e -> {
+            scrollPane.setVisible(false);
+            createMealType.setVisible(true);
+            header.backButton.setVisible(false);
         });
 
     }
 
-    // Given an audio file path, create a transcription, then generate the wanted meal type
+    // Given an audio file path, create a transcription, then generate the wanted
+    // meal type
     public static String getMealTypeFromAudio(String filePath) throws IOException, URISyntaxException {
         OpenAI model = new OpenAI();
         ChatGPT gpt = new ChatGPT(model);
@@ -725,7 +696,7 @@ class AppFrame extends BorderPane {
                                     audioInputStream,
                                     AudioFileFormat.Type.WAVE,
                                     audioFile);
-                            recordingLabel.setVisible(false);
+                            // recordingLabel.setVisible(false);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
