@@ -80,7 +80,9 @@ public class AudioRecorder {
 
     // Stops the recording process once this function is called
     public void stopRecording() {
-        targetDataLine.stop();
-        targetDataLine.close();
+        if(targetDataLine != null) {
+            targetDataLine.stop();
+            targetDataLine.close();
+        }
     }
 }
