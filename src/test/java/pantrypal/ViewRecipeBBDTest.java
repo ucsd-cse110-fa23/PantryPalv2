@@ -20,13 +20,13 @@ public class ViewRecipeBBDTest {
     @Test
     void testBDDViewRecipe() throws IOException {
         // Given the user completely generates a recipe
-        // And the user is on the “Recipes List” page
-        // And the title “potato mash” is accessible
         String title = "potato mush";
         String[] ingredients = {"potato","black papper", "butter"};
         String instructions = "Mash the cooked potatoes and fry the black pepper in butter, then stir all the ingredients together.";
         savedRecipe = new RecipeData(title, ingredients, instructions);
         
+        // And the user is on the “Recipes List” page
+        // And the title “potato mash” is accessible
         // When the user click on the title “potato mash”
         // Then the app should jump to a new page and display the details about potato mash
         try {
@@ -44,4 +44,5 @@ public class ViewRecipeBBDTest {
         }
 
     }
+    
 }
