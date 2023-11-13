@@ -37,7 +37,12 @@ public class NewRecipeScreen extends BorderPane {
 
     public NewRecipeScreen(Stage primaryStage, RecipeData recipe) throws IOException {
 
-        this.response = recipe.title + "\n" + recipe.instructions;
+        this.response = recipe.title + "\n";
+        this.response += "Listed Ingredients:\n";
+        for (int i = 0; i < recipe.ingredients.length; i++) {
+            this.response += recipe.ingredients[i] + "\n";
+        }
+        this.response += recipe.instructions;
         // Initialise the header Object
         header = new NewRecipeHeader(recipe.title);
 
@@ -108,7 +113,7 @@ public class NewRecipeScreen extends BorderPane {
             // switchEditable(isEditing);
             if (!isEditing) {
                 body.getDetails().setEditable(true);
-                editButton.setText("Done Editing");
+                editButton.setText("Done With Edit");
                 isEditing = true;
             } else {
                 body.getDetails().setEditable(false);
@@ -167,9 +172,9 @@ class NewRecipeFooter extends HBox {
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
         editButton = new Button("Edit Recipe"); // text displayed on clear recipes button
         editButton.setStyle(defaultButtonStyle);
-        saveButton = new Button("Save Recipe"); // text displayed on clear recipes button
+        saveButton = new Button("Save to Database"); // text displayed on clear recipes button
         saveButton.setStyle(defaultButtonStyle);
-        cancelButton = new Button("Cancel"); // text displayed on clear recipes button
+        cancelButton = new Button("Back"); // text displayed on clear recipes button
         cancelButton.setStyle(defaultButtonStyle);
         this.getChildren().addAll(editButton, saveButton, cancelButton); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
