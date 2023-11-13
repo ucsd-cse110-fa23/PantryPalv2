@@ -43,4 +43,4 @@ And finally, run the project using the following command:
 chmod +x gradlew
 ```
 
-**Thank you for choosing Team 25's PantryPal for your pantry needs! 🧑‍🍳🍳💅**
+**Thank you for choosing Team 25's PantryPal for your pantry needs! 🧑‍🍳🍳💅🕺*
