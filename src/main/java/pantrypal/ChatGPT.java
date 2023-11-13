@@ -39,13 +39,15 @@ public class ChatGPT {
     }
 
     public String generateMealType(String transcription) {
+        transcription = transcription.toLowerCase();
         String createMealTypePrompt = "Given the following transcription:\n" +
                 transcription + "\n" +
                 "Find the meal type of the above transcription. The meal type should be one of the following:\n" +
                 "Breakfast, Lunch, Dinner, Snack, Dessert, or Drink.\n" +
                 "If there is no valid meal type, return None\n" +
                 "The meal type is:";
-        if (!transcription.contains(" breakfast") && !transcription.contains(" lunch") && !transcription.contains(" dinner")){
+        if (!transcription.contains(" breakfast") && !transcription.contains(" lunch") && !transcription.contains(" dinner")
+            && !transcription.contains("breakfast") && !transcription.contains("lunch") && !transcription.contains("dinner")){
             return "Wrong meal type!";
         }
         return model.callModel(createMealTypePrompt);

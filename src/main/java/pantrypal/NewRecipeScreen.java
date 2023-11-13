@@ -74,7 +74,6 @@ public class NewRecipeScreen extends BorderPane {
             try {
                 primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -83,7 +82,6 @@ public class NewRecipeScreen extends BorderPane {
             try {
                 System.out.println(CRUDRecipes.recipeExists(recipe.title));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             try {
@@ -92,19 +90,16 @@ public class NewRecipeScreen extends BorderPane {
                     try {
                         CRUDRecipes.updateRecipe(recipe);
                     } catch (IOException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                 } else {
                     try {
                         CRUDRecipes.createRecipe(recipe);
                     } catch (IOException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                 }
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });

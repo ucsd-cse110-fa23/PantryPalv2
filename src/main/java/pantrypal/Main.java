@@ -59,16 +59,6 @@ class Recipe extends HBox {
         recipeName.setEditable(false);
         this.getChildren().add(recipeName); // add textlabel to recipe
 
-        // recipeDetails = new TextField(); // create recipe name text field
-        // recipeDetails.setPrefSize(380, 20); // set size of text field
-        // recipeDetails.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:
-        // 0;"); // set background color of
-        // // texfield
-        // index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
-        // recipeDetails.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to
-        // the text field
-        // this.getChildren().add(recipeDetails); // add textlabel to recipe
-
         viewButton = new Button("View");
         viewButton.setPrefSize(100, 20);
         viewButton.setPrefHeight(Double.MAX_VALUE);
@@ -89,7 +79,6 @@ class Recipe extends HBox {
                         new Scene(new ConfirmDelete(primaryStage, CRUDRecipes.getRecipe(recipeName.getText())), 500,
                                 600));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -99,7 +88,6 @@ class Recipe extends HBox {
                 Scene scene = new Scene(new ViewRecipe(primaryStage, recipeData), 500, 600);
                 primaryStage.setScene(scene);
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -110,7 +98,6 @@ class Recipe extends HBox {
 
     public void setRecipeIndex(int num) {
         this.index.setText(num + ""); // num to String
-        // this.recipeName.setPromptText("Recipe " + num);
     }
 
     public void setRecipeName(String name) {
@@ -190,12 +177,7 @@ class CreateRecipe extends VBox {
         this.setStyle("-fx-background-color: #a7d6cc;");
         this.setSpacing(15);
 
-        // backButton = new Button("Back");
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 15 arial;";
-
-        // backButton.setPadding(new Insets(0, 0, 0, 0));
-        // backButton.setStyle(defaultButtonStyle); // styling the button
-        // backButton.setPrefSize(90, 30);
 
         this.primaryStage = primaryStage;
         this.mealType = mealType;
@@ -220,7 +202,6 @@ class CreateRecipe extends VBox {
 
         addButton.setGraphic(mic_img_view);
 
-        // stopButton = new Button("Stop and Generate Recipe");
         stopButton = new Button();
         stopButton.setStyle(defaultButtonStyle); // styling the buttonv
         stopButton.setPrefSize(150, 30);
@@ -238,11 +219,8 @@ class CreateRecipe extends VBox {
         no_mic_img_view.setFitWidth(35);
         stopButton.setStyle("-fx-background-color: #e37179; ");
         recordingLabel = new Label("Recording...");
-
         stopButton.setGraphic(no_mic_img_view);
 
-        // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
-        // this.getChildren().addAll(backButton, addButton, recipeListButton);
         this.getChildren().addAll(mealTypeLabel, addButton, stopButton, recordingLabel);
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
@@ -253,10 +231,6 @@ class CreateRecipe extends VBox {
 
         addListeners();
     }
-
-    // public Button getBackButton() {
-    // return backButton;
-    // }
 
     public Button getAddButton() {
         return addButton;
@@ -317,7 +291,6 @@ class CreateRecipe extends VBox {
 }
 
 class CreateMealType extends VBox {
-    // private Button backButton;
     private Button addButton;
     private Button stopButton;
     private Label recordingLabel;
@@ -328,12 +301,7 @@ class CreateMealType extends VBox {
         this.setStyle("-fx-background-color: #a7d6cc;");
         this.setSpacing(15);
 
-        // backButton = new Button("Back");
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 15 arial;";
-
-        // backButton.setPadding(new Insets(0, 0, 0, 0));
-        // backButton.setStyle(defaultButtonStyle); // styling the button
-        // backButton.setPrefSize(90, 30);
 
         addButton = new Button(); // text displayed on add button
         addButton.setStyle(defaultButtonStyle); // styling the buttonv
@@ -381,16 +349,10 @@ class CreateMealType extends VBox {
                 // "-fx-background-radius: 5em; " +
                 "-fx-background-color: #e6f5f3;");
 
-        // backButton.setPadding(new Insets(10)); //10 px "buffer" around button
-        // this.getChildren().addAll(backButton, addButton, recipeListButton);
         this.getChildren().addAll(addButton, stopButton, recordingLabel, recipeListButton);
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
     }
-
-    // public Button getBackButton() {
-    // return backButton;
-    // }
 
     public Button getAddButton() {
         return addButton;
@@ -407,52 +369,6 @@ class CreateMealType extends VBox {
     public Label getRecordingLabel() {
         return recordingLabel;
     }
-}
-
-class Footer extends HBox {
-
-    // private Button addButton;
-    private Button clearButton;
-    private Button loadButton;
-    private Button saveButton;
-
-    Footer() {
-        this.setPrefSize(500, 60);
-        this.setStyle("-fx-background-color: #F0F8FF;");
-        this.setSpacing(15);
-
-        // set a default style for buttons - background color, font size, italics
-        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
-
-        // addButton = new Button("Create Recipe"); // text displayed on add button
-        // addButton.setStyle(defaultButtonStyle); // styling the button
-        clearButton = new Button("Delete Selected Recipes"); // text displayed on clear recipes button
-        clearButton.setStyle(defaultButtonStyle);
-        loadButton = new Button("Load Recipes"); // text displayed on clear recipes button
-        loadButton.setStyle(defaultButtonStyle);
-        saveButton = new Button("Save Recipes"); // text displayed on clear recipes button
-        saveButton.setStyle(defaultButtonStyle);
-        this.getChildren().addAll(clearButton, loadButton, saveButton); // adding buttons to footer
-        this.setAlignment(Pos.CENTER); // aligning the buttons to center
-
-    }
-
-    // public Button getAddButton() {
-    // return addButton;
-    // }
-
-    public Button getClearButton() {
-        return clearButton;
-    }
-
-    public Button getLoadButton() {
-        return loadButton;
-    }
-
-    public Button getSaveButton() {
-        return saveButton;
-    }
-
 }
 
 class Header extends HBox {
@@ -514,17 +430,11 @@ class AppFrame extends BorderPane {
         // Create a recipelist Object to hold the recipes
         recipeList = new RecipeList(primaryStage);
 
-        // Initialise the Footer Object
-        // footer = new Footer();
-
         createMealType = new CreateMealType();
 
         scrollPane = new ScrollPane(recipeList);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
-
-        // add the cards to the stackPane
-        // TODO: create a pane for the detailed view of each recipe
 
         stackPane.getChildren().addAll(scrollPane, createMealType);
         scrollPane.setVisible(false);
@@ -536,8 +446,6 @@ class AppFrame extends BorderPane {
         this.setTop(header);
         // Add scroller to the centre of the BorderPane
         this.setCenter(stackPane);
-        // Add footer to the bottom of the BorderPane
-        // this.setBottom(footer);
 
         // Initialise Button Variables through the getters in Footer
         addButton = createMealType.getAddButton();
@@ -546,12 +454,6 @@ class AppFrame extends BorderPane {
         recipeListButton = createMealType.getRecipeListButton();
 
         recordingLabel.setVisible(false);
-
-        // clearButton = footer.getClearButton();
-        // loadButton = footer.getLoadButton();
-        // saveButton = footer.getSaveButton();
-        // backButton = createRecipe.getBackButton();
-        // Call Event Listeners for the Buttons
         ar = new AudioRecorder();
 
         addListeners();
@@ -594,7 +496,8 @@ class AppFrame extends BorderPane {
             result = getMealTypeFromAudio("recording.wav");
             System.out.println(result);
 
-            if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
+            if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
+                && !result.equals("Breakfast") && !result.equals("Lunch") && !result.equals("Dinner")) {
                 recordingLabel.setText("Invalid meal type generated, please try again");
                 return;
             } else {
@@ -617,59 +520,6 @@ class AppFrame extends BorderPane {
         String mealType = gpt.generateMealType(transcript);
         return mealType;
     }
-
-    // public void addListeners() {
-
-    // // Add button functionality
-    // addButton.setOnAction(e -> {
-    // // Create a new recipe
-    // /*
-    // * Recipe recipe = new Recipe();
-    // * // Add recipe to recipelist
-    // * recipeList.getChildren().add(recipe);
-    // * // Add doneButtonToggle to the Done button
-    // * Button deleteButton = recipe.getDeleteButton();
-    // * deleteButton.setOnAction(e1 -> {
-    // * // Call toggleDone on click
-    // * recipe.toggleDone();
-    // * });
-    // * // Update recipe indices
-    // * recipeList.updateRecipeIndices();
-    // */
-
-    // // open next page in the card layout
-    // // scrollPane.setVisible(false);
-    // // createRecipe.setVisible(true);
-
-    // // CALL WHISPER HERE + TAKE MIC INPUT
-    // });
-
-    // // backButton.setOnAction(e -> {
-    // // scrollPane.setVisible(true);
-    // // createRecipe.setVisible(false);
-    // // });
-
-    // recipeListButton.setOnAction(e -> {
-    // // TODO: Open up the list of all recipes, and allow user to select one
-    // });
-
-    // // Clear finished recipes
-    // // clearButton.setOnAction(e -> {
-    // // recipeList.removeCompletedRecipes();
-    // // });
-
-    // // load recipes from file
-    // // loadButton.setOnAction(e -> {
-    // // recipeList.loadRecipes();
-    // // });
-
-    // // save current recipe list
-    // // saveButton.setOnAction(e -> {
-    // // recipeList.saveRecipes();
-    // // });
-
-    // }
-    // }
 }
 
 public class Main extends Application {
