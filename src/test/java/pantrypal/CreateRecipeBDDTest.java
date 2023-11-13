@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class CreateRecipeBDDTest {
+    
+    
+    // Scenario 1: Creating a New Recipe
     @Test
     void testBDDCreateRecipe() {
         // Given the user is using the recipe app
@@ -26,6 +29,7 @@ public class CreateRecipeBDDTest {
 
     }
 
+    // Scenario 2: Providing a Nonexistent Meal Type
     @Test
     void testBDDCreateRecipeInvalidMealType() {
         // Given the user is using the recipe app

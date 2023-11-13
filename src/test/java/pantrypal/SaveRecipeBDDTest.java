@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 public class SaveRecipeBDDTest {
     RecipeData unsavedRecipe;
+
+    // Scenario 1: Save a  recipe
     @Test
     void testBDDSaveRecipe() {
         // Given the user completely generates a recipe
