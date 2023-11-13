@@ -46,4 +46,3 @@ chmod +x gradlew
 ```
 
 **Thank you for choosing Team 25's PantryPal for your pantry needs! 🧑‍🍳🍳💅**
-Peyton
