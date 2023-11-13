@@ -4,9 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class CreateRecipeBDDTest {
-    
-    
+public class CreateRecipeBDDTest { //Feature 1: Recipe Creation [H] & Feature 2: Meal Type Selection [M]
     // Scenario 1: Creating a New Recipe
     @Test
     void testBDDCreateRecipe() {
@@ -29,6 +27,7 @@ public class CreateRecipeBDDTest {
 
     }
 
+    //
     // Scenario 2: Providing a Nonexistent Meal Type
     @Test
     void testBDDCreateRecipeInvalidMealType() {
