@@ -12,6 +12,7 @@ public class AudioRecorder {
     private AudioFormat audioFormat = getAudioFormat();
     private TargetDataLine targetDataLine;
     private Thread t;
+    public static String path = "recording.wav";
 
     public AudioRecorder() {
         audioFormat = getAudioFormat();
@@ -64,7 +65,7 @@ public class AudioRecorder {
                                     targetDataLine);
 
                             // the file that will contain the audio data
-                            File audioFile = new File("recording.wav");
+                            File audioFile = new File(path);
                             AudioSystem.write(
                                     audioInputStream,
                                     AudioFileFormat.Type.WAVE,
