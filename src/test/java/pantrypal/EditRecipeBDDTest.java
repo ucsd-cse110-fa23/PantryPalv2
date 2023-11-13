@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class EditRecipeBDDTest {
+public class EditRecipeBDDTest { // Feature 6: Recipe Editing [M]
     RecipeData savedRecipe;
 
     private void resetRecipeFile() {
@@ -24,12 +24,12 @@ public class EditRecipeBDDTest {
     }
 
     @BeforeEach
-    void setUp() {
+    private void setUp() {
         resetRecipeFile();
     }
 
     @AfterEach
-    void tearDown() {
+    private void tearDown() {
         resetRecipeFile();
     }
 

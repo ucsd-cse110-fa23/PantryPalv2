@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class CreateRecipeTypeBDDTest {
+public class CreateRecipeTypeBDDTest { //More in depth tests for Feature 2: Meal Type Selection [M]
     @Test
     void testBDDCreateRecipeBreakfast() {
         MockModelMealType model = new MockModelMealType();
