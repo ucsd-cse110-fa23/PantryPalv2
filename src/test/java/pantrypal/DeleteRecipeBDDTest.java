@@ -18,6 +18,26 @@ import javafx.beans.binding.When;
 
 public class DeleteRecipeBDDTest { // Feature 7: Recipe Deletion [L]
     RecipeData savedRecipe;
+
+    private void resetRecipeFile() {
+        Path path = Paths.get(CRUDRecipes.FILE_PATH);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        resetRecipeFile();
+    }
+
+    @AfterEach
+    void tearDown() {
+        resetRecipeFile();
+    }
+
     // Scenario 1: Deleting a Recipe from the Database
 
     private void resetRecipeFile() {
