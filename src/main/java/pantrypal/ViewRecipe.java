@@ -76,17 +76,16 @@ public class ViewRecipe extends BorderPane {
                 isEditing = true;
             } else {
                 body.getDetails().setEditable(false);
+                this.recipe.instructions = body.getDetails().getText();
                 editButton.setText("Edit Recipe");
                 isEditing = false;
             }
-
         });
 
         saveButton.setOnAction(e -> {
             try {
                 System.out.println(CRUDRecipes.recipeExists(recipe.title));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             try {
@@ -95,31 +94,26 @@ public class ViewRecipe extends BorderPane {
                     try {
                         CRUDRecipes.updateRecipe(recipe);
                     } catch (IOException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                 } else {
                     try {
                         CRUDRecipes.createRecipe(recipe);
                     } catch (IOException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                 }
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
 
         deleteButton.setOnAction(e -> {
-            // TODO::deletion
             try {
                 primaryStage.setScene(
                         new Scene(new ConfirmDelete(primaryStage, CRUDRecipes.getRecipe(recipe.title)), 500,
                                 600));
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -129,7 +123,6 @@ public class ViewRecipe extends BorderPane {
                 primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
                 
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
             
