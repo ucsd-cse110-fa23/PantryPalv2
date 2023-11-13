@@ -16,19 +16,40 @@ import org.junit.jupiter.api.Test;
 
 import javafx.beans.binding.When;
 
-public class DeleteRecipeBDDTest { //Feature 7: Recipe Deletion [L]
+public class DeleteRecipeBDDTest { // Feature 7: Recipe Deletion [L]
     RecipeData savedRecipe;
     // Scenario 1: Deleting a Recipe from the Database
+
+    private void resetRecipeFile() {
+        CRUDRecipes.setFilePath("test.json");
+        Path path = Paths.get(CRUDRecipes.FILE_PATH);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        resetRecipeFile();
+    }
+
+    @AfterEach
+    void tearDown() {
+        resetRecipeFile();
+    }
+
     @Test
     void testBDDViewRecipe() throws IOException {
         // Given the user completely generates a recipe
         // And the user is on the detail page
         // And the “delete” button is accessible
         String title = "potato mush";
-        String[] ingredients = {"potato","black papper", "butter"};
+        String[] ingredients = { "potato", "black papper", "butter" };
         String instructions = "Mash the cooked potatoes and fry the black pepper in butter, then stir all the ingredients together.";
         savedRecipe = new RecipeData(title, ingredients, instructions);
-        
+
         // When the user click on the “delete” button
         // Then the recipe should be deleted from the database
         // And the recipe should be deleted from the saved recipe list
@@ -36,7 +57,7 @@ public class DeleteRecipeBDDTest { //Feature 7: Recipe Deletion [L]
         try {
             CRUDRecipes.createRecipe(savedRecipe);
 
-            //Ensure recipe has been added
+            // Ensure recipe has been added
             assertTrue(CRUDRecipes.recipeExists(title));
 
             CRUDRecipes.deleteRecipe(title);
@@ -47,5 +68,5 @@ public class DeleteRecipeBDDTest { //Feature 7: Recipe Deletion [L]
         }
 
     }
-    
+
 }

@@ -18,6 +18,7 @@ public class ViewRecipeListBDDTest { // Feature 5: View List of Recipes [H]
     RecipeData savedRecipe;
 
     private void resetRecipeFile() {
+        CRUDRecipes.setFilePath("test.json");
         Path path = Paths.get(CRUDRecipes.FILE_PATH);
         try {
             Files.deleteIfExists(path);

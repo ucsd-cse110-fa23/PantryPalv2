@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test;
 public class CRUDRecipesTest {
 
     private void resetRecipeFile() {
-        Path path = Paths.get(CRUDRecipes.FILE_PATH); 
+        CRUDRecipes.setFilePath("test.json");
+        Path path = Paths.get(CRUDRecipes.FILE_PATH);
         try {
             Files.deleteIfExists(path);
         } catch (IOException e) {
@@ -34,11 +35,11 @@ public class CRUDRecipesTest {
     void tearDown() {
         resetRecipeFile();
     }
-    
-    //General check #1 for create recipe
+
+    // General check #1 for create recipe
     @Test
     void testCreateRecipesGeneral() {
-        String[] ingredients1 = {"Chicken", "Rice"};
+        String[] ingredients1 = { "Chicken", "Rice" };
         RecipeData recipe1 = new RecipeData("Chicken and rice", ingredients1, "Cook it together");
 
         try {
@@ -49,7 +50,7 @@ public class CRUDRecipesTest {
         }
     }
 
-    //Test with no ingredients
+    // Test with no ingredients
     @Test
     void testCreateRecipesNoIngredients() {
         String[] ingredients1 = {};
@@ -78,7 +79,7 @@ public class CRUDRecipesTest {
 
     @Test
     void testRecipeExists() {
-        String[] ingredients1 = {"Chicken"};
+        String[] ingredients1 = { "Chicken" };
         RecipeData recipe1 = new RecipeData("", ingredients1, "Nadada");
 
         try {
@@ -131,8 +132,8 @@ public class CRUDRecipesTest {
     @Test
     void testUpdateRecipeAddIngredients() {
         String title = "Chicken and Rice";
-        String[] ingredientsInitial = {"Chicken", "Rice"};
-        String[] ingredientsUpdated = {"Chicken", "Rice", "Onion"};
+        String[] ingredientsInitial = { "Chicken", "Rice" };
+        String[] ingredientsUpdated = { "Chicken", "Rice", "Onion" };
         RecipeData recipe1 = new RecipeData(title, ingredientsInitial, "Cook it together");
 
         try {
@@ -149,7 +150,7 @@ public class CRUDRecipesTest {
     @Test
     void testUpdateRecipeDeleteIngredients() {
         String title = "Chicken and Rice";
-        String[] ingredientsInitial = {"Chicken", "Rice"};
+        String[] ingredientsInitial = { "Chicken", "Rice" };
         String[] ingredientsUpdated = {};
         RecipeData recipe1 = new RecipeData(title, ingredientsInitial, "Cook it together");
 
@@ -167,8 +168,8 @@ public class CRUDRecipesTest {
     @Test
     void testUpdateRecipeNoChanges() {
         String title = "Chicken and Rice";
-        String[] ingredientsInitial = {"Chicken", "Rice"};
-        String[] ingredientsUpdated = {"Chicken", "Rice"};
+        String[] ingredientsInitial = { "Chicken", "Rice" };
+        String[] ingredientsUpdated = { "Chicken", "Rice" };
         RecipeData recipe1 = new RecipeData(title, ingredientsInitial, "Cook it together");
 
         try {
@@ -185,7 +186,7 @@ public class CRUDRecipesTest {
     @Test
     void testUpdateRecipeInstructions() {
         String title = "Chicken and Rice";
-        String[] ingredients = {"Chicken", "Rice"};
+        String[] ingredients = { "Chicken", "Rice" };
         String instructionsInitial = "Cook it up";
         String instructionsUpdated = "Cook the chicken with the rice";
         RecipeData recipe1 = new RecipeData(title, ingredients, instructionsInitial);
@@ -204,7 +205,7 @@ public class CRUDRecipesTest {
     @Test
     void testUpdateRecipeDeleteInstructions() {
         String title = "Chicken and Rice";
-        String[] ingredients = {"Chicken", "Rice"};
+        String[] ingredients = { "Chicken", "Rice" };
         String instructionsInitial = "Cook it up";
         String instructionsUpdated = "";
         RecipeData recipe1 = new RecipeData(title, ingredients, instructionsInitial);
@@ -223,14 +224,14 @@ public class CRUDRecipesTest {
     @Test
     void testGetRecipe() {
         String title = "Chicken and Rice";
-        String[] ingredients = {"Chicken", "Rice"};
+        String[] ingredients = { "Chicken", "Rice" };
         String instructions = "Cook it up";
         RecipeData recipe1 = new RecipeData(title, ingredients, instructions);
 
         try {
             CRUDRecipes.createRecipe(recipe1);
 
-            //Check that title, ingredients, and instructions are the same
+            // Check that title, ingredients, and instructions are the same
             assertEquals(CRUDRecipes.getRecipe(title).title, recipe1.title);
             assertArrayEquals(CRUDRecipes.getRecipe(title).ingredients, recipe1.ingredients);
             assertEquals(CRUDRecipes.getRecipe(title).instructions, recipe1.instructions);
@@ -242,18 +243,18 @@ public class CRUDRecipesTest {
     @Test
     void testGetRecipeDifferentRecipes() {
         String title1 = "Chicken and Rice";
-        String[] ingredients1 = {"Chicken", "Rice"};
+        String[] ingredients1 = { "Chicken", "Rice" };
         String instructions1 = "Cook it up";
         RecipeData recipe1 = new RecipeData(title1, ingredients1, instructions1);
 
         String title2 = "Beef and Rice";
-        String[] ingredients2 = {"Beef", "Rice"};
+        String[] ingredients2 = { "Beef", "Rice" };
         String instructions2 = "Dont cook it up";
         RecipeData recipe2 = new RecipeData(title2, ingredients2, instructions2);
 
         try {
             CRUDRecipes.createRecipe(recipe1);
-            //Check that title, ingredients, and instructions are the same
+            // Check that title, ingredients, and instructions are the same
             assertNotEquals(CRUDRecipes.getRecipe(title1).title, recipe2.title);
             assertNotEquals(CRUDRecipes.getRecipe(title1).instructions, recipe2.instructions);
         } catch (IOException e) {
@@ -264,14 +265,14 @@ public class CRUDRecipesTest {
     @Test
     void testDeleteRecipe() {
         String title1 = "Chicken and Rice";
-        String[] ingredients1 = {"Chicken", "Rice"};
+        String[] ingredients1 = { "Chicken", "Rice" };
         String instructions1 = "Cook it up";
         RecipeData recipe1 = new RecipeData(title1, ingredients1, instructions1);
 
         try {
             CRUDRecipes.createRecipe(recipe1);
-            
-            //Ensure recipe has been added
+
+            // Ensure recipe has been added
             assertTrue(CRUDRecipes.recipeExists(title1));
 
             CRUDRecipes.deleteRecipe(recipe1.title);
@@ -291,8 +292,8 @@ public class CRUDRecipesTest {
 
         try {
             CRUDRecipes.createRecipe(recipe1);
-            
-            //Ensure recipe has been added
+
+            // Ensure recipe has been added
             assertTrue(CRUDRecipes.recipeExists(title1));
 
             CRUDRecipes.deleteRecipe(recipe1.title);
@@ -306,12 +307,12 @@ public class CRUDRecipesTest {
     @Test
     void testReadRecipes() {
         String title1 = "Chicken and Rice";
-        String[] ingredients1 = {"Chicken", "Rice"};
+        String[] ingredients1 = { "Chicken", "Rice" };
         String instructions1 = "Cook it up";
         RecipeData recipe1 = new RecipeData(title1, ingredients1, instructions1);
 
         String title2 = "Beef and Rice";
-        String[] ingredients2 = {"Beef", "Rice"};
+        String[] ingredients2 = { "Beef", "Rice" };
         String instructions2 = "Dont cook it up";
         RecipeData recipe2 = new RecipeData(title2, ingredients2, instructions2);
 
