@@ -29,6 +29,8 @@ git clone https://github.com/ucsd-cse110-fa23/cse-110-project-team-25.git
 ```
 and then cd into the designated project directory. 
 
+### For Mac
+
 Then, as our project is gradle-based, build the project using the following command:
 ```
 ./gradlew build
@@ -36,6 +38,27 @@ Then, as our project is gradle-based, build the project using the following comm
 And finally, run the project using the following command:
 ```
 ./gradlew run
+```
+
+### For Windows
+
+Then, as our project is gradle-based, build the project using the following command:
+```
+gradlew build
+```
+And finally, run the project using the following command:
+```
+gradlew run
+```
+
+### and in case that doesn't work on windows...try powershell! 
+Then, as our project is gradle-based, build the project using the following command:
+```
+./gradlew.bat run
+```
+And finally, run the project using the following command:
+```
+./gradlew.bat build
 ```
 
 **Please note** that sometimes macs have permission errors with gradle, and may require the following type of command to be run prior to building and running the application:
