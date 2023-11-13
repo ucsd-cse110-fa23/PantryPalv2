@@ -496,7 +496,8 @@ class AppFrame extends BorderPane {
             result = getMealTypeFromAudio("recording.wav");
             System.out.println(result);
 
-            if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")) {
+            if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
+                && !result.equals("Breakfast") && !result.equals("Lunch") && !result.equals("Dinner")) {
                 recordingLabel.setText("Invalid meal type generated, please try again");
                 return;
             } else {
