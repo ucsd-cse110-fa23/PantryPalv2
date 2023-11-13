@@ -217,8 +217,7 @@ class CreateRecipe extends VBox {
         ImageView no_mic_img_view = new ImageView(no_mic_img);
         no_mic_img_view.setFitHeight(35);
         no_mic_img_view.setFitWidth(35);
-        stopButton.setStyle("-fx-background-color: #e37179; ");
-        recordingLabel = new Label("Recording...");
+
         stopButton.setGraphic(no_mic_img_view);
 
         this.getChildren().addAll(mealTypeLabel, addButton, stopButton, recordingLabel);
@@ -259,7 +258,8 @@ class CreateRecipe extends VBox {
         });
     }
 
-    // Given the audio recording of the ingredients, create a new recipe and display it in NewRecipeScreen()
+    // Given the audio recording of the ingredients, create a new recipe and display
+    // it in NewRecipeScreen()
     private void processIngredientRecording() {
         String[] result;
         try {
@@ -488,7 +488,8 @@ class AppFrame extends BorderPane {
 
     }
 
-    // Given the audio file, extract the meal type, and if it valid go to CreateRecipe() screen
+    // Given the audio file, extract the meal type, and if it valid go to
+    // CreateRecipe() screen
     private void processMealTypeRecording() {
         String result;
         try {
@@ -497,7 +498,7 @@ class AppFrame extends BorderPane {
             System.out.println(result);
 
             if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
-                && !result.equals("Breakfast") && !result.equals("Lunch") && !result.equals("Dinner")) {
+                    && !result.equals("Breakfast") && !result.equals("Lunch") && !result.equals("Dinner")) {
                 recordingLabel.setText("Invalid meal type generated, please try again");
                 return;
             } else {

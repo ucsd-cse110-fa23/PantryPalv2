@@ -14,8 +14,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewRecipeListBDDTest { //Feature 5: View List of Recipes [H]
+public class ViewRecipeListBDDTest { // Feature 5: View List of Recipes [H]
     RecipeData savedRecipe;
+
+    private void resetRecipeFile() {
+        Path path = Paths.get(CRUDRecipes.FILE_PATH);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        resetRecipeFile();
+    }
+
+    @AfterEach
+    void tearDown() {
+        resetRecipeFile();
+    }
 
     // Scenario 1: Saved at least one recipe
     @Test
@@ -24,10 +43,10 @@ public class ViewRecipeListBDDTest { //Feature 5: View List of Recipes [H]
         // And the user is on the homepage page
         // And the button “View Recipe List” is accessible
         String title = "potato mush";
-        String[] ingredients = {"potato","black papper", "butter"};
+        String[] ingredients = { "potato", "black papper", "butter" };
         String instructions = "Mash the cooked potatoes and fry the black pepper in butter, then stir all the ingredients together.";
         savedRecipe = new RecipeData(title, ingredients, instructions);
-        
+
         // When the user click on the button “View Recipe List”
         // Then the app should jump to a new page and display the saved recipe list
         try {
@@ -42,7 +61,7 @@ public class ViewRecipeListBDDTest { //Feature 5: View List of Recipes [H]
         }
     }
 
-    //Scenario 2: Have no saved recipe
+    // Scenario 2: Have no saved recipe
     @Test
     void testBDDViewRecipeListNoSaved() throws IOException {
         // Given the user have not saved any recipe
@@ -50,10 +69,10 @@ public class ViewRecipeListBDDTest { //Feature 5: View List of Recipes [H]
         // And the button “View Recipe List” is accessible
 
         String title = "potato mush";
-        String[] ingredients = {"potato","black papper", "butter"};
+        String[] ingredients = { "potato", "black papper", "butter" };
         String instructions = "Mash the cooked potatoes and fry the black pepper in butter, then stir all the ingredients together.";
         savedRecipe = new RecipeData(title, ingredients, instructions);
-        
+
         // And the user is on the “Recipes List” page
         // And the title “potato mash” is accessible
         // When the user click on the title “potato mash”
@@ -62,7 +81,7 @@ public class ViewRecipeListBDDTest { //Feature 5: View List of Recipes [H]
             CRUDRecipes.createRecipe(savedRecipe);
 
             ArrayList<RecipeData> expectedRecipes = new ArrayList<>();
-            //expectedRecipes.add(savedRecipe);
+            // expectedRecipes.add(savedRecipe);
 
             assertEquals(expectedRecipes.size(), 0);
         } catch (IOException e) {
@@ -70,5 +89,5 @@ public class ViewRecipeListBDDTest { //Feature 5: View List of Recipes [H]
         }
 
     }
-    
+
 }
