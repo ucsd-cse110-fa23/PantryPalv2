@@ -14,7 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewRecipeListBBDTest {
+public class ViewRecipeListBDDTest {
     RecipeData savedRecipe;
 
     // Scenario 1: Saved at least one recipe
