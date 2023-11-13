@@ -20,6 +20,7 @@ public class DeleteRecipeBDDTest { // Feature 7: Recipe Deletion [L]
     RecipeData savedRecipe;
 
     private void resetRecipeFile() {
+        CRUDRecipes.changeFilePath("test.json");
         Path path = Paths.get(CRUDRecipes.FILE_PATH);
         try {
             Files.deleteIfExists(path);

@@ -21,8 +21,12 @@ import com.google.gson.reflect.TypeToken;
 
 public class CRUDRecipes {
 
-    public static final String FILE_PATH = "recipes.json"; // change this in the test file
+    public static String FILE_PATH = "recipes.json"; // change this in the test file
     private static final Gson gson = new Gson();
+
+    public static void changeFilePath(String path) {
+        FILE_PATH = path;
+    }
 
     // Reads the existing recipes from the JSON file
     public static ArrayList<RecipeData> readRecipes() throws IOException {

@@ -18,6 +18,7 @@ public class SaveRecipeBDDTest { // Feature 4: Recipe Saving [H]
     RecipeData unsavedRecipe;
 
     private void resetRecipeFile() {
+        CRUDRecipes.changeFilePath("test.json");
         Path path = Paths.get(CRUDRecipes.FILE_PATH);
         try {
             Files.deleteIfExists(path);

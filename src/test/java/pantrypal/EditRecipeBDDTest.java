@@ -1,10 +1,6 @@
 package pantrypal;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -14,9 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ViewRecipeBDDTest { // Feature 3: Detailed Recipe Display
+public class EditRecipeBDDTest {
     RecipeData savedRecipe;
-    // Scenario 1: Saved at least one recipe
 
     private void resetRecipeFile() {
         CRUDRecipes.changeFilePath("test.json");
@@ -38,33 +33,33 @@ public class ViewRecipeBDDTest { // Feature 3: Detailed Recipe Display
         resetRecipeFile();
     }
 
+    // Scenario: Save a modification
     @Test
-    void testBDDViewRecipe() throws IOException {
-        // Given the user completely generates a recipe
+    void testBDDViewRecipeListOneSaved() throws IOException {
+        // Given the user saved a recipe “potato mash”
         String title = "potato mush";
         String[] ingredients = { "potato", "black papper", "butter" };
         String instructions = "Mash the cooked potatoes and fry the black pepper in butter, then stir all the ingredients together.";
         savedRecipe = new RecipeData(title, ingredients, instructions);
 
-        // And the user is on the “Recipes List” page
-        // And the title “potato mash” is accessible
-        // When the user click on the title “potato mash”
-        // Then the app should jump to a new page and display the details about potato
-        // mash
+        // When the user click on the button “View Recipe List”
+        // Then the app should jump to a new page and display the saved recipe list
         try {
             CRUDRecipes.createRecipe(savedRecipe);
-
-            ArrayList<RecipeData> expectedRecipes = new ArrayList<>();
-            expectedRecipes.add(savedRecipe);
-
-            assertEquals(expectedRecipes.get(0).title, savedRecipe.title);
-            assertArrayEquals(expectedRecipes.get(0).ingredients, savedRecipe.ingredients);
-            assertEquals(expectedRecipes.get(0).instructions, savedRecipe.instructions);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // the and the user edit some details in current recipe
+        // And the user is on edit page
+        // And “save” and “cancel” button are accessible
+        RecipeData data = CRUDRecipes.getRecipe(title);
+        data.instructions = "Mash the cooked potatoes and fry the black pepper in butter, then stir all the ingredients together. Add some salt.";
+        // When the user click on the “save” button
+        // Then the recipe should be updated and saved into the database
+        CRUDRecipes.updateRecipe(data);
+        assertEquals(CRUDRecipes.getRecipe(title).instructions, data.instructions);
+        // And the recipe should be updated to the saved recipe list
+        // And the app should jump back to the recipe’s details page
 
     }
-
 }
