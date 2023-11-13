@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import javafx.beans.binding.When;
 
-public class DeleteRecipeBDDTest {
+public class DeleteRecipeBDDTest { //Feature 7: Recipe Deletion [L]
     RecipeData savedRecipe;
     // Scenario 1: Deleting a Recipe from the Database
     @Test
