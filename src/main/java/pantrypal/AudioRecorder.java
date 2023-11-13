@@ -42,6 +42,8 @@ public class AudioRecorder {
                 bigEndian);
     }
 
+    // Starts the recording process which given audio from microphone, creates an audio file 
+    // (this is done on a thread to not impact the useability of the app while the recording is happening)
     public void startRecording() {
         t = new Thread(
                 new Runnable() {
@@ -75,6 +77,7 @@ public class AudioRecorder {
         t.start();
     }
 
+    // Stops the recording process once this function is called
     public void stopRecording() {
         targetDataLine.stop();
         targetDataLine.close();

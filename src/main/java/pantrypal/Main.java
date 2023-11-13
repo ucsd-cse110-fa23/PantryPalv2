@@ -15,18 +15,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
-
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.TargetDataLine;
-import javax.swing.plaf.InsetsUIResource;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
