@@ -283,12 +283,7 @@ class CreateRecipe extends VBox {
         String[] result;
         try {
             recordingLabel.setText("Processing...");
-            try {
-                wait(10);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+
             result = getRecipeFromAudio("recording.wav", mealType);
             recordingLabel.setText("Stop and Generate Recipe");
 
