@@ -72,7 +72,7 @@ public class ViewRecipe extends BorderPane {
         editButton.setOnAction(e -> {
             if (!isEditing) {
                 body.getDetails().setEditable(true);
-                editButton.setText("Done Editing");
+                editButton.setText("Done With Edit");
                 isEditing = true;
             } else {
                 body.getDetails().setEditable(false);
@@ -121,11 +121,11 @@ public class ViewRecipe extends BorderPane {
         backButton.setOnAction(e -> {
             try {
                 primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-                
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            
+
         });
 
     }
@@ -136,7 +136,7 @@ class ViewRecipeHeader extends HBox {
     private Button backButton;
 
     ViewRecipeHeader(String title) {
-        
+
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF; -fx-font-weight: bold; -fx-font: 11 arial;";
         backButton = new Button("Back");
         backButton.setStyle(defaultButtonStyle);
@@ -196,12 +196,12 @@ class ViewRecipeFooter extends HBox {
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
         editButton = new Button("Edit Recipe"); // text displayed on clear recipes button
         editButton.setStyle(defaultButtonStyle);
-        saveButton = new Button("Save Recipe"); // text displayed on clear recipes
+        saveButton = new Button("Save to Database"); // text displayed on clear recipes
         saveButton.setStyle(defaultButtonStyle);
         deleteButton = new Button("Delete Recipe"); // text displayed on clear recipes button
         deleteButton.setStyle(defaultButtonStyle);
-        
-        this.getChildren().addAll(editButton,saveButton, deleteButton); // adding buttons to footer
+
+        this.getChildren().addAll(editButton, saveButton, deleteButton); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }

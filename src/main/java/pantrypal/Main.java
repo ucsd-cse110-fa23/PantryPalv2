@@ -162,6 +162,7 @@ class CreateRecipe extends VBox {
     // Point A
     // private Button backButton;
     private Label mealTypeLabel;
+    private Button backButton;
     private Button addButton;
     private Button stopButton;
     private Label recordingLabel;
@@ -182,7 +183,16 @@ class CreateRecipe extends VBox {
         this.primaryStage = primaryStage;
         this.mealType = mealType;
 
-        mealTypeLabel = new Label("Meal Type: " + mealType);
+        this.backButton = new Button("Back");
+        backButton.setStyle(defaultButtonStyle);
+        backButton.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
+        backButton.setAlignment(Pos.BOTTOM_CENTER);
+
+        mealTypeLabel = new Label("To generate your " + mealType.strip().toLowerCase()
+                + " recipe, press the green button, speak your ingredients, then press the red button.");
+        mealTypeLabel.setWrapText(true);
+        mealTypeLabel.setTextAlignment(TextAlignment.CENTER);
+        mealTypeLabel.setMaxWidth(400);
 
         addButton = new Button(); // text displayed on add button
         addButton.setStyle(defaultButtonStyle); // styling the buttonv
@@ -221,7 +231,7 @@ class CreateRecipe extends VBox {
         recordingLabel = new Label("Recording...");
         stopButton.setGraphic(no_mic_img_view);
 
-        this.getChildren().addAll(mealTypeLabel, addButton, stopButton, recordingLabel);
+        this.getChildren().addAll(mealTypeLabel, addButton, stopButton, recordingLabel, backButton);
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
 
@@ -257,13 +267,28 @@ class CreateRecipe extends VBox {
             ar.stopRecording();
             processIngredientRecording();
         });
+
+        backButton.setOnAction(e -> {
+            try {
+                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
     }
 
-    // Given the audio recording of the ingredients, create a new recipe and display it in NewRecipeScreen()
+    // Given the audio recording of the ingredients, create a new recipe and display
+    // it in NewRecipeScreen()
     private void processIngredientRecording() {
         String[] result;
         try {
             recordingLabel.setText("Processing...");
+            try {
+                wait(10);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             result = getRecipeFromAudio("recording.wav", mealType);
             recordingLabel.setText("Stop and Generate Recipe");
 
@@ -295,6 +320,7 @@ class CreateMealType extends VBox {
     private Button stopButton;
     private Label recordingLabel;
     private Button recipeListButton;
+    private Label instructionsLabel;
 
     CreateMealType() {
         this.setPrefSize(500, 560);
@@ -313,6 +339,11 @@ class CreateMealType extends VBox {
                         "-fx-min-height: 90px; " +
                         "-fx-max-width: 90px; " +
                         "-fx-max-height: 90px;");
+
+        instructionsLabel = new Label(
+                "Press the button below to start recording your meal type. Press the red button when you are done recording.");
+        instructionsLabel.setWrapText(true);
+        instructionsLabel.setMaxWidth(400);
 
         Image mic_img = new Image("file:src/resources/mic.png");
         ImageView mic_img_view = new ImageView(mic_img);
@@ -349,7 +380,7 @@ class CreateMealType extends VBox {
                 // "-fx-background-radius: 5em; " +
                 "-fx-background-color: #e6f5f3;");
 
-        this.getChildren().addAll(addButton, stopButton, recordingLabel, recipeListButton);
+        this.getChildren().addAll(instructionsLabel, addButton, stopButton, recordingLabel, recipeListButton);
 
         this.setAlignment(Pos.CENTER); // Align the text to the Center
     }
@@ -488,7 +519,7 @@ class AppFrame extends BorderPane {
 
     }
 
-    // Given the audio file, extract the meal type, and if it valid go to CreateRecipe() screen
+    // Given the audio file, extract the meal type, and if it valid go to
     private void processMealTypeRecording() {
         String result;
         try {
@@ -497,7 +528,7 @@ class AppFrame extends BorderPane {
             System.out.println(result);
 
             if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
-                && !result.equals("Breakfast") && !result.equals("Lunch") && !result.equals("Dinner")) {
+                    && !result.equals("Breakfast") && !result.equals("Lunch") && !result.equals("Dinner")) {
                 recordingLabel.setText("Invalid meal type generated, please try again");
                 return;
             } else {
