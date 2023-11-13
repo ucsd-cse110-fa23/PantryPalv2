@@ -19,6 +19,7 @@ public class ViewRecipeBDDTest { // Feature 3: Detailed Recipe Display
     // Scenario 1: Saved at least one recipe
 
     private void resetRecipeFile() {
+        CRUDRecipes.changeFilePath("test.json");
         Path path = Paths.get(CRUDRecipes.FILE_PATH);
         try {
             Files.deleteIfExists(path);
