@@ -3,8 +3,10 @@
 Welcome to PantryPal, the latest solution to your meal prep desires!
 
 ## Table of Contents
-- [Introduction](#introduction)
-- [Instructions + How To Run](#Instructions + How To Run)
+- [PantryPal - Group 25](#pantrypal---group-25)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Instructions + How To Run](#instructions--how-to-run)
 
 ## Introduction
 
@@ -44,3 +46,4 @@ chmod +x gradlew
 ```
 
 **Thank you for choosing Team 25's PantryPal for your pantry needs! 🧑‍🍳🍳💅**
+Peyton
