@@ -43,6 +43,7 @@ public class NewRecipeScreen extends BorderPane {
             this.response += recipe.ingredients[i] + "\n";
         }
         this.response += recipe.instructions;
+        recipe.instructions = this.response;
         // Initialise the header Object
         header = new NewRecipeHeader(recipe.title);
 
