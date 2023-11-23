@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+dependencies {
+    def junitVersion = '5.8.1'
+
+    // This provides the JUnit API.
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    // This provides the TestEngine to actually run the tests.
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation group: 'org.json', name: 'json', version: '20230227'
+    implementation 'com.google.code.gson:gson:2.8.9' // Check for the latest version
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+            // Add additional source directories here
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+    // You can define more source sets if needed
+}
+
+mainClassName = 'pantrypal.Main'
