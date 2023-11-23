@@ -15,7 +15,7 @@ import java.nio.file.StandardCopyOption;
 public class MealRequestController {
 
     
-    @PostMapping("/mealtype")
+    @PostMapping("/api/mealtype")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty() || !FileService.isWavFile(file)) {
             return ResponseEntity.badRequest().body("Invalid file (type=" + file.getContentType() +"). Please upload a WAV file.");

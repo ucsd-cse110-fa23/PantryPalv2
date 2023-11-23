@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MiddlewareModel {
-    private static final String API_ENDPOINT = "http://localhost:8080"; // TODO: Create a config file with this instead
+    private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this instead
 
     public String mealTypeExtraction(String filePath) {
         String path = "/mealtype";

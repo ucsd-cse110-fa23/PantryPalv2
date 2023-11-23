@@ -1,6 +1,7 @@
 package pantrypal;
 
 public class RecipeData {
+    Long id;
     String title;
     String[] ingredients;
     String instructions;

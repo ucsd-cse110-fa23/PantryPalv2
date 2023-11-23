@@ -15,7 +15,7 @@ import java.nio.file.StandardCopyOption;
 public class GenerateRecipeController {
 
     
-    @PostMapping("/generate-recipe")
+    @PostMapping("/api/generate-recipe")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("mealType") String mealType) {
         if (file.isEmpty() || !FileService.isWavFile(file)) {
             return ResponseEntity.badRequest().body("Invalid file (type=\" + file.getContentType() +\"). Please upload a WAV file.");
