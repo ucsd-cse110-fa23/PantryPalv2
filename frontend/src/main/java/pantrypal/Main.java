@@ -280,7 +280,7 @@ class CreateRecipe extends VBox {
     // Given the audio recording of the ingredients, create a new recipe and display
     // it in NewRecipeScreen()
     private void processIngredientRecording() {
-        String[] result;
+        String result;
         try {
             recordingLabel.setText("Processing...");
 
@@ -292,7 +292,7 @@ class CreateRecipe extends VBox {
             Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
             primaryStage.setScene(scene);
 
-            System.out.println(result[0]);
+            System.out.println(result);
         } catch (IOException e1) {
             e1.printStackTrace();
         } catch (URISyntaxException e1) {
@@ -300,12 +300,16 @@ class CreateRecipe extends VBox {
         }
     }
 
-    public static String[] getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
-        OpenAI model = new OpenAI();
-        ChatGPT gpt = new ChatGPT(model);
-        String transcript = Whisper.getTranscript(filePath);
-        String[] recipe = gpt.generateRecipe(transcript, mealType);
-        return recipe;
+    public static String getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
+        MiddlewareModel mm = new MiddlewareModel();
+        return mm.generateRecipe(filePath, mealType);
+
+
+        // OpenAI model = new OpenAI();
+        // ChatGPT gpt = new ChatGPT(model);
+        // String transcript = Whisper.getTranscript(filePath);
+        // String[] recipe = gpt.generateRecipe(transcript, mealType);
+        // return recipe;
     }
 
 }
@@ -519,7 +523,7 @@ class AppFrame extends BorderPane {
         String result;
         try {
             recordingLabel.setText("Processing...");
-            result = getMealTypeFromAudio("recording.wav");
+            result = getMealTypeFromAudio("recording.wav"); //TODO: Put this file name somewhere else
             System.out.println(result);
 
             if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
@@ -540,11 +544,8 @@ class AppFrame extends BorderPane {
     // Given an audio file path, create a transcription, then generate the wanted
     // meal type
     public static String getMealTypeFromAudio(String filePath) throws IOException, URISyntaxException {
-        OpenAI model = new OpenAI();
-        ChatGPT gpt = new ChatGPT(model);
-        String transcript = Whisper.getTranscript(filePath);
-        String mealType = gpt.generateMealType(transcript);
-        return mealType;
+        MiddlewareModel mm = new MiddlewareModel();
+        return mm.mealTypeExtraction(filePath);
     }
 }
 
