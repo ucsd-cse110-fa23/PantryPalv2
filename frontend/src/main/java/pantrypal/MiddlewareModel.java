@@ -3,6 +3,8 @@ package pantrypal;
 // import org.apache.tomcat.jni.File;
 // import org.springframework.http.HttpEntity;
 // import org.springframework.http.HttpStatus;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -13,15 +15,20 @@ import javafx.scene.text.Text;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 // import org.apache.http.client.methods.CloseableHttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -30,6 +37,67 @@ import java.io.IOException;
 
 public class MiddlewareModel {
     private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this instead
+
+    // Gets list of recipes from middleware server
+    public List<RecipeData> getRecipes() {
+        List<RecipeData> recipes = null;
+        try {
+            HttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(API_ENDPOINT + "/recipes");
+
+            // Execute the HttpGet request and get the response
+            HttpResponse response = httpClient.execute(httpGet);
+
+            // Check if the response status code indicates success (e.g., 200 OK)
+            if (response.getStatusLine().getStatusCode() == 200) {
+                String jsonResponse = EntityUtils.toString(response.getEntity());
+
+                // Use Gson to deserialize the JSON response into a list of RecipeData objects
+                Gson gson = new Gson();
+                recipes = gson.fromJson(jsonResponse, new TypeToken<List<RecipeData>>() {}.getType());
+            } else {
+                System.err.println("HTTP GET request failed with status code: " + response.getStatusLine().getStatusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return recipes;
+    }
+
+    // Posts all recipes to server
+    public void postRecipes(List<RecipeData> recipes) {
+        try {
+            HttpClient httpClient = HttpClients.createDefault();
+            Gson gson = new GsonBuilder().create();
+
+            // Serialize the list of RecipeData objects to JSON
+            String jsonRequest = gson.toJson(recipes);
+
+            // Create an HttpPost request
+            HttpPost httpPost = new HttpPost(API_ENDPOINT + "/recipes");
+
+            // Set the JSON request body
+            StringEntity entity = new StringEntity(jsonRequest);
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
+
+            // Execute the POST request and get the response
+            HttpResponse response = httpClient.execute(httpPost);
+
+            // Check if the response status code indicates success (e.g., 200 OK)
+            if (response.getStatusLine().getStatusCode() == 200) {
+                // Parse the response content
+                String jsonResponse = EntityUtils.toString(response.getEntity());
+
+                System.out.println("Server response: " + jsonResponse);
+            } else {
+                System.err.println("HTTP POST request failed with status code: " + response.getStatusLine().getStatusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public String mealTypeExtraction(String filePath) {
         String path = "/mealtype";

@@ -19,13 +19,15 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class RecipeService {
 
     public String FILE_PATH = "recipes.json"; // change this in the test file
     private final Gson gson = new Gson();
 
-    public RecipeService(String path) {
-        FILE_PATH = path;
+    public RecipeService() {
     }
 
     public void changeFilePath(String path) {
@@ -36,7 +38,7 @@ public class RecipeService {
     public ArrayList<RecipeData> readRecipes() throws IOException {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
-            return new ArrayList<>();
+            return new ArrayList<RecipeData>();
         }
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -94,6 +96,22 @@ public class RecipeService {
         List<RecipeData> recipes = readRecipes();
         recipes.removeIf(recipe -> recipe.title.equals(title));
         writeRecipes(recipes);
+    }
+
+    // Delete the file that contains all recipes locally
+    public void deleteRecipesFile() {
+        File fileToDelete = new File(FILE_PATH);
+
+        // Check if the file exists before attempting to delete
+        if (fileToDelete.exists()) {
+            if (fileToDelete.delete()) {
+                System.out.println("File deleted successfully.");
+            } else {
+                System.err.println("Failed to delete the file.");
+            }
+        } else {
+            System.err.println("File not found.");
+        }
     }
 
 }

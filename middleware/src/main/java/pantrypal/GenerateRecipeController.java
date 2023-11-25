@@ -36,6 +36,8 @@ public class GenerateRecipeController {
         String transcript = whisper.getTranscript(FileService.getFilePath());
         String recipe = gpt.generateRecipe(transcript, mealType);
 
+        System.out.println(recipe);
+
         return recipe;
     }
 

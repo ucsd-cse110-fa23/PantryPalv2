@@ -11,12 +11,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -550,6 +549,30 @@ class AppFrame extends BorderPane {
 }
 
 public class Main extends Application {
+
+    @Override
+    public void init() throws Exception {
+        System.out.println("Application is initializing...");
+
+        MiddlewareModel mm = new MiddlewareModel();
+        List<RecipeData> recipes = mm.getRecipes();
+
+        for(RecipeData recipe : recipes) {
+            CRUDRecipes.createRecipe(recipe);
+        }
+        
+    }
+
+    @Override
+    public void stop() throws Exception {
+        System.out.println("Application is closing...");
+
+        List<RecipeData> recipes = CRUDRecipes.readRecipes();
+        MiddlewareModel mm = new MiddlewareModel();
+        mm.postRecipes(recipes);
+
+        CRUDRecipes.deleteRecipesFile();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {

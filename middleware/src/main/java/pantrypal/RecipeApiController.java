@@ -11,14 +11,32 @@ import java.util.List;
 @RequestMapping("/api/recipes")
 public class RecipeApiController {
 
-    @Autowired
     private RecipeService recipeService;
 
-    @PostMapping
-    public ResponseEntity<String> createRecipe(@RequestBody RecipeData recipe) {
+    @Autowired
+    public RecipeApiController(RecipeService recipeService) {
+        this.recipeService = recipeService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RecipeData>> getAllRecipes() {
         try {
-            recipeService.createRecipe(recipe);
-            return ResponseEntity.ok("Successful recipe creation");
+            List<RecipeData> recipes = recipeService.readRecipes();
+            return ResponseEntity.ok(recipes);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<String> createRecipe(@RequestBody List<RecipeData> recipes) {
+        recipeService.deleteRecipesFile();
+        try {
+            for(RecipeData recipe : recipes) {
+                recipeService.createRecipe(recipe);
+            }
+            return ResponseEntity.ok("Successful recipes creation");
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error with recipe creation");
@@ -26,15 +44,18 @@ public class RecipeApiController {
         
     }
 
-    @GetMapping
-    public List<RecipeData> getAllRecipes() {
-        try {
-            return recipeService.readRecipes();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    // @PostMapping
+    // public ResponseEntity<String> createRecipe(@RequestBody RecipeData recipe) {
+    //     try {
+    //         recipeService.createRecipe(recipe);
+    //         return ResponseEntity.ok("Successful recipe creation");
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.internalServerError().body("Error with recipe creation");
+    //     }
+        
+    // }
+
 
     @GetMapping("/{title}")
     public ResponseEntity<RecipeData> getRecipeByTitle(@PathVariable String title) {
