@@ -27,7 +27,7 @@ public class AudioRecorder {
         int sampleSizeInBits = 16;
 
         // the number of audio channels in this format (1 for mono, 2 for stereo).
-        int channels = 2;
+        int channels = 1;
 
         // whether the data is signed or unsigned.
         boolean signed = true;
@@ -43,8 +43,10 @@ public class AudioRecorder {
                 bigEndian);
     }
 
-    // Starts the recording process which given audio from microphone, creates an audio file 
-    // (this is done on a thread to not impact the useability of the app while the recording is happening)
+    // Starts the recording process which given audio from microphone, creates an
+    // audio file
+    // (this is done on a thread to not impact the useability of the app while the
+    // recording is happening)
     public void startRecording() {
         t = new Thread(
                 new Runnable() {
@@ -80,7 +82,7 @@ public class AudioRecorder {
 
     // Stops the recording process once this function is called
     public void stopRecording() {
-        if(targetDataLine != null) {
+        if (targetDataLine != null) {
             targetDataLine.stop();
             targetDataLine.close();
         }

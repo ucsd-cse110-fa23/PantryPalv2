@@ -24,8 +24,8 @@ class AccountInfo extends HBox {
 
     private VBox fields;
 
-    private TextField username;
-    private TextField password;
+    private TextField usernameField;
+    private TextField passwordField;
 
     AccountInfo(String usernameString, String passwordString) {
 
@@ -36,31 +36,31 @@ class AccountInfo extends HBox {
         fields.setSpacing(5);
         fields.setPrefSize(200, 60);
 
-        username = new TextField();
-        username.setPrefSize(150, 20);
-        username.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
-        username.setPadding(new Insets(5, 0, 5, 0));
-        this.username.setPromptText("Username");
-        fields.getChildren().add(username);
+        usernameField = new TextField();
+        usernameField.setPrefSize(150, 20);
+        usernameField.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
+        usernameField.setPadding(new Insets(5, 0, 5, 0));
+        this.usernameField.setPromptText("Username");
+        fields.getChildren().add(usernameField);
 
-        password = new TextField();
-        password.setPrefSize(150, 20);
-        password.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:0;");
-        password.setPadding(new Insets(5, 0, 5, 0));
-        this.password.setPromptText("Password");
-        fields.getChildren().add(password);
+        passwordField = new TextField();
+        passwordField.setPrefSize(150, 20);
+        passwordField.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:0;");
+        passwordField.setPadding(new Insets(5, 0, 5, 0));
+        this.passwordField.setPromptText("Password");
+        fields.getChildren().add(passwordField);
 
         this.getChildren().add(fields);
 
         this.setAlignment(Pos.CENTER);
     }
 
-    public TextField getUsername() {
-        return this.username;
+    public String getUsernameField() {
+        return this.usernameField.getText();
     }
 
-    public TextField getPassword() {
-        return this.password;
+    public String getPasswordField() {
+        return this.passwordField.getText();
     }
 
     AccountInfo() {

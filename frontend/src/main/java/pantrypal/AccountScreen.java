@@ -57,11 +57,14 @@ public class AccountScreen extends BorderPane {
 
     public void addListeners() {
         signupButton.setOnAction(e2 -> {
-            System.out.println("username: " + accountInfo.getUsername().getText());
-            System.out.println("password: " + accountInfo.getPassword().getText());
+            System.out.println("username: " + accountInfo.getUsernameField());
+            System.out.println("password: " + accountInfo.getPasswordField());
 
             // create account document in database
             // display error message if username already used(?)
+
+            // create a new account object
+            Account newAccount = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
 
             System.out.println("User signed up successfully!");
 
@@ -76,8 +79,8 @@ public class AccountScreen extends BorderPane {
         });
 
         loginButton.setOnAction(e2 -> {
-            System.out.println("username: " + accountInfo.getUsername().getText());
-            System.out.println("password: " + accountInfo.getPassword().getText());
+            System.out.println("username: " + accountInfo.getUsernameField());
+            System.out.println("password: " + accountInfo.getPasswordField());
 
             // check if matching document exists in database
             // display error message if not
