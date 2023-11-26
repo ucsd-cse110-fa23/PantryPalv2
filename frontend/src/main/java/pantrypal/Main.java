@@ -303,7 +303,6 @@ class CreateRecipe extends VBox {
         MiddlewareModel mm = new MiddlewareModel();
         return mm.generateRecipe(filePath, mealType);
 
-
         // OpenAI model = new OpenAI();
         // ChatGPT gpt = new ChatGPT(model);
         // String transcript = Whisper.getTranscript(filePath);
@@ -522,7 +521,7 @@ class AppFrame extends BorderPane {
         String result;
         try {
             recordingLabel.setText("Processing...");
-            result = getMealTypeFromAudio("recording.wav"); //TODO: Put this file name somewhere else
+            result = getMealTypeFromAudio("recording.wav"); // TODO: Put this file name somewhere else
             System.out.println(result);
 
             if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
@@ -557,10 +556,10 @@ public class Main extends Application {
         MiddlewareModel mm = new MiddlewareModel();
         List<RecipeData> recipes = mm.getRecipes();
 
-        for(RecipeData recipe : recipes) {
+        for (RecipeData recipe : recipes) {
             CRUDRecipes.createRecipe(recipe);
         }
-        
+
     }
 
     @Override
@@ -584,7 +583,10 @@ public class Main extends Application {
         // Set the title of the app
         primaryStage.setTitle("Pantry Pal");
         // Create scene of mentioned size with the border pane
-        primaryStage.setScene(new Scene(root, 500, 600));
+        // primaryStage.setScene(new Scene(root, 500, 600));
+
+        Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+        primaryStage.setScene(accScene);
         // Make window non-resizable
         primaryStage.setResizable(false);
         // Show the app
