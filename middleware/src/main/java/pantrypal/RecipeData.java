@@ -3,28 +3,37 @@ package pantrypal;
 public class RecipeData {
     Long id;
     String title;
-    String[] ingredients;
     String instructions;
+    String[] ingredients;
+    String imageUrl;
 
     public RecipeData(String gptResponse) {
-        String[] response = gptResponse.split("\n");
+        // Split by |||||
+        String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
 
-        this.title = response[0];
-        this.instructions = joinSubsectionLoop(response, 2, response.length-1);
-        ingredients = response[response.length-1].split(";");
+        // Check if the split response has at least two parts (recipe and image URL)
+        if (parts.length > 1) {
+            // Process the first part for recipe details
+            String[] recipeDetails = parts[0].split("\n");
+            this.title = recipeDetails[0].trim();
+            this.instructions = joinSubsectionLoop(recipeDetails, 1, recipeDetails.length - 2);
+            this.ingredients = recipeDetails[recipeDetails.length - 1].split(";");
+
+            // Second part is the image URL
+            this.imageUrl = parts[1].trim();
+        }
     }
 
-    private static String joinSubsectionLoop(String[] array, int startIndex, int endIndex) {
-        StringBuilder result = new StringBuilder();
-        for (int i = startIndex; i < endIndex; i++) {
-            result.append(array[i]);
-            if (i < endIndex - 1) {
-                result.append(", "); // Add a separator between elements
+    private String joinSubsectionLoop(String[] lines, int start, int end) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = start; i <= end; i++) {
+            sb.append(lines[i]);
+            if (i < end) {
+                sb.append("\n"); // Add newline character between lines
             }
         }
-        return result.toString();
+        return sb.toString();
     }
-
     /*
      * Overloaded constructor for database operations
      */
@@ -34,3 +43,4 @@ public class RecipeData {
         this.instructions = instructions;
     }
 }
+

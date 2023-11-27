@@ -40,7 +40,7 @@ public class ViewRecipe extends BorderPane {
     public ViewRecipe(Stage primaryStage, RecipeData recipe) throws IOException {
         this.response = recipe.title + "\n" + recipe.instructions;
         // Initialise the header Object
-        header = new ViewRecipeHeader(recipe.title);
+        header = new ViewRecipeHeader(recipe.title, recipe.imageUrl);
 
         // Initialise the body Object
         body = new ViewRecipeBody(response);
@@ -134,27 +134,29 @@ public class ViewRecipe extends BorderPane {
 class ViewRecipeHeader extends HBox {
 
     private Button backButton;
+    private ImageView imageView;
 
-    ViewRecipeHeader(String title) {
+    ViewRecipeHeader(String title, String url) {
 
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF; -fx-font-weight: bold; -fx-font: 11 arial;";
         backButton = new Button("Back");
         backButton.setStyle(defaultButtonStyle);
 
-        this.setPrefSize(500, 60); // Size of the header
+        this.setPrefSize(500, 200); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-        Text titleText = new Text(title);
+        // Create and set up the ImageView
+        imageView = new ImageView(new Image(url, true)); // true to load in background
+        imageView.setFitHeight(120); 
+        imageView.setPreserveRatio(true);
+
+        Text titleText = new Text(title); // Text of the Header
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
 
-        // VBox for centering titleText
-        VBox titleVBox = new VBox(titleText);
-        titleVBox.setAlignment(Pos.CENTER);
-
-        this.getChildren().addAll(titleVBox, backButton);
-        HBox.setHgrow(backButton, Priority.ALWAYS);
-        this.setAlignment(Pos.CENTER_RIGHT); // Align the whole content to the right
-        this.setSpacing(50);
+        // Add ImageView and title Text to the HBox
+        this.getChildren().addAll(imageView, titleText);
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(15);
     }
 
     public Button getBackButton() {

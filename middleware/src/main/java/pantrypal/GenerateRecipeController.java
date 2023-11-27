@@ -23,7 +23,7 @@ public class GenerateRecipeController {
 
         try {
             FileService.saveFile(file);
-            return ResponseEntity.ok(generateRecipe(new ChatGPT(), new Whisper(), mealType));
+            return ResponseEntity.ok(generateRecipe(new ChatGPT(), new Whisper(), new DallE(), mealType));
             // return ResponseEntity.ok("File uploaded successfully: " + file.getOriginalFilename());
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,13 +32,14 @@ public class GenerateRecipeController {
 
     }
 
-    public String generateRecipe(IChatGPT gpt, IWhisper whisper, String mealType) throws IOException, URISyntaxException {
+    public String generateRecipe(IChatGPT gpt, IWhisper whisper, DallE dalle, String mealType) throws IOException, InterruptedException, URISyntaxException {
         String transcript = whisper.getTranscript(FileService.getFilePath());
         String recipe = gpt.generateRecipe(transcript, mealType);
+        String imageUrl = dalle.generateImageURL(recipe);
 
         System.out.println(recipe);
 
-        return recipe;
+        return recipe + "|||||" + imageUrl;
     }
 
 }
