@@ -1,3 +1,8 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.sourcePaths": [
+        "frontend\\src\\main\\java",
+        "frontend\\src\\test\\java",
+        "frontend\\src\\main\\java\\pantrypal"
+    ]
 }

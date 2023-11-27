@@ -11,12 +11,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.TextAlignment;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -280,7 +279,7 @@ class CreateRecipe extends VBox {
     // Given the audio recording of the ingredients, create a new recipe and display
     // it in NewRecipeScreen()
     private void processIngredientRecording() {
-        String[] result;
+        String result;
         try {
             recordingLabel.setText("Processing...");
 
@@ -292,7 +291,7 @@ class CreateRecipe extends VBox {
             Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
             primaryStage.setScene(scene);
 
-            System.out.println(result[0]);
+            System.out.println(result);
         } catch (IOException e1) {
             e1.printStackTrace();
         } catch (URISyntaxException e1) {
@@ -300,12 +299,15 @@ class CreateRecipe extends VBox {
         }
     }
 
-    public static String[] getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
-        OpenAI model = new OpenAI();
-        ChatGPT gpt = new ChatGPT(model);
-        String transcript = Whisper.getTranscript(filePath);
-        String[] recipe = gpt.generateRecipe(transcript, mealType);
-        return recipe;
+    public static String getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
+        MiddlewareModel mm = new MiddlewareModel();
+        return mm.generateRecipe(filePath, mealType);
+
+        // OpenAI model = new OpenAI();
+        // ChatGPT gpt = new ChatGPT(model);
+        // String transcript = Whisper.getTranscript(filePath);
+        // String[] recipe = gpt.generateRecipe(transcript, mealType);
+        // return recipe;
     }
 
 }
@@ -519,7 +521,7 @@ class AppFrame extends BorderPane {
         String result;
         try {
             recordingLabel.setText("Processing...");
-            result = getMealTypeFromAudio("recording.wav");
+            result = getMealTypeFromAudio("recording.wav"); // TODO: Put this file name somewhere else
             System.out.println(result);
 
             if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
@@ -540,15 +542,36 @@ class AppFrame extends BorderPane {
     // Given an audio file path, create a transcription, then generate the wanted
     // meal type
     public static String getMealTypeFromAudio(String filePath) throws IOException, URISyntaxException {
-        OpenAI model = new OpenAI();
-        ChatGPT gpt = new ChatGPT(model);
-        String transcript = Whisper.getTranscript(filePath);
-        String mealType = gpt.generateMealType(transcript);
-        return mealType;
+        MiddlewareModel mm = new MiddlewareModel();
+        return mm.mealTypeExtraction(filePath);
     }
 }
 
 public class Main extends Application {
+
+    @Override
+    public void init() throws Exception {
+        System.out.println("Application is initializing...");
+
+        MiddlewareModel mm = new MiddlewareModel();
+        List<RecipeData> recipes = mm.getRecipes();
+
+        for (RecipeData recipe : recipes) {
+            CRUDRecipes.createRecipe(recipe);
+        }
+
+    }
+
+    @Override
+    public void stop() throws Exception {
+        System.out.println("Application is closing...");
+
+        List<RecipeData> recipes = CRUDRecipes.readRecipes();
+        MiddlewareModel mm = new MiddlewareModel();
+        mm.postRecipes(recipes);
+
+        CRUDRecipes.deleteRecipesFile();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -560,7 +583,10 @@ public class Main extends Application {
         // Set the title of the app
         primaryStage.setTitle("Pantry Pal");
         // Create scene of mentioned size with the border pane
-        primaryStage.setScene(new Scene(root, 500, 600));
+        // primaryStage.setScene(new Scene(root, 500, 600));
+
+        Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+        primaryStage.setScene(accScene);
         // Make window non-resizable
         primaryStage.setResizable(false);
         // Show the app

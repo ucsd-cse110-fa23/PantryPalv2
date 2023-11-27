@@ -44,7 +44,7 @@ Then, as our project is gradle-based, build the project using the following comm
 And finally, run the project using the following command:
 
 ```
-./gradlew run
+./gradlew run --parallel
 ```
 
 ### For Windows

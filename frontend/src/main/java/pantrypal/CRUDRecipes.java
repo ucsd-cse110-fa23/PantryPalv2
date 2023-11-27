@@ -92,4 +92,20 @@ public class CRUDRecipes {
         writeRecipes(recipes);
     }
 
+    // Delete the file that contains all recipes locally
+    public static void deleteRecipesFile() {
+        File fileToDelete = new File(FILE_PATH);
+
+        // Check if the file exists before attempting to delete
+        if (fileToDelete.exists()) {
+            if (fileToDelete.delete()) {
+                System.out.println("File deleted successfully.");
+            } else {
+                System.err.println("Failed to delete the file.");
+            }
+        } else {
+            System.err.println("File not found.");
+        }
+    }
+
 }

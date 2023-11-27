@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 import org.json.*;
 
-public class Whisper {
+public class Whisper implements IWhisper {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
     private static final String TOKEN = APIKey.getAPIKey();
     private static final String MODEL = "whisper-1";
@@ -13,7 +13,7 @@ public class Whisper {
 
     // Helper method to write a parameter to the output stream in multipart form
     // data format
-    private static void writeParameterToOutputStream(
+    private void writeParameterToOutputStream(
             OutputStream outputStream,
             String parameterName,
             String parameterValue,
@@ -26,7 +26,7 @@ public class Whisper {
 
     // Helper method to write a file to the output stream in multipart form data
     // format
-    private static void writeFileToOutputStream(
+    private void writeFileToOutputStream(
             OutputStream outputStream,
             File file,
             String boundary) throws IOException {
@@ -47,7 +47,7 @@ public class Whisper {
     }
 
     // Helper method to handle a successful response
-    private static String handleSuccessResponse(HttpURLConnection connection)
+    private String handleSuccessResponse(HttpURLConnection connection)
             throws IOException, JSONException {
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(connection.getInputStream()));
@@ -67,7 +67,7 @@ public class Whisper {
     }
 
     // Helper method to handle an error response
-    private static void handleErrorResponse(HttpURLConnection connection)
+    private void handleErrorResponse(HttpURLConnection connection)
             throws IOException, JSONException {
         BufferedReader errorReader = new BufferedReader(
                 new InputStreamReader(connection.getErrorStream()));
@@ -81,7 +81,7 @@ public class Whisper {
         System.out.println("Error Result: " + errorResult);
     }
 
-    public static String getTranscript(String filePath) throws IOException, URISyntaxException {
+    public String getTranscript(String filePath) throws IOException, URISyntaxException {
         FILE_PATH = filePath;
         // Create file object from file path
         File file = new File(FILE_PATH);
@@ -129,14 +129,6 @@ public class Whisper {
         // Disconnect connection
         connection.disconnect();
         return toRet;
-    }
-
-    public static void main(String[] args) {
-        try {
-            System.out.println(getTranscript(FILE_PATH));
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
 
 }

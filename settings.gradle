@@ -1,0 +1,3 @@
+rootProject.name = 'cse-110-project-team-25'
+include 'middleware'
+include 'frontend'
