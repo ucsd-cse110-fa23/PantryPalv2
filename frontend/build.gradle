@@ -7,8 +7,6 @@ plugins {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
-        //for sonia's mac
-        // languageVersion = JavaLanguageVersion.of(18)
     }
 }
 
