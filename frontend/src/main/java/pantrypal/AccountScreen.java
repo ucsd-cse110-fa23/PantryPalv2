@@ -64,9 +64,28 @@ public class AccountScreen extends BorderPane {
             // display error message if username already used(?)
 
             // create a new account object
-            Account newAccount = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
+            Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
 
-            System.out.println("User signed up successfully!");
+            // try {
+            //     System.out.println(AccountService.accountExists(account.getUsername()));
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
+            try {
+                if (AccountService.accountExists(account.getUsername())) {
+                    System.out.println("Account with that username already exists. Choose a different username");
+                } else {
+                    try {
+                        AccountService.createAccount(account);
+                        System.out.println("User signed up successfully!");
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                }
+            catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
             // redirect to next screen once authenticated
             // temp transition:
