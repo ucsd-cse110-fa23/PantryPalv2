@@ -45,7 +45,7 @@ import org.bson.types.ObjectId;
 @Service
 public class RecipeService {
 
-    public String FILE_PATH = "src/resources/recipes.json"; // change this in the test file
+    public String FILE_PATH = "src/test/recipes.json"; // change this in the test file
     private final Gson gson = new Gson();
 
     private String username = "Ben";

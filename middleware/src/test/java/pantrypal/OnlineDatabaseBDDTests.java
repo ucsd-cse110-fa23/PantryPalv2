@@ -18,7 +18,7 @@ public class OnlineDatabaseBDDTests {
         // “Miso Paste, Tofu”, and instructions “Put all ingredients into a pot of water
         // and boil”, and an image of a bowl of soup with it.
         RecipeData recipe = new RecipeData("Miso Soup", new String[] { "Miso Paste", "Tofu" },
-                "Put all ingredients into a pot of water and boil");
+                "Put all ingredients into a pot of water and boil", "Lunch", 0.0);
         RecipeService recipeService = new RecipeService("Ben", true);
         try {
             recipeService.createRecipe(recipe);
@@ -36,6 +36,10 @@ public class OnlineDatabaseBDDTests {
         // and boil”, and an image of a bowl of soup with it.
         try {
             assertTrue(recipeService2.recipeExists(recipe.title));
+            assertTrue(recipeService2.readRecipes().get(0).title.equals(recipe.title));
+            assertTrue(recipeService2.readRecipes().get(0).instructions.equals(recipe.instructions));
+            assertTrue(recipeService2.readRecipes().get(0).ingredients[0].equals(recipe.ingredients[0]));
+            assertTrue(recipeService2.readRecipes().get(0).ingredients[1].equals(recipe.ingredients[1]));
         } catch (IOException e) {
             e.printStackTrace();
         }
