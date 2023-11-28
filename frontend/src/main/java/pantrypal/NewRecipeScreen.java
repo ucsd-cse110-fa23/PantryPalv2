@@ -93,6 +93,7 @@ public class NewRecipeScreen extends BorderPane {
                 if (CRUDRecipes.recipeExists(recipe.title)) {
 
                     try {
+                        recipe.instructions = body.getDetails().getText();
                         CRUDRecipes.updateRecipe(recipe);
                     } catch (IOException e1) {
                         e1.printStackTrace();
