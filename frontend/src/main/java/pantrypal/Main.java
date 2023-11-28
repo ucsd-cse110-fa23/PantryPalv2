@@ -286,7 +286,7 @@ class CreateRecipe extends VBox {
             result = getRecipeFromAudio("recording.wav", mealType);
             recordingLabel.setText("Stop and Generate Recipe");
 
-            RecipeData recipe = new RecipeData(result);
+            RecipeData recipe = new RecipeData(result, mealType);
 
             Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
             primaryStage.setScene(scene);
