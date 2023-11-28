@@ -78,6 +78,12 @@ public class AccountScreen extends BorderPane {
                     try {
                         AccountService.createAccount(account);
                         System.out.println("User signed up successfully!");
+                        try {
+                            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -89,30 +95,52 @@ public class AccountScreen extends BorderPane {
 
             // redirect to next screen once authenticated
             // temp transition:
-            try {
-                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
         });
 
         loginButton.setOnAction(e2 -> {
             System.out.println("username: " + accountInfo.getUsernameField());
             System.out.println("password: " + accountInfo.getPasswordField());
+            
+            String enteredUsername = accountInfo.getUsernameField();
+            String enteredPassword = accountInfo.getPasswordField();
+            try {
+                if (AccountService.accountExists(enteredUsername)) {
+                    if (AccountService.getAccount(enteredUsername).getPassword().equals(enteredPassword)) {
+                        System.out.println("user logged in successfully!");
+                        try {
+                            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("wrong password entered");
+                    }
+                } else {
+                    System.out.println("an account with this username does not exist yet");
+                }
+                }
+            catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
             // check if matching document exists in database
             // display error message if not
-            System.out.println("User logged in successfully!");
 
             // redirect to next screen once authenticated
             // temp transition:
-            try {
-                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
         });
     }
 }
