@@ -583,7 +583,10 @@ public class Main extends Application {
         // Set the title of the app
         primaryStage.setTitle("Pantry Pal");
         // Create scene of mentioned size with the border pane
-        primaryStage.setScene(new Scene(root, 500, 600));
+        // primaryStage.setScene(new Scene(root, 500, 600));
+
+        Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+        primaryStage.setScene(accScene);
         // Make window non-resizable
         primaryStage.setResizable(false);
         // Show the app
