@@ -44,15 +44,4 @@ public class AuthenticationService {
             return true;
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(AuthenticationService.createAccount("test", "test"));
-        System.out.println(AuthenticationService.createAccount("test", "test2"));
-        System.out.println(AuthenticationService.createAccount("test2", "test"));
-        System.out.println(AuthenticationService.createAccount("test2", "test2"));
-        System.out.println(AuthenticationService.authenticate("test", "test"));
-        System.out.println(AuthenticationService.authenticate("test", "test2"));
-        System.out.println(AuthenticationService.authenticate("test2", "test"));
-        System.out.println(AuthenticationService.authenticate("test2", "test2"));
-    }
 }
