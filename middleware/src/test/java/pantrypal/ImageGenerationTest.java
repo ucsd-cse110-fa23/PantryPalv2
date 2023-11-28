@@ -29,11 +29,9 @@ public class ImageGenerationTest {
     // Test whether the generated image URL is empty
     @Test
     public void generateImageUrlNotNull() throws IOException, InterruptedException, URISyntaxException {
-        String recipeTitle = "Chicken fried rice";
-
         // Set up behavior for the mocked DallE instance
-        when(dalle.generateImageURL(recipeTitle)).thenReturn("https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img" + recipeTitle +"-mocked.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked");
-        
+        when(dalle.generateImageURL(anyString())).thenReturn("https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img-mocked.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked");
+        String recipeTitle = "Chicken fried rice";
         String imageUrl = dalle.generateImageURL(recipeTitle);
         assertNotNull(imageUrl, "Generated image URL should not be null");
     }
@@ -41,11 +39,10 @@ public class ImageGenerationTest {
     // Test whether the format of the generated image URL is valid
     @Test
     public void generateImageUrlValidFormat() throws IOException, InterruptedException, URISyntaxException {
+        // Set up behavior for the mocked DallE instance
+        when(dalle.generateImageURL(anyString())).thenReturn("https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img-mocked.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked");
+
         String recipeTitle = "Miso Soup";
-
-         // Set up behavior for the mocked DallE instance
-        when(dalle.generateImageURL(recipeTitle)).thenReturn("https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img" + recipeTitle +"-mocked.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked");
-
         String imageUrl = dalle.generateImageURL(recipeTitle);
         assertTrue(urlPattern.matcher(imageUrl).matches(), "Invalid image URL format");
     }
