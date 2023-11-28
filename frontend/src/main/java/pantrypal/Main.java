@@ -286,7 +286,7 @@ class CreateRecipe extends VBox {
             result = getRecipeFromAudio("recording.wav", mealType);
             recordingLabel.setText("Stop and Generate Recipe");
 
-            RecipeData recipe = new RecipeData(result);
+            RecipeData recipe = new RecipeData(result, mealType);
 
             Scene scene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
             primaryStage.setScene(scene);
@@ -302,7 +302,6 @@ class CreateRecipe extends VBox {
     public static String getRecipeFromAudio(String filePath, String mealType) throws IOException, URISyntaxException {
         MiddlewareModel mm = new MiddlewareModel();
         return mm.generateRecipe(filePath, mealType);
-
 
         // OpenAI model = new OpenAI();
         // ChatGPT gpt = new ChatGPT(model);
@@ -522,7 +521,7 @@ class AppFrame extends BorderPane {
         String result;
         try {
             recordingLabel.setText("Processing...");
-            result = getMealTypeFromAudio("recording.wav"); //TODO: Put this file name somewhere else
+            result = getMealTypeFromAudio("recording.wav"); // TODO: Put this file name somewhere else
             System.out.println(result);
 
             if (!result.equals(" Breakfast") && !result.equals(" Lunch") && !result.equals(" Dinner")
@@ -557,10 +556,10 @@ public class Main extends Application {
         MiddlewareModel mm = new MiddlewareModel();
         List<RecipeData> recipes = mm.getRecipes();
 
-        for(RecipeData recipe : recipes) {
+        for (RecipeData recipe : recipes) {
             CRUDRecipes.createRecipe(recipe);
         }
-        
+
     }
 
     @Override
