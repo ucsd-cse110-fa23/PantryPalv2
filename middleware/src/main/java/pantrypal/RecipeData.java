@@ -10,8 +10,8 @@ public class RecipeData {
         String[] response = gptResponse.split("\n");
 
         this.title = response[0];
-        this.instructions = joinSubsectionLoop(response, 2, response.length-1);
-        ingredients = response[response.length-1].split(";");
+        this.instructions = joinSubsectionLoop(response, 2, response.length - 1);
+        ingredients = response[response.length - 1].split(";");
     }
 
     private static String joinSubsectionLoop(String[] array, int startIndex, int endIndex) {
@@ -32,5 +32,9 @@ public class RecipeData {
         this.title = title;
         this.ingredients = ingredients;
         this.instructions = instructions;
+    }
+
+    public String toString() {
+        return title + "\n" + instructions + "\n" + String.join(";", ingredients);
     }
 }

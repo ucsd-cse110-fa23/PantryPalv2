@@ -1,5 +1,6 @@
 package pantrypal;
 
+import java.io.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,8 +10,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
 import org.json.JSONArray;
@@ -20,6 +24,23 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.scanner.Scanner;
+
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.*;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 @Service
 public class RecipeService {
@@ -27,15 +48,109 @@ public class RecipeService {
     public String FILE_PATH = "recipes.json"; // change this in the test file
     private final Gson gson = new Gson();
 
+    private String username = "Ben";
+
     public RecipeService() {
+    }
+
+    public RecipeService(String username) {
+        this.username = username;
     }
 
     public void changeFilePath(String path) {
         FILE_PATH = path;
     }
 
-    // Reads the existing recipes from the JSON file
+    // Writes the updated recipes to the JSON file
+    private void writeRecipes(List<RecipeData> recipes) throws IOException {
+        String uri = MongoKey.getAPIKey();
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("Pantrypal");
+            MongoCollection<Document> collection = database.getCollection(username);
+            collection.drop();
+            for (RecipeData recipe : recipes) {
+                Document recipeDoc = new Document("_id", new ObjectId());
+                recipeDoc.append("title", recipe.title)
+                        .append("type", "TDB")
+                        .append("createdDate", "TBD")
+                        .append("ingredients", Arrays.asList(recipe.ingredients))
+                        .append("instructions", recipe.instructions);
+                collection.insertOne(recipeDoc);
+            }
+        }
+    }
+
+    /**
+     * MongoDB append a recipe to the list (create)
+     * 
+     * @param recipes the recipes that we are adding
+     */
+    public void createRecipe(RecipeData recipe) throws IOException {
+        String uri = MongoKey.getAPIKey();
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("Pantrypal");
+
+            if (!database.listCollectionNames().into(new ArrayList<>()).contains(username)) {
+                database.createCollection(username);
+            }
+            MongoCollection<Document> collection = database.getCollection(username);
+
+            Document recipeDoc = new Document("_id", new ObjectId());
+            recipeDoc.append("title", recipe.title)
+                    .append("type", "TDB")
+                    .append("createdDate", "TBD")
+                    .append("ingredients", Arrays.asList(recipe.ingredients))
+                    .append("instructions", recipe.instructions);
+            collection.insertOne(recipeDoc);
+        }
+    }
+
+    /**
+     * Reads recipes from the MongoDB Server
+     * 
+     * @return the current list of recipes in the database
+     */
     public ArrayList<RecipeData> readRecipes() throws IOException {
+        String uri = MongoKey.getAPIKey();
+        ArrayList<RecipeData> recipes = new ArrayList<>();
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase database = mongoClient.getDatabase("Pantrypal");
+            MongoCollection<Document> collection = database.getCollection(username);
+            // traverse the list of documents in the collection
+            ArrayList<Document> recipeList = collection.find().into(new ArrayList<>()); // find all docs
+            for (Document recipe : recipeList) {
+                System.out.println(recipe.toJson());
+                String title = recipe.getString("title");
+                List<String> listIng = (List<String>) recipe.get("ingredients");
+                String[] ingredients = new String[listIng.size()];
+                ingredients = (listIng).toArray(ingredients);
+                String instructions = recipe.getString("instructions");
+
+                RecipeData data = new RecipeData(title, ingredients, instructions);
+                recipes.add(data);
+            }
+
+        }
+        return recipes;
+    }
+
+    // ----------------------------------------------------------------------------------------------
+
+    // Adds a new recipe
+    public void createRecipeOld(RecipeData newRecipe) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        recipes.add(newRecipe);
+        writeRecipes(recipes);
+    }
+
+    public boolean recipeExistsOld(String title) throws IOException {
+        List<RecipeData> recipes = readRecipes();
+        return recipes.stream()
+                .anyMatch(recipe -> recipe.title.equals(title));
+    }
+
+    // Reads the existing recipes from the JSON file
+    public ArrayList<RecipeData> readRecipesOld() throws IOException {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
             return new ArrayList<RecipeData>();
@@ -51,23 +166,10 @@ public class RecipeService {
     }
 
     // Writes the updated recipes to the JSON file
-    private void writeRecipes(List<RecipeData> recipes) throws IOException {
+    private void writeRecipesOld(List<RecipeData> recipes) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH));
         gson.toJson(recipes, writer);
         writer.close();
-    }
-
-    // Adds a new recipe
-    public void createRecipe(RecipeData newRecipe) throws IOException {
-        List<RecipeData> recipes = readRecipes();
-        recipes.add(newRecipe);
-        writeRecipes(recipes);
-    }
-
-    public boolean recipeExists(String title) throws IOException {
-        List<RecipeData> recipes = readRecipes();
-        return recipes.stream()
-                .anyMatch(recipe -> recipe.title.equals(title));
     }
 
     // Retrieves a specific recipe based on its title
@@ -111,6 +213,30 @@ public class RecipeService {
             }
         } else {
             System.err.println("File not found.");
+        }
+    }
+
+    /** main method for debugging */
+    public static void main(String[] args) {
+        RecipeService r = new RecipeService();
+        String[] i = { "cream", "sugar", "starch", "vanilla" };
+        RecipeData recipe = new RecipeData("Pudding", i,
+                "cook all ingredients over a low flame after combining for 10-15 minutes.");
+        try {
+            r.createRecipe(recipe);
+            ArrayList<RecipeData> recipes = r.readRecipes();
+            r.updateRecipe(new RecipeData("Pudding", i,
+                    "cook all ingredients over a low flame after combining for 10-15 minutes. Then, let cool."));
+            ArrayList<RecipeData> recipes2 = r.readRecipes();
+            r.deleteRecipe("Pudding");
+            ArrayList<RecipeData> recipes3 = r.readRecipes();
+
+            System.out.println(recipes);
+            System.out.println(recipes2);
+            System.out.println(recipes3);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
