@@ -45,10 +45,11 @@ import org.bson.types.ObjectId;
 @Service
 public class RecipeService {
 
-    public String FILE_PATH = "recipes.json"; // change this in the test file
+    public String FILE_PATH = "src/resources/recipes.json"; // change this in the test file
     private final Gson gson = new Gson();
 
     private String username = "Ben";
+    boolean testing = false;
 
     public RecipeService() {
     }
@@ -57,12 +58,21 @@ public class RecipeService {
         this.username = username;
     }
 
+    public RecipeService(String username, boolean testing) {
+        this.username = username;
+        this.testing = testing;
+    }
+
     public void changeFilePath(String path) {
         FILE_PATH = path;
     }
 
     // Writes the updated recipes to the JSON file
     private void writeRecipes(List<RecipeData> recipes) throws IOException {
+        if (testing) {
+            writeRecipesOld(recipes);
+            return;
+        }
         String uri = MongoKey.getAPIKey();
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("Pantrypal");
@@ -71,7 +81,7 @@ public class RecipeService {
             for (RecipeData recipe : recipes) {
                 Document recipeDoc = new Document("_id", new ObjectId());
                 recipeDoc.append("title", recipe.title)
-                        .append("type", "TDB")
+                        .append("type", recipe.type)
                         .append("createdDate", "TBD")
                         .append("ingredients", Arrays.asList(recipe.ingredients))
                         .append("instructions", recipe.instructions)
@@ -88,6 +98,9 @@ public class RecipeService {
      * @return the current list of recipes in the database
      */
     public ArrayList<RecipeData> readRecipes() throws IOException {
+        if (testing) {
+            return readRecipesOld();
+        }
         String uri = MongoKey.getAPIKey();
         ArrayList<RecipeData> recipes = new ArrayList<>();
         try (MongoClient mongoClient = MongoClients.create(uri)) {

@@ -7,24 +7,38 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 public class OnlineDatabaseBDDTests {
-    // Scenario 1: Save a recipe
     @Test
     void testBDDSaveRecipe() {
-        // // Given the user completely generates a recipe
-        // String[] ingredients = { "Chicken" };
-        // unsavedRecipe = new RecipeData("Fried Chicken", ingredients, "Deep fry it!");
+        // Given that the user has generated a recipe with the title “Miso Soup”, the
+        // ingredients “Miso Paste, Tofu”, and instructions “Put all ingredients into a
+        // pot of water and boil”, and an image of a bowl of soup with it
+        // When the user logs out of their account and logs onto their account from
+        // another computer, and clicks on the “View Recipe List” button,
+        // Then the user should see a recipe with the title “Miso Soup”, the ingredients
+        // “Miso Paste, Tofu”, and instructions “Put all ingredients into a pot of water
+        // and boil”, and an image of a bowl of soup with it.
+        RecipeData recipe = new RecipeData("Miso Soup", new String[] { "Miso Paste", "Tofu" },
+                "Put all ingredients into a pot of water and boil");
+        RecipeService recipeService = new RecipeService("Ben", true);
+        try {
+            recipeService.createRecipe(recipe);
+            assertTrue(recipeService.recipeExists(recipe.title));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // // And the “save” button is accessible
-        // // When the user click on the “save” button
-        // // Then the recipe should be saved into the database
-        // try {
-        // CRUDRecipes.createRecipe(unsavedRecipe);
+        // When the user logs out of their account and logs onto their account from
+        // another computer, and clicks on the “View Recipe List” button,
 
-        // // Then the recipe should be saved into the database
-        // assertTrue(CRUDRecipes.recipeExists(unsavedRecipe.title));
+        RecipeService recipeService2 = new RecipeService("Ben", true);
+        // Then the user should see a recipe with the title “Miso Soup”, the ingredients
+        // “Miso Paste, Tofu”, and instructions “Put all ingredients into a pot of water
+        // and boil”, and an image of a bowl of soup with it.
+        try {
+            assertTrue(recipeService2.recipeExists(recipe.title));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
     }
 }
