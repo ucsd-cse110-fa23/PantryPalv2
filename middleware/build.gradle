@@ -61,5 +61,5 @@ test {
 //     // You can define more source sets if needed
 // }
 
-mainClassName = 'pantrypal.RecipeService'
+mainClassName = 'pantrypal.MiddlewareApplication'
 // mainClassName = 'pantrypal.Main'

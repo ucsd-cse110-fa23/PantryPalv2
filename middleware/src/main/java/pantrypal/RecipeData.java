@@ -21,14 +21,17 @@ public class RecipeData {
     /*
      * Overloaded constructor for database operations
      */
-    public RecipeData(String title, String[] ingredients, String instructions, String type) {
+    public RecipeData(String title, String[] ingredients, String instructions, String type, double createdTime) {
         this.title = title;
         this.ingredients = ingredients;
         this.instructions = instructions;
-        this.createdTime = System.currentTimeMillis();
+        this.createdTime = createdTime;
         this.type = type;
     }
 
+    /*
+     * For previous tests
+     */
     public RecipeData(String title, String[] ingredients, String instructions) {
         this.title = title;
         this.ingredients = ingredients;

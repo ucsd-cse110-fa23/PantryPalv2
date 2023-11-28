@@ -36,7 +36,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class MiddlewareModel {
-    private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this instead
+    private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this
+                                                                            // instead
 
     // Gets list of recipes from middleware server
     public List<RecipeData> getRecipes() {
@@ -54,9 +55,12 @@ public class MiddlewareModel {
 
                 // Use Gson to deserialize the JSON response into a list of RecipeData objects
                 Gson gson = new Gson();
-                recipes = gson.fromJson(jsonResponse, new TypeToken<List<RecipeData>>() {}.getType());
+                recipes = gson.fromJson(jsonResponse, new TypeToken<List<RecipeData>>() {
+                }.getType());
+                System.out.println("Server response: " + recipes);
             } else {
-                System.err.println("HTTP GET request failed with status code: " + response.getStatusLine().getStatusCode());
+                System.err.println(
+                        "HTTP GET request failed with status code: " + response.getStatusLine().getStatusCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +96,8 @@ public class MiddlewareModel {
 
                 System.out.println("Server response: " + jsonResponse);
             } else {
-                System.err.println("HTTP POST request failed with status code: " + response.getStatusLine().getStatusCode());
+                System.err.println(
+                        "HTTP POST request failed with status code: " + response.getStatusLine().getStatusCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,12 +154,12 @@ public class MiddlewareModel {
                     // return "Upload successful. Server response: " + responseBody;
                 } else {
                     return null;
-                    //return {"Upload failed. Server returned status code: " + statusCode};
+                    // return {"Upload failed. Server returned status code: " + statusCode};
                 }
             }
         } catch (IOException e) {
             return null;
-            //return "Error occurred during upload: " + e.getMessage();
+            // return "Error occurred during upload: " + e.getMessage();
         }
     }
 
