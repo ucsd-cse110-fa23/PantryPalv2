@@ -44,7 +44,7 @@ public class NewRecipeScreen extends BorderPane {
         }
         this.response += recipe.instructions;
         // Initialise the header Object
-        header = new NewRecipeHeader(recipe.title);
+        header = new NewRecipeHeader(recipe.title, recipe.imageUrl);
 
         // Initialise the body Object
         body = new NewRecipeBody(response);
@@ -127,15 +127,25 @@ public class NewRecipeScreen extends BorderPane {
 }
 
 class NewRecipeHeader extends HBox {
-
-    NewRecipeHeader(String title) {
-        this.setPrefSize(500, 60); // Size of the header
+    private ImageView imageView;
+    NewRecipeHeader(String title, String url) {
+        
+        
+        this.setPrefSize(500, 200); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
+
+        // Create and set up the ImageView
+        imageView = new ImageView(new Image(url, true));
+        imageView.setFitHeight(120);
+        imageView.setPreserveRatio(true);
 
         Text titleText = new Text(title); // Text of the Header
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
-        this.getChildren().add(titleText);
-        this.setAlignment(Pos.CENTER); // Align the text to the Center
+
+        // Add ImageView and title Text to the HBox
+        this.getChildren().addAll(imageView, titleText);
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(15);
     }
 }
 
