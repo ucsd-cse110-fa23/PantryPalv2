@@ -60,11 +60,14 @@ public class AccountScreen extends BorderPane {
             System.out.println("username: " + accountInfo.getUsernameField());
             System.out.println("password: " + accountInfo.getPasswordField());
 
+            String enteredUsername = accountInfo.getUsernameField();
+            String enteredPassword = accountInfo.getPasswordField();
+            
             // create account document in database
             // display error message if username already used(?)
 
             // create a new account object
-            Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
+            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
 
             // try {
             //     System.out.println(AccountService.accountExists(account.getUsername()));
@@ -72,10 +75,11 @@ public class AccountScreen extends BorderPane {
             //     e1.printStackTrace();
             // }
             try {
-                if (AccountService.accountExists(account.getUsername())) {
+                if (AccountService.accountExists(enteredUsername)) {
                     System.out.println("Account with that username already exists. Choose a different username");
                 } else {
                     try {
+                        Account account = new Account(enteredUsername, enteredPassword);
                         AccountService.createAccount(account);
                         System.out.println("User signed up successfully!");
                         try {
@@ -112,6 +116,8 @@ public class AccountScreen extends BorderPane {
             try {
                 if (AccountService.accountExists(enteredUsername)) {
                     if (AccountService.getAccount(enteredUsername).getPassword().equals(enteredPassword)) {
+                        Account account = new Account(enteredUsername, enteredPassword);
+                        AccountService.login(account);
                         System.out.println("user logged in successfully!");
                         try {
                             primaryStage.setScene(new Scene(new AppFrame(primaryStage)));

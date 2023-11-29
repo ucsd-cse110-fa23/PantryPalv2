@@ -64,6 +64,10 @@ public class AccountService {
                 .anyMatch(account -> account.getUsername().equals(username));
     }
 
+    public static boolean login(Account newAccount) throws IOException {
+        return true;
+    }
+
     // Retrieves a account based on its username
     public static Account getAccount(String username) throws IOException {
         List<Account> accounts = readAccounts();
