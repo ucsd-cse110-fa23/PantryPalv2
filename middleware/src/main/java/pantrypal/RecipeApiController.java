@@ -20,6 +20,7 @@ public class RecipeApiController {
 
     @GetMapping
     public ResponseEntity<List<RecipeData>> getAllRecipes() {
+        System.out.println("Getting all recipes");
         try {
             List<RecipeData> recipes = recipeService.readRecipes();
             return ResponseEntity.ok(recipes);
@@ -33,7 +34,7 @@ public class RecipeApiController {
     public ResponseEntity<String> createRecipe(@RequestBody List<RecipeData> recipes) {
         recipeService.deleteRecipesFile();
         try {
-            for(RecipeData recipe : recipes) {
+            for (RecipeData recipe : recipes) {
                 recipeService.createRecipe(recipe);
             }
             return ResponseEntity.ok("Successful recipes creation");
@@ -41,21 +42,21 @@ public class RecipeApiController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error with recipe creation");
         }
-        
+
     }
 
     // @PostMapping
     // public ResponseEntity<String> createRecipe(@RequestBody RecipeData recipe) {
-    //     try {
-    //         recipeService.createRecipe(recipe);
-    //         return ResponseEntity.ok("Successful recipe creation");
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //         return ResponseEntity.internalServerError().body("Error with recipe creation");
-    //     }
-        
+    // try {
+    // recipeService.createRecipe(recipe);
+    // return ResponseEntity.ok("Successful recipe creation");
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // return ResponseEntity.internalServerError().body("Error with recipe
+    // creation");
     // }
 
+    // }
 
     @GetMapping("/{title}")
     public ResponseEntity<RecipeData> getRecipeByTitle(@PathVariable String title) {
