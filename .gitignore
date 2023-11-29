@@ -7,3 +7,5 @@ build/
 recording.wav
 recipes.txt
 recipes.json
+middleware\build.gradle
+frontend\build.gradle
