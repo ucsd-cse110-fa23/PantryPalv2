@@ -6,7 +6,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
         //for sonia's mac
         // languageVersion = JavaLanguageVersion.of(18)
     }
@@ -17,7 +17,7 @@ repositories {
 }
 
 javafx {
-    version = "17"
+    version = "21"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
