@@ -59,7 +59,8 @@ public class ImageGenerationBDDTest { // user story 6 - Recipe Image Generation
         String expectedURL = "https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img-mocked-Bacon-Egg-and-Cheese-Pie.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked";
 
         when(dalle.generateImageURL(eq(expectedRecipe))).thenReturn(expectedURL);
-        RecipeData exsitRecipe = new RecipeData("Eggs;bacon;cheese;|||||https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img-mocked-Bacon-Egg-and-Cheese-Pie.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked");
+        
+        RecipeData exsitRecipe = new RecipeData("Eggs;bacon;cheese;|||||https://oaidalleapiprodscus.blob.core.windows.net/private/org-mocked/user-mocked/img-mocked-Bacon-Egg-and-Cheese-Pie.png?st=mocked&se=mocked&sp=mocked&sv=mocked&sr=mocked&rscd=mocked&rsct=image/png&skoid=mocked&sktid=mocked&skt=mocked&ske=mocked&sks=mocked&skv=mocked&sig=mocked","Breakfast");
         String actualURL = exsitRecipe.imageUrl;
 
         assertEquals(expectedURL, actualURL);
