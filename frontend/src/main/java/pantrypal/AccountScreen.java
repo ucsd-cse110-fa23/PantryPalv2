@@ -68,6 +68,7 @@ public class AccountScreen extends BorderPane {
 
             // create a new account object
             // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
+            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
 
             // try {
             //     System.out.println(AccountService.accountExists(account.getUsername()));
@@ -92,6 +93,15 @@ public class AccountScreen extends BorderPane {
             catch (Exception e1) {
                 e1.printStackTrace();
             }
+
+            // redirect to next screen once authenticated
+            // temp transition:
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
 
             // redirect to next screen once authenticated
             // temp transition:
@@ -134,7 +144,12 @@ public class AccountScreen extends BorderPane {
             // temp transition:
             // try {
             //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
             // } catch (IOException e1) {
             //     e1.printStackTrace();
             // }
