@@ -10,7 +10,6 @@ public class RecipeData {
     public RecipeData(String gptResponse) {
         // Split by |||||
         String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
-
         // Check if the split response has at least two parts (recipe and image URL)
         if (parts.length > 1) {
             // Process the first part for recipe details
