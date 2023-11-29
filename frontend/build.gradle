@@ -9,7 +9,8 @@ java {
         languageVersion = JavaLanguageVersion.of(21)
         //for sonia's mac
         // languageVersion = JavaLanguageVersion.of(18)
-
+    }
+}
 
 repositories {
     mavenCentral()
