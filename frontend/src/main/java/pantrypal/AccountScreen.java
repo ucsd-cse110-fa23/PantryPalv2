@@ -75,25 +75,21 @@ public class AccountScreen extends BorderPane {
             //     e1.printStackTrace();
             // }
             try {
-                if (AccountService.accountExists(enteredUsername)) {
-                    System.out.println("Account with that username already exists. Choose a different username");
-                } else {
-                    try {
-                        Account account = new Account(enteredUsername, enteredPassword);
-                        AccountService.createAccount(account);
+                Account account = new Account(enteredUsername, enteredPassword);
+                    MiddlewareModel mm = new MiddlewareModel();
+                    boolean created = mm.postAccountCreation(account);
+                    if (created) {
                         System.out.println("User signed up successfully!");
                         try {
                             primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+                    } else {
+                        System.out.println("Account with that username already exists. Choose a different username");
                     }
                 }
-                }
-            catch (IOException e1) {
+            catch (Exception e1) {
                 e1.printStackTrace();
             }
 
@@ -114,25 +110,20 @@ public class AccountScreen extends BorderPane {
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
             try {
-                if (AccountService.accountExists(enteredUsername)) {
-                    if (AccountService.getAccount(enteredUsername).getPassword().equals(enteredPassword)) {
-                        Account account = new Account(enteredUsername, enteredPassword);
-                        AccountService.login(account);
-                        System.out.println("user logged in successfully!");
-                        try {
-                            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    } else {
-                        System.out.println("wrong password entered");
+                Account account = new Account(enteredUsername, enteredPassword);
+                MiddlewareModel mm = new MiddlewareModel();
+                boolean login = mm.postAccountAuthentication(account);
+                if (login) {
+                    System.out.println("user logged in successfully!");
+                    try {
+                        primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
                 } else {
-                    System.out.println("an account with this username does not exist yet");
-                }
-                }
-            catch (IOException e1) {
+                    System.out.println("Unsuccessful login attempt");
+                }  
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
 

@@ -23,6 +23,7 @@ public class AccountService {
 
     public static String FILE_PATH = "accounts.json"; // change this in the test file
     private static final Gson gson = new Gson();
+    
 
     public static void changeFilePath(String path) {
         FILE_PATH = path;
