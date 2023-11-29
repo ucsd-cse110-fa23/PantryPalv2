@@ -163,4 +163,72 @@ public class MiddlewareModel {
         }
     }
 
+    // Sends POST request for account authentication
+    public Boolean postAccountAuthentication(Account acc) {
+        try {
+            HttpClient httpClient = HttpClients.createDefault();
+            Gson gson = new GsonBuilder().create();
+
+            // Serialize the Account object to JSON
+            String jsonRequest = gson.toJson(acc);
+
+            // Create an HttpPost request
+            HttpPost httpPost = new HttpPost(API_ENDPOINT + "/account/login");
+
+            // Set the JSON request body
+            StringEntity entity = new StringEntity(jsonRequest);
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
+
+            // Execute the POST request and get the response
+            HttpResponse response = httpClient.execute(httpPost);
+
+            // Check if the response status code indicates logging in (e.g., 200 OK)
+            if (response.getStatusLine().getStatusCode() == 200) {
+                // Parse the response content
+                String responseBody = EntityUtils.toString(response.getEntity());
+                return true;
+            } else if (response.getStatusLine().getStatusCode() == 404) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Sends POST request for account creation
+    public Boolean postAccountCreation(Account acc) {
+        try {
+            HttpClient httpClient = HttpClients.createDefault();
+            Gson gson = new GsonBuilder().create();
+
+            // Serialize the Account object to JSON
+            String jsonRequest = gson.toJson(acc);
+
+            // Create an HttpPost request
+            HttpPost httpPost = new HttpPost(API_ENDPOINT + "/account/create");
+
+            // Set the JSON request body
+            StringEntity entity = new StringEntity(jsonRequest);
+            entity.setContentType("application/json");
+            httpPost.setEntity(entity);
+
+            // Execute the POST request and get the response
+            HttpResponse response = httpClient.execute(httpPost);
+
+            // Check if the response status code indicates logging in (e.g., 200 OK)
+            if (response.getStatusLine().getStatusCode() == 200) {
+                // Parse the response content
+                String responseBody = EntityUtils.toString(response.getEntity());
+                return true; //returns username if logged in
+            } else if (response.getStatusLine().getStatusCode() == 404) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

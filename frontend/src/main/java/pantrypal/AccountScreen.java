@@ -60,40 +60,99 @@ public class AccountScreen extends BorderPane {
             System.out.println("username: " + accountInfo.getUsernameField());
             System.out.println("password: " + accountInfo.getPasswordField());
 
+            String enteredUsername = accountInfo.getUsernameField();
+            String enteredPassword = accountInfo.getPasswordField();
+            
             // create account document in database
             // display error message if username already used(?)
 
             // create a new account object
-            Account newAccount = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
+            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
+            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
 
-            System.out.println("User signed up successfully!");
+            // try {
+            //     System.out.println(AccountService.accountExists(account.getUsername()));
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
+            try {
+                Account account = new Account(enteredUsername, enteredPassword);
+                    MiddlewareModel mm = new MiddlewareModel();
+                    boolean created = mm.postAccountCreation(account);
+                    if (created) {
+                        System.out.println("User signed up successfully!");
+                        try {
+                            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("Account with that username already exists. Choose a different username");
+                    }
+                }
+            catch (Exception e1) {
+                e1.printStackTrace();
+            }
 
             // redirect to next screen once authenticated
             // temp transition:
-            try {
-                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
+
+            // redirect to next screen once authenticated
+            // temp transition:
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
         });
 
         loginButton.setOnAction(e2 -> {
             System.out.println("username: " + accountInfo.getUsernameField());
             System.out.println("password: " + accountInfo.getPasswordField());
+            
+            String enteredUsername = accountInfo.getUsernameField();
+            String enteredPassword = accountInfo.getPasswordField();
+            try {
+                Account account = new Account(enteredUsername, enteredPassword);
+                MiddlewareModel mm = new MiddlewareModel();
+                boolean login = mm.postAccountAuthentication(account);
+                if (login) {
+                    System.out.println("user logged in successfully!");
+                    try {
+                        primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Unsuccessful login attempt");
+                }  
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
 
             // check if matching document exists in database
             // display error message if not
-            System.out.println("User logged in successfully!");
 
             // redirect to next screen once authenticated
             // temp transition:
-            try {
-                primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // try {
+            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
+            // } catch (IOException e1) {
+            //     e1.printStackTrace();
+            // }
         });
     }
 }
