@@ -27,7 +27,7 @@ public class DallE {
     public String generateImageURL(String prompt) throws IOException, InterruptedException, URISyntaxException{
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", MODEL);
-        requestBody.put("prompt", prompt);
+        requestBody.put("prompt", ensureMaxLength(prompt, 950)); // Dalle prompt has to be under 1000 characters
         requestBody.put("n", 1);
         requestBody.put("size", "256x256");
 
@@ -54,9 +54,18 @@ public class DallE {
         // Process the response
         String responseBody = response.body();
         JSONObject responseJson = new JSONObject(responseBody);
+        System.out.println(requestBody);
+        System.out.println(responseJson);
         String generatedImageURL = responseJson.getJSONArray("data").getJSONObject(0).getString("url");
 
         return generatedImageURL;    
+    }
+
+    public String ensureMaxLength(String input, int maxLength) {
+        if (input != null && input.length() > maxLength) {
+            return input.substring(0, maxLength);
+        }
+        return input;
     }
 }
 
