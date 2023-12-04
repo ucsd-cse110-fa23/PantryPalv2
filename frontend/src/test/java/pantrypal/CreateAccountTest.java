@@ -15,6 +15,193 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CreateAccountTest {
+    private void resetAccountsFile() {
+        AccountService.changeFilePath("test_account.json");
+        Path path = Paths.get(AccountService.FILE_PATH);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @BeforeEach
+    void setUp() {
+        resetAccountsFile();
+    }
+
+    @AfterEach
+    void tearDown() {
+        resetAccountsFile();
+    }
+
+    // General check #1 for create recipe
+    @Test
+    void testCreateAccountGeneral() {
+        String username = "chef12";
+        String password = "coolchefboi";
+        Account account1 = new Account(username, password);
+
+        try {
+            AccountService.createAccount(account1);
+            assertTrue(AccountService.accountExists(account1.getUsername()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // // Test with no ingredients
+    // @Test
+    // void testCreateRecipesNoIngredients() {
+    //     String username = ;
+    //     RecipeData recipe1 = new RecipeData("Nada", ingredients1, "Nadada");
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    // @Test
+    // void testCreateRecipesEmptyTitle() {
+    //     String[] ingredients1 = {};
+    //     RecipeData recipe1 = new RecipeData("", ingredients1, "Nadada");
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    @Test
+    void testAccountExists() {
+        String username = "chef12";
+        String password = "coolchefboi";
+        Account account1 = new Account(username, password);
+
+        try {
+            AccountService.createAccount(account1);
+            assertTrue(AccountService.accountExists(account1.getUsername()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // @Test
+    // void testRecipeExistsNoIngredients() {
+    //     String[] ingredients1 = {};
+    //     RecipeData recipe1 = new RecipeData("", ingredients1, "Nadada");
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    // @Test
+    // void testRecipeExistsNoInstructions() {
+    //     String[] ingredients1 = {};
+    //     RecipeData recipe1 = new RecipeData("", ingredients1, "");
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         assertTrue(CRUDRecipes.recipeExists(recipe1.title));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    // @Test
+    // void testRecipeExistsForWrongRecipe() {
+    //     String[] ingredients1 = {};
+    //     RecipeData recipe1 = new RecipeData("", ingredients1, "");
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         assertFalse(CRUDRecipes.recipeExists("NOT A RECIPE"));
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    @Test
+    void testGetAccount() {
+        String username = "chef12";
+        String password = "coolchefboi";
+        Account account1 = new Account(username, password);
+
+        try {
+            AccountService.createAccount(account1);
+
+            // Check that title, ingredients, and instructions are the same
+            assertEquals(AccountService.getAccount(username).getUsername(), account1.getUsername());
+            assertEquals(AccountService.getAccount(username).getPassword(), account1.getPassword());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // @Test
+    // void testGetRecipeDifferentRecipes() {
+    //     String title1 = "Chicken and Rice";
+    //     String[] ingredients1 = { "Chicken", "Rice" };
+    //     String instructions1 = "Cook it up";
+    //     RecipeData recipe1 = new RecipeData(title1, ingredients1, instructions1);
+
+    //     String title2 = "Beef and Rice";
+    //     String[] ingredients2 = { "Beef", "Rice" };
+    //     String instructions2 = "Dont cook it up";
+    //     RecipeData recipe2 = new RecipeData(title2, ingredients2, instructions2);
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         // Check that title, ingredients, and instructions are the same
+    //         assertNotEquals(CRUDRecipes.getRecipe(title1).title, recipe2.title);
+    //         assertNotEquals(CRUDRecipes.getRecipe(title1).instructions, recipe2.instructions);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    // @Test
+    // void testReadRecipes() {
+    //     String title1 = "Chicken and Rice";
+    //     String[] ingredients1 = { "Chicken", "Rice" };
+    //     String instructions1 = "Cook it up";
+    //     RecipeData recipe1 = new RecipeData(title1, ingredients1, instructions1);
+
+    //     String title2 = "Beef and Rice";
+    //     String[] ingredients2 = { "Beef", "Rice" };
+    //     String instructions2 = "Dont cook it up";
+    //     RecipeData recipe2 = new RecipeData(title2, ingredients2, instructions2);
+
+    //     try {
+    //         CRUDRecipes.createRecipe(recipe1);
+    //         CRUDRecipes.createRecipe(recipe2);
+
+    //         ArrayList<RecipeData> expectedRecipes = new ArrayList<>();
+    //         expectedRecipes.add(recipe1);
+    //         expectedRecipes.add(recipe2);
+
+    //         ArrayList<RecipeData> resultRecipes = CRUDRecipes.readRecipes();
+
+    //         assertEquals(expectedRecipes.get(0).title, recipe1.title);
+    //         assertArrayEquals(expectedRecipes.get(0).ingredients, recipe1.ingredients);
+    //         assertEquals(expectedRecipes.get(0).instructions, recipe1.instructions);
+
+    //         assertEquals(expectedRecipes.get(1).title, recipe2.title);
+    //         assertArrayEquals(expectedRecipes.get(1).ingredients, recipe2.ingredients);
+    //         assertEquals(expectedRecipes.get(1).instructions, recipe2.instructions);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     // General check #1 for username being passed through
     @Test
