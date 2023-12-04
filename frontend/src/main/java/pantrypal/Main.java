@@ -556,6 +556,10 @@ public class Main extends Application {
         MiddlewareModel mm = new MiddlewareModel();
         List<RecipeData> recipes = mm.getRecipes();
 
+        if (recipes == null) {
+            recipes = new ArrayList<RecipeData>();
+        }
+
         for (RecipeData recipe : recipes) {
             CRUDRecipes.createRecipe(recipe);
         }
