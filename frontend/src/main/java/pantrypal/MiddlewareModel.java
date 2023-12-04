@@ -163,4 +163,37 @@ public class MiddlewareModel {
         }
     }
 
+    public String regenerateRecipe(String[] ingredients, String mealType, String  originalRecipe) {
+        String path = "/regenerate-recipe";
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost httpPost = new HttpPost(API_ENDPOINT + path);
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.addTextBody("mealType", mealType, ContentType.TEXT_PLAIN);
+            builder.addTextBody("originalRecipe", originalRecipe, ContentType.TEXT_PLAIN);
+
+            String ingredientList = String.join(",", ingredients);
+            builder.addTextBody("ingredients", ingredientList, ContentType.TEXT_PLAIN);
+
+            HttpEntity multipart = builder.build();
+            httpPost.setEntity(multipart);
+
+            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    String responseBody = EntityUtils.toString(response.getEntity());
+                    return responseBody;
+                    // return "Upload successful. Server response: " + responseBody;
+                } else {
+                    return null;
+                    // return {"Upload failed. Server returned status code: " + statusCode};
+                }
+            }
+        } catch (IOException e) {
+            return null;
+            // return "Error occurred during upload: " + e.getMessage();
+        }
+    }
+
 }

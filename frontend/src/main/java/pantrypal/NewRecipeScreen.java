@@ -29,6 +29,7 @@ public class NewRecipeScreen extends BorderPane {
     private Button editButton;
     private Button saveButton;
     private Button cancelButton;
+    private Button regenerateButton;
     private String response;
     private RecipeData recipe;
     private Stage primaryStage;
@@ -63,6 +64,7 @@ public class NewRecipeScreen extends BorderPane {
         editButton = newfooter.getEditButton();
         saveButton = newfooter.getSaveButton();
         cancelButton = newfooter.getCancelButton();
+        regenerateButton = newfooter.getRegenerateButton();
 
         this.recipe = recipe;
         this.primaryStage = primaryStage;
@@ -123,6 +125,21 @@ public class NewRecipeScreen extends BorderPane {
                 isEditing = false;
             }
         });
+
+        regenerateButton.setOnAction(e -> {
+            if (recipe != null) {
+                try {
+                    MiddlewareModel mm = new MiddlewareModel();
+                    recipe.updateRecipeData(mm.regenerateRecipe(recipe.ingredients, recipe.type, recipe.toString()));
+        
+                    Scene newscene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
+                    primaryStage.setScene(newscene);
+                    primaryStage.show(); 
+                } catch (IOException ex) {
+                    ex.printStackTrace(); 
+                }
+            }
+        });
     }
 }
 
@@ -174,6 +191,7 @@ class NewRecipeFooter extends HBox {
     private Button editButton;
     private Button saveButton;
     private Button cancelButton;
+    private Button regenerateButton;
 
     NewRecipeFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
@@ -187,7 +205,9 @@ class NewRecipeFooter extends HBox {
         saveButton.setStyle(defaultButtonStyle);
         cancelButton = new Button("Back"); // text displayed on clear recipes button
         cancelButton.setStyle(defaultButtonStyle);
-        this.getChildren().addAll(editButton, saveButton, cancelButton); // adding buttons to footer
+        regenerateButton = new Button("Regenerate Recipe"); 
+        regenerateButton.setStyle(defaultButtonStyle);
+        this.getChildren().addAll(editButton, saveButton, cancelButton, regenerateButton); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -202,6 +222,10 @@ class NewRecipeFooter extends HBox {
 
     public Button getCancelButton() {
         return cancelButton;
+    }
+
+    public Button getRegenerateButton() {
+        return regenerateButton;
     }
 
 }

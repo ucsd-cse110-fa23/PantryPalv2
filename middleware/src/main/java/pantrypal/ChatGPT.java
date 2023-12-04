@@ -162,4 +162,44 @@ public class ChatGPT implements IChatGPT {
         return generatedText;
     }
 
+    public String regenerateRecipe(String[] ingredients, String mealType, String originalContext) {
+        //String[] ingredients = extractIngredients(transcription);
+        String recipe = recrateRecipe(ingredients, mealType, originalContext);
+
+        String toRet = recipe + "\n";
+        for (int i = 0; i < ingredients.length; i++) {
+            toRet += ingredients[i];
+            if(i-1 < ingredients.length) {
+                toRet += ";";
+            }
+        }
+        return toRet;
+    }
+
+    public String recrateRecipe(String[] ingredients, String mealType, String originalContext) {
+        if (ingredients == null)
+            return null;
+
+        String ingredList = String.join(", ", ingredients);
+
+        String recerateRecipePrompt = "Given the following ingredients:\n" +
+                ingredList + "\n" +
+                "Generate me a " + mealType + " recipe with a different recipe:\n" +
+                originalContext + "\n" +
+                "It is utterly crucial that the recipe is a " + mealType + " recipe!\n" +
+                "Create an in-depth step-by-step guide detailing how to make the recipe. Each step\n" +
+                "should be easy to follow because it has so much detail.\n" +
+                "Display it in the following format:\n" +
+                "\n" +
+                "Recipe:\n" +
+                "Step 1:\n" +
+                "Step 2:\n" +
+                "\n" +
+                "Fill the following\n" +
+                "Recipe:";
+
+        String generatedText = callModel(recerateRecipePrompt);
+
+        return generatedText;
+    }
 }
