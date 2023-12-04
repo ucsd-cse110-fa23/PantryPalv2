@@ -31,18 +31,17 @@ public class RecipeApiController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createRecipe(@RequestParam("recipes") List<RecipeData> recipes, @RequestParam("username") String username) {
-        recipeService.deleteRecipesFile();
+    public ResponseEntity<String> createRecipe(@RequestBody RecipesCreationRequest request) {
         try {
-            for (RecipeData recipe : recipes) {
-                recipeService.createRecipe(recipe, username);
-            }
+            List<RecipeData> recipes = request.getRecipes();
+            String username = request.getUsername();
+
+            recipeService.writeRecipes(recipes, username);
             return ResponseEntity.ok("Successful recipes creation");
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error with recipe creation");
         }
-
     }
 
     // Keeping below if we want to change logic of how recipes are saved:

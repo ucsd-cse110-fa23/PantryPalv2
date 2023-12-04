@@ -16,11 +16,13 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 // import org.apache.http.client.methods.CloseableHttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -32,6 +34,8 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -75,18 +79,17 @@ public class MiddlewareModel implements IMiddlewareModel {
         try {
             HttpClient httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(API_ENDPOINT + "/recipes");
+
+            // Convert the request object to JSON
+            RecipesCreationRequest request = new RecipesCreationRequest();
+            request.setRecipes(recipes);
+            request.setUsername(acc.getUsername());
+
+            // Set the JSON as the request body
             Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(request);
 
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            String jsonRequest = gson.toJson(recipes);
-            builder.addTextBody("recipes", jsonRequest, ContentType.APPLICATION_JSON);
-            builder.addTextBody("username", acc.getUsername(), ContentType.TEXT_PLAIN);
-
-            HttpEntity multipart = builder.build();
-            httpPost.setEntity(multipart);
-
-            // Set the JSON request body
-            StringEntity entity = new StringEntity(jsonRequest);
+            StringEntity entity = new StringEntity(json);
             entity.setContentType("application/json");
             httpPost.setEntity(entity);
 

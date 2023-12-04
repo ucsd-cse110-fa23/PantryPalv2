@@ -68,11 +68,12 @@ public class RecipeService {
     }
 
     // Writes the updated recipes to the JSON file
-    private void writeRecipes(List<RecipeData> recipes, String username) throws IOException {
+    public void writeRecipes(List<RecipeData> recipes, String username) throws IOException {
         if (testing) {
             writeRecipesOld(recipes);
             return;
         }
+        System.out.println("WRITING RECIPESSSS \n\n\n\n\n");
         String uri = MongoKey.getAPIKey();
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("Pantrypal");
@@ -203,31 +204,6 @@ public class RecipeService {
             }
         } else {
             System.err.println("File not found.");
-        }
-    }
-
-    /** main method for debugging */
-    public static void main(String[] args) {
-        String username = "my-dummy";
-        RecipeService r = new RecipeService();
-        String[] i = { "cream", "sugar", "starch", "vanilla" };
-        RecipeData recipe = new RecipeData("Pudding", i,
-                "cook all ingredients over a low flame after combining for 10-15 minutes.");
-        try {
-            r.createRecipe(recipe, username);
-            ArrayList<RecipeData> recipes = r.readRecipes(username);
-            r.updateRecipe(new RecipeData("Pudding", i,
-                    "cook all ingredients over a low flame after combining for 10-15 minutes. Then, let cool."), username);
-            ArrayList<RecipeData> recipes2 = r.readRecipes(username);
-            r.deleteRecipe("Pudding", username);
-            ArrayList<RecipeData> recipes3 = r.readRecipes(username);
-
-            System.out.println(recipes);
-            System.out.println(recipes2);
-            System.out.println(recipes3);
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
