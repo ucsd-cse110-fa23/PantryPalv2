@@ -35,7 +35,7 @@ import org.apache.http.HttpStatus;
 import java.io.File;
 import java.io.IOException;
 
-public class MiddlewareModel {
+public class MiddlewareModel implements IMiddlewareModel {
     private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this
                                                                             // instead
 
@@ -230,5 +230,4 @@ public class MiddlewareModel {
         }
         return false;
     }
-
 }
