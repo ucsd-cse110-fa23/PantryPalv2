@@ -1,15 +1,5 @@
 package pantrypal;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 public class AccountService {
 
     private static Account acc;
@@ -48,6 +38,7 @@ public class AccountService {
             boolean login = middleware.postAccountAuthentication(account);
             if (login) {
                 AccountService.setAccount(account);
+                CRUDRecipes.loadRecipesFromServer(middleware, account);
                 return true;
             } 
             return false;

@@ -4,14 +4,16 @@ import java.util.ArrayList;
 
 public class MockMiddlewareModel implements IMiddlewareModel {
     private ArrayList<Account> accounts = new ArrayList<>();
+    private List<RecipeData> recipes = new ArrayList<>();
 
     // TODO: implement or remove from interface
-    public List<RecipeData> getRecipes() {
-        return null;
+    public List<RecipeData> getRecipes(Account acc) {
+        return recipes;
     }
 
     // TODO: implement or remove from interface
-    public void postRecipes(List<RecipeData> recipes) {
+    public void postRecipes(List<RecipeData> rs, Account acc) {
+        recipes = rs;
     }
 
     // TODO: implement or remove from interface
