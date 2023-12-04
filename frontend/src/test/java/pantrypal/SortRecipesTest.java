@@ -35,8 +35,8 @@ public class SortRecipesTest {
         // Given a list of recipes
         ArrayList<RecipeData> recipes = new ArrayList<RecipeData>();
         String[] ingredients = { "Chicken" };
-        recipes.add(new RecipeData("Fried Chicken", ingredients, "Deep fry it!"));
         recipes.add(new RecipeData("Chicken Soup", ingredients, "Boil it!"));
+        recipes.add(new RecipeData("Fried Chicken", ingredients, "Deep fry it!"));
         recipes.add(new RecipeData("Chicken Salad", ingredients, "Mix it!"));
 
         // When the user clicks on the “sort alphabetically” button
