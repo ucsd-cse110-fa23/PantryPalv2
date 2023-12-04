@@ -145,21 +145,21 @@ class RecipeList extends VBox {
      * Add the recipes to the children of recipelist component
      */
     public void loadRecipes(ArrayList<RecipeData> recipes) {
-        Collections.reverse(recipes);
         for (RecipeData recipeData : recipes) {
             // create Recipe object for each recipe data
             Recipe recipe = new Recipe(primaryStage, recipeData);
             recipe.setRecipeName(recipeData.title);
             this.getChildren().add(recipe);
         }
-        Collections.reverse(recipes);
     }
 
-    /** reorder recipes based on the following order
+    /**
+     * reorder recipes based on the following order
+     * 
      * @param recipes the recipe order to replace with
-      */
+     */
     public void redoRecipes(ArrayList<RecipeData> recipes) {
-        // drop current recipes 
+        // drop current recipes
         this.getChildren().clear();
         // load new permutation
         this.loadRecipes(recipes);
@@ -438,8 +438,7 @@ class Header extends HBox {
                 "Sort By",
                 "Alphabetically",
                 "Newest First",
-                "Oldest First"
-        );
+                "Oldest First");
         sortMenu = new ComboBox<String>(sortOptions);
         sortMenu.setValue("Sort By");
         backButton.setAlignment(Pos.CENTER_RIGHT);
@@ -448,7 +447,6 @@ class Header extends HBox {
         sortMenu.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
         sortMenu.setVisible(false);
         HBox.setHgrow(sortMenu, Priority.NEVER); // Prevents the back button from growing
-
 
         // Title Text
         titleText = new Text("PantryPal");
@@ -460,19 +458,19 @@ class Header extends HBox {
         HBox.setHgrow(titleContainer, Priority.ALWAYS); // Allows the title container to grow and center the title
 
         // Add components to the HBox
-        this.getChildren().addAll(backButton, titleContainer,sortMenu);
+        this.getChildren().addAll(backButton, titleContainer, sortMenu);
         this.backButton.setVisible(false);
     }
 
-    /** 
+    /**
      * getter for the sort dropdown
+     * 
      * @return the sortMenu object
      */
     public ComboBox<String> getSortMenu() {
         return sortMenu;
     }
 
-    
 }
 
 class AppFrame extends BorderPane {
@@ -557,8 +555,7 @@ class AppFrame extends BorderPane {
             sortMenu.setVisible(true);
         });
 
-
-        // back to main page 
+        // back to main page
         header.backButton.setOnAction(e -> {
             scrollPane.setVisible(false);
             createMealType.setVisible(true);
@@ -574,29 +571,27 @@ class AppFrame extends BorderPane {
     }
 
     /**
-     * Update recipe list order 
+     * Update recipe list order
+     * 
      * @param value the way the list should be ordered
      */
     private void updateList(String value) {
-        if(value.equals("Alphabetically")) {
+        if (value.equals("Alphabetically")) {
             // sort alphabetical
             this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
             this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, false));
-        }
-        else if (value.equals("Newest First")) {
-            // sort recipes reverse chronological 
+        } else if (value.equals("Newest First")) {
+            // sort recipes reverse chronological
             this.recipeList.setStyle("-fx-background-color: #23B5D3;");
             this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, true));
-        }
-        else if (value.equals("Oldest First")){
+        } else if (value.equals("Oldest First")) {
             // sort recipes chronological
             this.recipeList.setStyle("-fx-background-color: #75ABBC;");
             this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, false));
-        }
-        else {
-            // default 
+        } else {
+            // default
             this.recipeList.setStyle("-fx-background-color: #F0F8FF;");
-            this.recipeList.redoRecipes(this.recipeList.recipes);
+            this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, false));
         }
     }
 
@@ -639,6 +634,10 @@ public class Main extends Application {
 
         MiddlewareModel mm = new MiddlewareModel();
         List<RecipeData> recipes = mm.getRecipes();
+
+        if (recipes == null) {
+            recipes = new ArrayList<RecipeData>();
+        }
 
         for (RecipeData recipe : recipes) {
             CRUDRecipes.createRecipe(recipe);
