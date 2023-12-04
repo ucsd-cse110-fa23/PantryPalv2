@@ -48,7 +48,7 @@ public class RecipeService {
     public String FILE_PATH = "src/test/recipes.json"; // change this in the test file
     private final Gson gson = new Gson();
 
-    private String username = "Ben";
+    private String username = "my-dummy";
     boolean testing = false;
 
     public RecipeService() {
@@ -81,8 +81,6 @@ public class RecipeService {
             for (RecipeData recipe : recipes) {
                 Document recipeDoc = new Document("_id", new ObjectId());
                 recipeDoc.append("title", recipe.title)
-                        .append("type", recipe.type)
-                        .append("createdDate", "TBD")
                         .append("ingredients", Arrays.asList(recipe.ingredients))
                         .append("instructions", recipe.instructions)
                         .append("createdTime", recipe.createdTime)
