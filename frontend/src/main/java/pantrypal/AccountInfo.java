@@ -12,6 +12,8 @@ class AccountInfo extends HBox {
     private TextField usernameField;
     private TextField passwordField;
 
+    private TextField message;
+
     AccountInfo(String usernameString, String passwordString) {
 
         this.setPrefSize(500, 120);
@@ -35,6 +37,12 @@ class AccountInfo extends HBox {
         this.passwordField.setPromptText("Password");
         fields.getChildren().add(passwordField);
 
+        message = new TextField();
+        // message.setPrefSize(400, 20);
+        message.setStyle("-fx-background-color: #d9faf3; -fx-border-width:0;");
+        message.setEditable(false);
+        fields.getChildren().add(message);
+
         this.getChildren().add(fields);
 
         this.setAlignment(Pos.CENTER);
@@ -46,6 +54,10 @@ class AccountInfo extends HBox {
 
     public String getPasswordField() {
         return this.passwordField.getText();
+    }
+
+    public void setMessage(String message) {
+        this.message.setText(message);
     }
 
     AccountInfo() {

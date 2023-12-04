@@ -62,61 +62,64 @@ public class AccountScreen extends BorderPane {
 
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
-            
+
             // create account document in database
             // display error message if username already used(?)
 
             // create a new account object
-            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
-            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
+            // Account account = new Account(accountInfo.getUsernameField(),
+            // accountInfo.getPasswordField());
+            // Account account = new Account(accountInfo.getUsernameField(),
+            // accountInfo.getPasswordField());
 
             // try {
-            //     System.out.println(AccountService.accountExists(account.getUsername()));
+            // System.out.println(AccountService.accountExists(account.getUsername()));
             // } catch (IOException e1) {
-            //     e1.printStackTrace();
+            // e1.printStackTrace();
             // }
             try {
                 Account account = new Account(enteredUsername, enteredPassword);
-                    MiddlewareModel mm = new MiddlewareModel();
-                    boolean created = mm.postAccountCreation(account);
-                    if (created) {
-                        System.out.println("User signed up successfully!");
-                        try {
-                            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    } else {
-                        System.out.println("Account with that username already exists. Choose a different username");
+                MiddlewareModel mm = new MiddlewareModel();
+                boolean created = mm.postAccountCreation(account);
+                if (created) {
+                    System.out.println("User signed up successfully!");
+                    accountInfo.setMessage("User signed up successfully!");
+                    try {
+                        primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
+                } else {
+                    System.out.println("Account with that username already exists. Choose a different username");
+                    accountInfo.setMessage("Account with that username already exists. Choose a different username");
                 }
-            catch (Exception e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
 
             // redirect to next screen once authenticated
             // temp transition:
             // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
             // } catch (IOException e1) {
-            //     e1.printStackTrace();
+            // e1.printStackTrace();
             // }
 
             // redirect to next screen once authenticated
             // temp transition:
             // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
             // } catch (IOException e1) {
-            //     e1.printStackTrace();
+            // e1.printStackTrace();
             // }
         });
 
         loginButton.setOnAction(e2 -> {
             System.out.println("username: " + accountInfo.getUsernameField());
             System.out.println("password: " + accountInfo.getPasswordField());
-            
+
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
             try {
@@ -125,6 +128,7 @@ public class AccountScreen extends BorderPane {
                 boolean login = mm.postAccountAuthentication(account);
                 if (login) {
                     System.out.println("user logged in successfully!");
+                    accountInfo.setMessage("user logged in successfully!");
                     try {
                         primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
                     } catch (IOException e1) {
@@ -132,7 +136,8 @@ public class AccountScreen extends BorderPane {
                     }
                 } else {
                     System.out.println("Unsuccessful login attempt");
-                }  
+                    accountInfo.setMessage("Unsuccessful login attempt");
+                }
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -143,15 +148,15 @@ public class AccountScreen extends BorderPane {
             // redirect to next screen once authenticated
             // temp transition:
             // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
             // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
 
             // } catch (IOException e1) {
-            //     e1.printStackTrace();
+            // e1.printStackTrace();
             // }
             // } catch (IOException e1) {
-            //     e1.printStackTrace();
+            // e1.printStackTrace();
             // }
         });
     }
