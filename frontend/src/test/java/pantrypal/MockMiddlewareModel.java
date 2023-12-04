@@ -1,14 +1,9 @@
 package pantrypal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MockMiddlewareModel implements IMiddlewareModel {
-    private ArrayList<Account> accounts;
-    // private ArrayList<Account> accounts = new ArrayList<>() {{
-    //     add(new Account("test1", "pass1"));
-    //     add(new Account("test2", "pass2"));
-    //     add(new Account("test3", "pass3"));
-    // }};
+    private ArrayList<Account> accounts = new ArrayList<>();
 
     // TODO: implement or remove from interface
     public List<RecipeData> getRecipes() {
@@ -40,7 +35,7 @@ public class MockMiddlewareModel implements IMiddlewareModel {
 
     public Boolean postAccountCreation(Account acc) {
         for(Account a : accounts) {
-            if(a.getUsername() == acc.getUsername()) {
+            if(a.getUsername().equals(acc.getUsername())) {
                 return false;
             }
         }
