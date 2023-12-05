@@ -1,24 +1,12 @@
 package pantrypal;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
 
 public class AccountScreen extends BorderPane {
 
@@ -36,7 +24,6 @@ public class AccountScreen extends BorderPane {
         header = new AccountScreenHeader("Welcome to Pantry Pal!");
 
         // Initialise the body Object
-        // body = new AccountScreenBody();
         accountInfo = new AccountInfo();
 
         // Initialise the Footer Object
@@ -51,110 +38,52 @@ public class AccountScreen extends BorderPane {
         loginButton = footer.getloginButton();
 
         this.primaryStage = primaryStage;
-
+        
         addListeners();
     }
 
     public void addListeners() {
         signupButton.setOnAction(e2 -> {
-            System.out.println("username: " + accountInfo.getUsernameField());
-            System.out.println("password: " + accountInfo.getPasswordField());
-
+            // Get account from text fields
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
-            
-            // create account document in database
-            // display error message if username already used(?)
 
-            // create a new account object
-            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
-            // Account account = new Account(accountInfo.getUsernameField(), accountInfo.getPasswordField());
-
-            // try {
-            //     System.out.println(AccountService.accountExists(account.getUsername()));
-            // } catch (IOException e1) {
-            //     e1.printStackTrace();
-            // }
-            try {
-                Account account = new Account(enteredUsername, enteredPassword);
-                    MiddlewareModel mm = new MiddlewareModel();
-                    boolean created = mm.postAccountCreation(account);
-                    if (created) {
-                        System.out.println("User signed up successfully!");
-                        try {
-                            primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    } else {
-                        System.out.println("Account with that username already exists. Choose a different username");
-                    }
+            Boolean signup = AccountService.accountSignup(enteredUsername, enteredPassword, new MiddlewareModel());
+            if(signup) {
+                try {
+                    primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-            catch (Exception e1) {
-                e1.printStackTrace();
+            } else if(signup == false) {
+                System.out.println("Account with that username already exists. Choose a different username");
+            } else { //if signup == null
+                System.out.println("Error with the server");
             }
-
-            // redirect to next screen once authenticated
-            // temp transition:
-            // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-            // } catch (IOException e1) {
-            //     e1.printStackTrace();
-            // }
-
-            // redirect to next screen once authenticated
-            // temp transition:
-            // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-            // } catch (IOException e1) {
-            //     e1.printStackTrace();
-            // }
         });
 
         loginButton.setOnAction(e2 -> {
-            System.out.println("username: " + accountInfo.getUsernameField());
-            System.out.println("password: " + accountInfo.getPasswordField());
-            
+            // Get account from text fields
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
-            try {
-                Account account = new Account(enteredUsername, enteredPassword);
-                MiddlewareModel mm = new MiddlewareModel();
-                boolean login = mm.postAccountAuthentication(account);
-                if (login) {
-                    System.out.println("user logged in successfully!");
-                    try {
-                        primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                } else {
-                    System.out.println("Unsuccessful login attempt");
-                }  
-            } catch (Exception e1) {
-                e1.printStackTrace();
+
+            Boolean login = AccountService.accountLogin(enteredUsername, enteredPassword, new MiddlewareModel());
+
+            if(login) {
+                try {
+                    primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            } else if(login == false) {
+                System.out.println("Unsuccessful login attempt");
+            } else { //if signup == null
+                System.out.println("Error with the server");
             }
-
-            // check if matching document exists in database
-            // display error message if not
-
-            // redirect to next screen once authenticated
-            // temp transition:
-            // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-            // try {
-            //     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-            // } catch (IOException e1) {
-            //     e1.printStackTrace();
-            // }
-            // } catch (IOException e1) {
-            //     e1.printStackTrace();
-            // }
         });
     }
+    
+    
 }
 
 class AccountScreenHeader extends HBox {
@@ -175,42 +104,6 @@ class AccountScreenHeader extends HBox {
         this.setSpacing(50);
     }
 }
-
-// class AccountScreenBody extends HBox {
-
-// private TextField username;
-// private TextField password;
-
-// private VBox fields;
-
-// AccountScreenBody() {
-// this.setPrefSize(500, 120); // Size of the header
-// this.setStyle("-fx-background-color: #d5f2ec;");
-
-// fields = new VBox();
-// fields.setSpacing(5);
-// fields.setPrefSize(200, 60);
-
-// username = new TextField();
-// username.setPrefSize(150, 20);
-// username.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
-// username.setPadding(new Insets(5, 0, 5, 0));
-// this.username.setPromptText("Username");
-// fields.getChildren().add(username);
-
-// password = new TextField();
-// password.setPrefSize(150, 20);
-// password.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:0;");
-// password.setPadding(new Insets(5, 0, 5, 0));
-// this.password.setPromptText("Password");
-// fields.getChildren().add(password);
-
-// this.getChildren().add(fields);
-
-// this.setAlignment(Pos.CENTER); // Align the text to the Center
-// }
-
-// }
 
 class AccountScreenFooter extends HBox {
     private Button signupButton;

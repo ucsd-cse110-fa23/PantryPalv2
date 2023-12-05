@@ -788,7 +788,7 @@ public class Main extends Application {
 
         List<RecipeData> recipes = CRUDRecipes.readRecipes();
         MiddlewareModel mm = new MiddlewareModel();
-        mm.postRecipes(recipes);
+        mm.postRecipes(recipes, AccountService.getAccount());
 
         CRUDRecipes.deleteRecipesFile();
     }

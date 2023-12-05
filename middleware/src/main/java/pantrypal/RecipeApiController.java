@@ -19,10 +19,10 @@ public class RecipeApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeData>> getAllRecipes() {
-        System.out.println("Getting all recipes");
+    public ResponseEntity<List<RecipeData>> getAllRecipes(@RequestParam(value = "username", required = true) String username) {
+        System.out.println("Getting all recipes for user: " + username);
         try {
-            List<RecipeData> recipes = recipeService.readRecipes();
+            List<RecipeData> recipes = recipeService.readRecipes(username);
             return ResponseEntity.ok(recipes);
         } catch (IOException e) {
             e.printStackTrace();
@@ -31,20 +31,20 @@ public class RecipeApiController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createRecipe(@RequestBody List<RecipeData> recipes) {
-        // recipes contains all the recipes that should exist in the file 
-        recipeService.deleteRecipesFile();
+    public ResponseEntity<String> createRecipe(@RequestBody RecipesCreationRequest request) {
         try {
-            for (RecipeData recipe : recipes) {
-                recipeService.createRecipe(recipe);
-            }
+            List<RecipeData> recipes = request.getRecipes();
+            String username = request.getUsername();
+
+            recipeService.writeRecipes(recipes, username);
             return ResponseEntity.ok("Successful recipes creation");
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error with recipe creation");
         }
-
     }
+
+    // Keeping below if we want to change logic of how recipes are saved:
 
     // @PostMapping
     // public ResponseEntity<String> createRecipe(@RequestBody RecipeData recipe) {
@@ -59,36 +59,36 @@ public class RecipeApiController {
 
     // }
 
-    @GetMapping("/{title}")
-    public ResponseEntity<RecipeData> getRecipeByTitle(@PathVariable String title) {
-        RecipeData recipe = null;
-        try {
-            recipe = recipeService.getRecipeByTitle(title);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return recipe != null ? ResponseEntity.ok(recipe) : ResponseEntity.notFound().build();
-    }
+    // @GetMapping("/{title}")
+    // public ResponseEntity<RecipeData> getRecipeByTitle(@PathVariable String title) {
+    //     RecipeData recipe = null;
+    //     try {
+    //         recipe = recipeService.getRecipeByTitle(title);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return recipe != null ? ResponseEntity.ok(recipe) : ResponseEntity.notFound().build();
+    // }
 
-    @PutMapping
-    public ResponseEntity<String> updateRecipe(@RequestBody RecipeData recipeDetails) {
-        try {
-            recipeService.updateRecipe(recipeDetails);
-            return ResponseEntity.ok("Recipe updated!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Error with recipe update");
-        }
-    }
+    // @PutMapping
+    // public ResponseEntity<String> updateRecipe(@RequestBody RecipeData recipeDetails) {
+    //     try {
+    //         recipeService.updateRecipe(recipeDetails);
+    //         return ResponseEntity.ok("Recipe updated!");
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.internalServerError().body("Error with recipe update");
+    //     }
+    // }
 
-    @DeleteMapping("/{title}")
-    public ResponseEntity<?> deleteRecipe(@PathVariable String title) {
-        try {
-            recipeService.deleteRecipe(title);
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
-    }
+    // @DeleteMapping("/{title}")
+    // public ResponseEntity<?> deleteRecipe(@PathVariable String title) {
+    //     try {
+    //         recipeService.deleteRecipe(title);
+    //         return ResponseEntity.ok().build();
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
 }

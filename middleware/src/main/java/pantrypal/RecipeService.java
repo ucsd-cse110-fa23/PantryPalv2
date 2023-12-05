@@ -48,18 +48,18 @@ public class RecipeService {
     public String FILE_PATH = "src/test/recipes.json"; // change this in the test file
     private final Gson gson = new Gson();
 
-    private String username = "Ben";
+    // private String username = "my-dummy";
     boolean testing = false;
 
     public RecipeService() {
     }
 
     public RecipeService(String username) {
-        this.username = username;
+        // this.username = username;
     }
 
     public RecipeService(String username, boolean testing) {
-        this.username = username;
+        // this.username = username;
         this.testing = testing;
     }
 
@@ -68,11 +68,12 @@ public class RecipeService {
     }
 
     // Writes the updated recipes to the JSON file
-    private void writeRecipes(List<RecipeData> recipes) throws IOException {
+    public void writeRecipes(List<RecipeData> recipes, String username) throws IOException {
         if (testing) {
             writeRecipesOld(recipes);
             return;
         }
+        System.out.println("WRITING RECIPESSSS \n\n\n\n\n");
         String uri = MongoKey.getAPIKey();
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("Pantrypal");
@@ -81,8 +82,6 @@ public class RecipeService {
             for (RecipeData recipe : recipes) {
                 Document recipeDoc = new Document("_id", new ObjectId());
                 recipeDoc.append("title", recipe.title)
-                        .append("type", recipe.type)
-                        .append("createdDate", "TBD")
                         .append("ingredients", Arrays.asList(recipe.ingredients))
                         .append("instructions", recipe.instructions)
                         .append("createdTime", recipe.createdTime)
@@ -97,7 +96,7 @@ public class RecipeService {
      * 
      * @return the current list of recipes in the database
      */
-    public ArrayList<RecipeData> readRecipes() throws IOException {
+    public ArrayList<RecipeData> readRecipes(String username) throws IOException {
         if (testing) {
             return readRecipesOld();
         }
@@ -109,7 +108,6 @@ public class RecipeService {
             // traverse the list of documents in the collection
             ArrayList<Document> recipeList = collection.find().into(new ArrayList<>()); // find all docs
             for (Document recipe : recipeList) {
-                System.out.println(recipe.toJson());
                 String title = recipe.getString("title");
                 List<String> listIng = (List<String>) recipe.get("ingredients");
                 String[] ingredients = new String[listIng.size()];
@@ -129,14 +127,15 @@ public class RecipeService {
     // ----------------------------------------------------------------------------------------------
 
 
-    public void createRecipe(RecipeData newRecipe) throws IOException {
-        List<RecipeData> recipes = readRecipes();
+    // Adds a new recipe
+    public void createRecipe(RecipeData newRecipe, String username) throws IOException {
+        List<RecipeData> recipes = readRecipes(username);
         recipes.add(newRecipe);
-        writeRecipes(recipes);
+        writeRecipes(recipes, username);
     }
 
-    public boolean recipeExists(String title) throws IOException {
-        List<RecipeData> recipes = readRecipes();
+    public boolean recipeExists(String title, String username) throws IOException {
+        List<RecipeData> recipes = readRecipes(username);
         return recipes.stream()
                 .anyMatch(recipe -> recipe.title.equals(title));
     }
@@ -165,8 +164,8 @@ public class RecipeService {
     }
 
     // Retrieves a specific recipe based on its title
-    public RecipeData getRecipeByTitle(String title) throws IOException {
-        List<RecipeData> recipes = readRecipes();
+    public RecipeData getRecipeByTitle(String title, String username) throws IOException {
+        List<RecipeData> recipes = readRecipes(username);
         return recipes.stream()
                 .filter(recipe -> recipe.title.equals(title))
                 .findFirst()
@@ -174,22 +173,22 @@ public class RecipeService {
     }
 
     // Updates an existing recipe
-    public void updateRecipe(RecipeData updatedRecipe) throws IOException {
-        List<RecipeData> recipes = readRecipes();
+    public void updateRecipe(RecipeData updatedRecipe, String username) throws IOException {
+        List<RecipeData> recipes = readRecipes(username);
         for (int i = 0; i < recipes.size(); i++) {
             if (recipes.get(i).title.equals(updatedRecipe.title)) {
                 recipes.set(i, updatedRecipe);
                 break;
             }
         }
-        writeRecipes(recipes);
+        writeRecipes(recipes, username);
     }
 
     // Deletes a recipe
-    public void deleteRecipe(String title) throws IOException {
-        List<RecipeData> recipes = readRecipes();
+    public void deleteRecipe(String title, String username) throws IOException {
+        List<RecipeData> recipes = readRecipes(username);
         recipes.removeIf(recipe -> recipe.title.equals(title));
-        writeRecipes(recipes);
+        writeRecipes(recipes, username);
     }
 
     // Delete the file that contains all recipes locally
@@ -205,30 +204,6 @@ public class RecipeService {
             }
         } else {
             System.err.println("File not found.");
-        }
-    }
-
-    /** main method for debugging */
-    public static void main(String[] args) {
-        RecipeService r = new RecipeService();
-        String[] i = { "cream", "sugar", "starch", "vanilla" };
-        RecipeData recipe = new RecipeData("Pudding", i,
-                "cook all ingredients over a low flame after combining for 10-15 minutes.");
-        try {
-            r.createRecipe(recipe);
-            ArrayList<RecipeData> recipes = r.readRecipes();
-            r.updateRecipe(new RecipeData("Pudding", i,
-                    "cook all ingredients over a low flame after combining for 10-15 minutes. Then, let cool."));
-            ArrayList<RecipeData> recipes2 = r.readRecipes();
-            r.deleteRecipe("Pudding");
-            ArrayList<RecipeData> recipes3 = r.readRecipes();
-
-            System.out.println(recipes);
-            System.out.println(recipes2);
-            System.out.println(recipes3);
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
