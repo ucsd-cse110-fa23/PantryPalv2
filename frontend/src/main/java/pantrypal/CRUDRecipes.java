@@ -21,11 +21,27 @@ import com.google.gson.reflect.TypeToken;
 
 public class CRUDRecipes {
 
-    public static String FILE_PATH = "recipes.json"; // change this in the test file
+    public static String FILE_PATH = "src/resources/recipes.json"; 
     private static final Gson gson = new Gson();
 
     public static void changeFilePath(String path) {
         FILE_PATH = path;
+    }
+
+    public static void loadRecipesFromServer(IMiddlewareModel middleware, Account acc) {
+        List<RecipeData> recipes = middleware.getRecipes(acc);
+
+        if (recipes == null) {
+            recipes = new ArrayList<RecipeData>();
+        }
+
+        for (RecipeData recipe : recipes) {
+            try {
+                CRUDRecipes.createRecipe(recipe);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // Reads the existing recipes from the JSON file

@@ -16,11 +16,13 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 // import org.apache.http.client.methods.CloseableHttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -32,19 +34,22 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+
 import java.io.File;
 import java.io.IOException;
 
-public class MiddlewareModel {
+public class MiddlewareModel implements IMiddlewareModel {
     private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this
                                                                             // instead
 
     // Gets list of recipes from middleware server
-    public List<RecipeData> getRecipes() {
+    public List<RecipeData> getRecipes(Account acc) {
         List<RecipeData> recipes = null;
         try {
             HttpClient httpClient = HttpClients.createDefault();
-            HttpGet httpGet = new HttpGet(API_ENDPOINT + "/recipes");
+            String queryParams = "?username=" + acc.getUsername();
+            HttpGet httpGet = new HttpGet(API_ENDPOINT + "/recipes" + queryParams);
 
             // Execute the HttpGet request and get the response
             HttpResponse response = httpClient.execute(httpGet);
@@ -70,19 +75,21 @@ public class MiddlewareModel {
     }
 
     // Posts all recipes to server
-    public void postRecipes(List<RecipeData> recipes) {
+    public void postRecipes(List<RecipeData> recipes, Account acc) {
         try {
             HttpClient httpClient = HttpClients.createDefault();
-            Gson gson = new GsonBuilder().create();
-
-            // Serialize the list of RecipeData objects to JSON
-            String jsonRequest = gson.toJson(recipes);
-
-            // Create an HttpPost request
             HttpPost httpPost = new HttpPost(API_ENDPOINT + "/recipes");
 
-            // Set the JSON request body
-            StringEntity entity = new StringEntity(jsonRequest);
+            // Convert the request object to JSON
+            RecipesCreationRequest request = new RecipesCreationRequest();
+            request.setRecipes(recipes);
+            request.setUsername(acc.getUsername());
+
+            // Set the JSON as the request body
+            Gson gson = new GsonBuilder().create();
+            String json = gson.toJson(request);
+
+            StringEntity entity = new StringEntity(json);
             entity.setContentType("application/json");
             httpPost.setEntity(entity);
 
@@ -263,5 +270,4 @@ public class MiddlewareModel {
         }
         return false;
     }
-
 }

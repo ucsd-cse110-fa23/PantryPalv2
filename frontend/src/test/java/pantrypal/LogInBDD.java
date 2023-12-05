@@ -15,41 +15,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class LogInBDD {
-    private void resetAccountsFile() {
-        AccountService.changeFilePath("test_account.json");
-        Path path = Paths.get(AccountService.FILE_PATH);
-        try {
-            Files.deleteIfExists(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @BeforeEach
-    void setUp() {
-        resetAccountsFile();
-    }
-
-    @AfterEach
-    void tearDown() {
-        resetAccountsFile();
-    }
 
     // BDD test where the user logs in successfully and creates recipes
     @Test
     void testLogIn() {
+        IMiddlewareModel middleware = new MockMiddlewareModel();
         String username = "chef12";
         String password = "coolchefboi";
-        Account account1 = new Account(username, password);
 
         String[] ingredients1 = { "Chicken", "Rice" };
         RecipeData recipe1 = new RecipeData("Chicken and rice", ingredients1, "Cook it together");
 
         try {
-            AccountService.createAccount(account1);
-            assertTrue(AccountService.accountExists(account1.getUsername()));
-            assertEquals(account1.getPassword(), password);
-            assertTrue(AccountService.login(account1));
+            AccountService.accountSignup(username, password, middleware);
+            assertTrue(AccountService.accountLogin(username, password, middleware));
+
             CRUDRecipes.createRecipe(recipe1);
             assertTrue(CRUDRecipes.recipeExists(recipe1.title));
         } catch (IOException e) {
@@ -64,22 +44,20 @@ public class LogInBDD {
     // to create some recipes
     @Test
     void testLogInNonExistent() {
+        IMiddlewareModel middleware = new MockMiddlewareModel();
         String username = "chef3";
         String password = "coolguy";
-        Account account1 = new Account(username, password);
 
         String[] ingredients1 = { "Chicken", "Rice" };
         RecipeData recipe1 = new RecipeData("Chicken and rice", ingredients1, "Cook it together");
 
         String nonexistentUser = "chef4";
-        Account nonexistentAccount = new Account(nonexistentUser, password);
 
         try {
-            AccountService.createAccount(account1);
-            assertFalse(AccountService.accountExists(nonexistentUser));
-            assertTrue(AccountService.accountExists(account1.getUsername()));
-            assertEquals(account1.getPassword(), password);
-            assertTrue(AccountService.login(account1));
+            AccountService.accountSignup(username, password, middleware);
+            assertFalse(AccountService.accountLogin(nonexistentUser, password, middleware));
+            assertTrue(AccountService.accountLogin(username, password, middleware));
+
             CRUDRecipes.createRecipe(recipe1);
             assertTrue(CRUDRecipes.recipeExists(recipe1.title));
         } catch (IOException e) {
