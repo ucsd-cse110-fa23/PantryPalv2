@@ -85,7 +85,8 @@ public class RecipeService {
                         .append("ingredients", Arrays.asList(recipe.ingredients))
                         .append("instructions", recipe.instructions)
                         .append("createdTime", recipe.createdTime)
-                        .append("type", recipe.type);
+                        .append("type", recipe.type)
+                        .append("image",recipe.imageUrl);
                 collection.insertOne(recipeDoc);
             }
         }
@@ -115,8 +116,9 @@ public class RecipeService {
                 String instructions = recipe.getString("instructions");
                 String type = recipe.getString("type");
                 double createdTime = recipe.getDouble("createdTime");
-
+                String imageUrl = recipe.getString("image");
                 RecipeData data = new RecipeData(title, ingredients, instructions, type, createdTime);
+                data.imageUrl = imageUrl;
                 recipes.add(data);
             }
 
