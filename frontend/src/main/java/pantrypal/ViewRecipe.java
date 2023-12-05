@@ -146,6 +146,10 @@ class ViewRecipeHeader extends HBox {
         this.setStyle("-fx-background-color: #d5f2ec;");
 
         // Create and set up the ImageView
+
+        // if the url is null, add a placeholder image 
+        if(url==null) 
+            url = "https://cdn.dribbble.com/users/1012566/screenshots/4187820/media/985748436085f06bb2bd63686ff491a5.jpg?resize=400x300&vertical=center";
         imageView = new ImageView(new Image(url, true)); // true to load in background
         imageView.setFitHeight(120); 
         imageView.setPreserveRatio(true);
