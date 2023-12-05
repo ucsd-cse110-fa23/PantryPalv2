@@ -1,9 +1,11 @@
 package pantrypal;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -827,7 +829,6 @@ class AppFrame extends BorderPane {
 }
 
 public class Main extends Application {
-
     @Override
     public void stop() throws Exception {
         System.out.println("Application is closing...");
@@ -842,22 +843,35 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        MiddlewareModel mm = new MiddlewareModel();
+        if (!mm.isServerOnline()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Server Unavailable");
+                alert.setHeaderText(null);
+                alert.setContentText("The server is currently unavailable. Please check your connection or try again later.");
+                alert.showAndWait();
+                primaryStage.close();
+            });
+        } 
 
-        // Setting the Layout of the Window- Should contain a Header, Footer and the
-        // RecipeList
-        AppFrame root = new AppFrame(primaryStage);
+        else{
+            // Setting the Layout of the Window- Should contain a Header, Footer and the
+            // RecipeList
+            AppFrame root = new AppFrame(primaryStage);
 
-        // Set the title of the app
-        primaryStage.setTitle("Pantry Pal");
-        // Create scene of mentioned size with the border pane
-        // primaryStage.setScene(new Scene(root, 500, 600));
+            // Set the title of the app
+            primaryStage.setTitle("Pantry Pal");
+            // Create scene of mentioned size with the border pane
+            // primaryStage.setScene(new Scene(root, 500, 600));
 
-        Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
-        primaryStage.setScene(accScene);
-        // Make window non-resizable
-        primaryStage.setResizable(false);
-        // Show the app
-        primaryStage.show();
+            Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+            primaryStage.setScene(accScene);
+            // Make window non-resizable
+            primaryStage.setResizable(false);
+            // Show the app
+            primaryStage.show();
+        }
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
