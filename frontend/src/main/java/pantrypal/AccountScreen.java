@@ -7,6 +7,20 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.lang.reflect.Type;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import javafx.scene.control.CheckBox;
 
 public class AccountScreen extends BorderPane {
 
@@ -17,14 +31,28 @@ public class AccountScreen extends BorderPane {
     private Button signupButton;
     private Button loginButton;
 
+    private CheckBox rememberMe;
+
     private Stage primaryStage;
 
+    private String rememberUser;
+    private String rememberPassword;
+
     public AccountScreen(Stage primaryStage) throws IOException {
+
+        if (RememberAccount.getLastAccount() != null) {
+            rememberUser = RememberAccount.getLastAccount().getUsername();
+            rememberPassword = RememberAccount.getLastAccount().getPassword();
+        } else {
+            rememberUser = "";
+            rememberPassword = "";
+        }
+
         // Initialise the header Object
         header = new AccountScreenHeader("Welcome to Pantry Pal!");
 
         // Initialise the body Object
-        accountInfo = new AccountInfo();
+        accountInfo = new AccountInfo(rememberUser, rememberPassword);
 
         // Initialise the Footer Object
         footer = new AccountScreenFooter();
@@ -36,6 +64,7 @@ public class AccountScreen extends BorderPane {
         // Initialise Button Variables through the getters in Footer
         signupButton = footer.getsignupButton();
         loginButton = footer.getloginButton();
+        rememberMe = footer.getRememberMe();
 
         this.primaryStage = primaryStage;
 
@@ -51,6 +80,10 @@ public class AccountScreen extends BorderPane {
             Boolean signup = AccountService.accountSignup(enteredUsername, enteredPassword, new MiddlewareModel());
             if (signup) {
                 try {
+                    if (rememberMe.isSelected()) {
+                        System.out.println("Remember Me!");
+                        RememberAccount.createAccount(new Account(enteredUsername, enteredPassword));
+                    }
                     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -71,6 +104,10 @@ public class AccountScreen extends BorderPane {
 
             if (login) {
                 try {
+                    if (rememberMe.isSelected()) {
+                        System.out.println("Remember Me!");
+                        RememberAccount.createAccount(new Account(enteredUsername, enteredPassword));
+                    }
                     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -107,6 +144,7 @@ class AccountScreenHeader extends HBox {
 class AccountScreenFooter extends HBox {
     private Button signupButton;
     private Button loginButton;
+    private CheckBox rememberMe;
 
     AccountScreenFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
@@ -120,7 +158,9 @@ class AccountScreenFooter extends HBox {
         loginButton = new Button("Log In"); // text displayed on clear recipes button
         loginButton.setStyle(defaultButtonStyle);
 
-        this.getChildren().addAll(signupButton, loginButton); // adding buttons to footer
+        rememberMe = new CheckBox("Remember Me?");
+
+        this.getChildren().addAll(signupButton, loginButton, rememberMe); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -131,6 +171,10 @@ class AccountScreenFooter extends HBox {
 
     public Button getloginButton() {
         return loginButton;
+    }
+
+    public CheckBox getRememberMe() {
+        return rememberMe;
     }
 
 }

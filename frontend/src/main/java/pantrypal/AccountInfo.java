@@ -26,6 +26,7 @@ class AccountInfo extends HBox {
         usernameField.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
         usernameField.setPadding(new Insets(5, 0, 5, 0));
         this.usernameField.setPromptText("Username");
+        usernameField.setText(usernameString);
         fields.getChildren().add(usernameField);
 
         passwordField = new TextField();
@@ -33,6 +34,8 @@ class AccountInfo extends HBox {
         passwordField.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:0;");
         passwordField.setPadding(new Insets(5, 0, 5, 0));
         this.passwordField.setPromptText("Password");
+        passwordField.setText(passwordString);
+
         fields.getChildren().add(passwordField);
 
         this.getChildren().add(fields);
@@ -46,6 +49,14 @@ class AccountInfo extends HBox {
 
     public String getPasswordField() {
         return this.passwordField.getText();
+    }
+
+    public void setUsernameField(String username) {
+        this.usernameField.setText(username);
+    }
+
+    public void setPasswordField(String password) {
+        this.passwordField.setText(password);
     }
 
     AccountInfo() {

@@ -692,6 +692,7 @@ public class Main extends Application {
         mm.postRecipes(recipes, AccountService.getAccount());
 
         CRUDRecipes.deleteRecipesFile();
+        RememberAccount.deleteRememberedAccountsFile();
     }
 
     @Override
