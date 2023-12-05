@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 public class LogInBDD {
 
-    private void resetRrememberedAccountsFile() {
+    private void resetRememberedAccountsFile() {
         RememberAccount.changeFilePath("rememberedAccounts.json");
         Path path = Paths.get(RememberAccount.FILE_PATH);
         try {
