@@ -490,6 +490,7 @@ class Header extends HBox {
         ObservableList<String> sortOptions = FXCollections.observableArrayList(
                 "Sort By",
                 "Alphabetically",
+                "Reverse Alphabetically",
                 "Newest First",
                 "Oldest First"
         );
@@ -716,7 +717,13 @@ class AppFrame extends BorderPane {
             // sort alphabetical
             this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
             this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, false));
-        } else if (value.equals("Newest First")) {
+        } 
+        else if (value.equals("Reverse Alphabetically")) {
+            // sort alphabetical
+            this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
+            this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, true));
+        } 
+        else if (value.equals("Newest First")) {
             // sort recipes reverse chronological
             this.recipeList.setStyle("-fx-background-color: #23B5D3;");
             this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, true));
