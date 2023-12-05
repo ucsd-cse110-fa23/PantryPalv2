@@ -32,11 +32,13 @@ public class RecipeApiController {
 
     @PostMapping
     public ResponseEntity<String> createRecipe(@RequestBody List<RecipeData> recipes) {
+        // recipes contains all the recipes that should exist in the file 
         recipeService.deleteRecipesFile();
         try {
-            for (RecipeData recipe : recipes) {
+            /*for (RecipeData recipe : recipes) {
                 recipeService.createRecipe(recipe);
-            }
+            }*/
+            recipeService.createRecipe(recipes);
             return ResponseEntity.ok("Successful recipes creation");
         } catch (IOException e) {
             e.printStackTrace();

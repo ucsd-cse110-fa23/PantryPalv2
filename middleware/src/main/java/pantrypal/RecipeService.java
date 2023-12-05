@@ -129,8 +129,14 @@ public class RecipeService {
     // ----------------------------------------------------------------------------------------------
 
     // Adds a new recipe
+    public void createRecipe(List<RecipeData> recipes) throws IOException {
+        //List<RecipeData> recipes = new ArrayList<RecipeData>();//readRecipes();
+        //recipes.add(newRecipe);
+        writeRecipes(recipes);
+    }
+
     public void createRecipe(RecipeData newRecipe) throws IOException {
-        List<RecipeData> recipes = readRecipes();
+        List<RecipeData> recipes = new ArrayList<RecipeData>();//readRecipes();
         recipes.add(newRecipe);
         writeRecipes(recipes);
     }
