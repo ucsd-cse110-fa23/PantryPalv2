@@ -415,6 +415,7 @@ class CreateMealType extends VBox {
 
 class Header extends HBox {
     Button backButton;
+    Button logoutButton;
     Text titleText;
     StackPane titleContainer;
 
@@ -429,9 +430,15 @@ class Header extends HBox {
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
         backButton.setStyle(defaultButtonStyle);
         backButton.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
-
         backButton.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(backButton, Priority.NEVER); // Prevents the back button from growing
+
+        logoutButton = new Button("Log Out");
+        logoutButton.setStyle(defaultButtonStyle);
+        logoutButton.setPadding(new Insets(10, 10, 10, 10));
+
+        logoutButton.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(logoutButton, Priority.NEVER);
 
         // configure the sort menu
         ObservableList<String> sortOptions = FXCollections.observableArrayList(
@@ -442,6 +449,8 @@ class Header extends HBox {
         sortMenu = new ComboBox<String>(sortOptions);
         sortMenu.setValue("Sort By");
         backButton.setAlignment(Pos.CENTER_RIGHT);
+        logoutButton.setAlignment(Pos.CENTER_RIGHT);
+
         sortMenu.setStyle("-fx-font-size: 14px; -fx-background-color: white; -fx-border-color: #ccc;");
         sortMenu.setStyle(defaultButtonStyle);
         sortMenu.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
@@ -458,8 +467,10 @@ class Header extends HBox {
         HBox.setHgrow(titleContainer, Priority.ALWAYS); // Allows the title container to grow and center the title
 
         // Add components to the HBox
-        this.getChildren().addAll(backButton, titleContainer, sortMenu);
+        this.getChildren().addAll(logoutButton, backButton, titleContainer, sortMenu);
         this.backButton.setVisible(false);
+        this.logoutButton.setVisible(false);
+
     }
 
     /**
@@ -552,6 +563,8 @@ class AppFrame extends BorderPane {
             scrollPane.setVisible(true);
             createMealType.setVisible(false);
             header.backButton.setVisible(true);
+            header.logoutButton.setVisible(true);
+
             sortMenu.setVisible(true);
         });
 
@@ -563,10 +576,52 @@ class AppFrame extends BorderPane {
             sortMenu.setVisible(false);
         });
 
+        header.logoutButton.setOnAction(e -> {
+            try {
+                scrollPane.setVisible(false);
+                header.backButton.setVisible(false);
+                header.logoutButton.setVisible(false);
+
+                logout();
+            } catch (IOException ex) {
+                // Handle the IOException here, log it, show an error message, or take
+                // appropriate action.
+                ex.printStackTrace();
+            }
+        });
+
+        // header.logoutButton.setOnAction(e -> {
+
+        // scrollPane.setVisible(false);
+        // header.backButton.setVisible(false);
+        // header.logoutButton.setVisible(false);
+
+        // logout();
+
+        // });
+
         sortMenu.setOnAction(event -> {
             // Update styling when the selection changes
             updateList(sortMenu.getValue());
         });
+
+    }
+
+    public void logout() throws IOException {
+        try {
+            System.out.println("Logging out...");
+
+            List<RecipeData> recipes = CRUDRecipes.readRecipes();
+            MiddlewareModel mm = new MiddlewareModel();
+            mm.postRecipes(recipes, AccountService.getAccount());
+            CRUDRecipes.deleteRecipesFile();
+            Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+            primaryStage.setScene(accScene);
+
+        } catch (IOException e1) {
+            // TODO: handle exception
+            e1.printStackTrace();
+        }
 
     }
 

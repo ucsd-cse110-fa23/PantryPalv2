@@ -38,7 +38,7 @@ public class AccountScreen extends BorderPane {
         loginButton = footer.getloginButton();
 
         this.primaryStage = primaryStage;
-        
+
         addListeners();
     }
 
@@ -49,15 +49,15 @@ public class AccountScreen extends BorderPane {
             String enteredPassword = accountInfo.getPasswordField();
 
             Boolean signup = AccountService.accountSignup(enteredUsername, enteredPassword, new MiddlewareModel());
-            if(signup) {
+            if (signup) {
                 try {
                     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            } else if(signup == false) {
+            } else if (signup == false) {
                 System.out.println("Account with that username already exists. Choose a different username");
-            } else { //if signup == null
+            } else { // if signup == null
                 System.out.println("Error with the server");
             }
         });
@@ -69,21 +69,20 @@ public class AccountScreen extends BorderPane {
 
             Boolean login = AccountService.accountLogin(enteredUsername, enteredPassword, new MiddlewareModel());
 
-            if(login) {
+            if (login) {
                 try {
                     primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            } else if(login == false) {
+            } else if (login == false) {
                 System.out.println("Unsuccessful login attempt");
-            } else { //if signup == null
+            } else { // if signup == null
                 System.out.println("Error with the server");
             }
         });
     }
-    
-    
+
 }
 
 class AccountScreenHeader extends HBox {
