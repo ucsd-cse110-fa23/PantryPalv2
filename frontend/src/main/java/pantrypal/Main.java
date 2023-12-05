@@ -766,23 +766,6 @@ class AppFrame extends BorderPane {
 public class Main extends Application {
 
     @Override
-    public void init() throws Exception {
-        System.out.println("Application is initializing...");
-
-        MiddlewareModel mm = new MiddlewareModel();
-        List<RecipeData> recipes = mm.getRecipes();
-
-        if (recipes == null) {
-            recipes = new ArrayList<RecipeData>();
-        }
-
-        for (RecipeData recipe : recipes) {
-            CRUDRecipes.createRecipe(recipe);
-        }
-
-    }
-
-    @Override
     public void stop() throws Exception {
         System.out.println("Application is closing...");
 
