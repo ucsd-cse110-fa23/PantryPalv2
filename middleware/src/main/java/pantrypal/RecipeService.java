@@ -108,7 +108,6 @@ public class RecipeService {
             // traverse the list of documents in the collection
             ArrayList<Document> recipeList = collection.find().into(new ArrayList<>()); // find all docs
             for (Document recipe : recipeList) {
-                System.out.println(recipe.toJson());
                 String title = recipe.getString("title");
                 List<String> listIng = (List<String>) recipe.get("ingredients");
                 String[] ingredients = new String[listIng.size()];
