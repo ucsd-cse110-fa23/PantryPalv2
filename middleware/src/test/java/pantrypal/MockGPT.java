@@ -22,7 +22,22 @@ public class MockGPT implements IChatGPT {
 
 
     public String generateMealType(String transcription) {
-        return "Breakfast";
+        transcription = transcription.toLowerCase();
+        // if (!transcription.contains(" breakfast") && !transcription.contains(" lunch") && !transcription.contains(" dinner")
+        //     && !transcription.contains("breakfast") && !transcription.contains("lunch") && !transcription.contains("dinner")){
+            
+        // }
+        if(transcription.contains(" breakfast")||transcription.contains("breakfast")){
+            return "Breakfast";
+        }
+        else if(transcription.contains(" lunch")||transcription.contains("lunch")){
+            return "Lunch";
+        }
+        else if(transcription.contains(" dinner")||transcription.contains("dinner")){
+            return "Dinner";
+        }
+        
+        return "Wrong meal type!";
     }
 
 
