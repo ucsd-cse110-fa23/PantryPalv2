@@ -293,7 +293,7 @@ public class MiddlewareModel implements IMiddlewareModel {
             // Check if the response status code indicates logging in (e.g., 200 OK)
             if (response.getStatusLine().getStatusCode() == 200) {
                 String responseBody = EntityUtils.toString(response.getEntity());
-                System.out.println("URL for access: " + responseBody);
+                System.out.println("http://localhost:8080/share/recipe?recipe=" + responseBody.replace(" ", "%20"));
                 return responseBody;
             }
         } catch (Exception e) {
