@@ -30,7 +30,6 @@ public class RegenerateRecipeTest {
 
     @Test
     void testRecreateRecipe() {
-        //String prompt = "Given the following ingredients:\n";
         String[] ingredients1 = { "Eggs", "Sausage", "Onions" };
         String[] ingredients2 = { "Salami", "Bread", "Lettuce", "Butter" };
         String[] ingredients3 = { "Steak", "Sea Salt", "Pepper", "Garlic", "Olive Oil" };

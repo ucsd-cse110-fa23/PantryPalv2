@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-public class RegenerateRecipeBDDTest {
+public class RegenerateRecipeBDDTest { // Feature 14: Recipe regeneration [M]
     private MockGPT mockGPT;
     
     @BeforeEach
@@ -37,7 +37,6 @@ public class RegenerateRecipeBDDTest {
         
         // Check if the regenerated recipe is not null
         assertNotNull(regenerateRecipe, "Regenerated recipe should not be null");
-
         // Check if the regenerated recipe is different from the original one
         assertNotEquals(originalRecipe, regenerateRecipe, "Regenerated recipe should be different from the original one");
         
