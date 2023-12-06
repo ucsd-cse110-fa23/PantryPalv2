@@ -4,24 +4,24 @@ public class RecipeData {
     Long id;
     String title;
     String instructions;
+    
 
     // public RecipeData(String gptResponse) {
-    // // Split by |||||
-    // String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
+    //     // Split by |||||
+    //     String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
 
-    // // Check if the split response has at least two parts (recipe and image URL)
-    // if (parts.length > 1) {
+    //     // Check if the split response has at least two parts (recipe and image URL)
+    //     if (parts.length > 1) {
+            
+    //         // Process the first part for recipe details
+    //         String[] recipeDetails = parts[0].split("\n");
+    //         this.title = recipeDetails[0].trim();
+    //         this.instructions = joinSubsectionLoop(recipeDetails, 1, recipeDetails.length - 2);
+    //         this.ingredients = recipeDetails[recipeDetails.length - 1].split(";");
 
-    // // Process the first part for recipe details
-    // String[] recipeDetails = parts[0].split("\n");
-    // this.title = recipeDetails[0].trim();
-    // this.instructions = joinSubsectionLoop(recipeDetails, 1, recipeDetails.length
-    // - 2);
-    // this.ingredients = recipeDetails[recipeDetails.length - 1].split(";");
-
-    // // Second part is the image URL
-    // this.imageUrl = parts[1].trim();
-    // }
+    //         // Second part is the image URL
+    //         this.imageUrl = parts[1].trim();
+    //     }
     String[] ingredients;
     String imageUrl;
     double createdTime;
@@ -66,6 +66,23 @@ public class RecipeData {
         this.instructions = instructions;
         this.createdTime = System.currentTimeMillis();
         this.type = "Breakfast";
+    }
+
+    public void updateRecipeData(String gptResponse) {
+        String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
+
+        if (parts.length > 1) {
+            
+            // Process the first part for recipe details
+            String[] recipeDetails = parts[0].split("\n");
+            this.title = recipeDetails[0].trim();
+            this.instructions = joinSubsectionLoop(recipeDetails, 1, recipeDetails.length - 2);
+            this.ingredients = recipeDetails[recipeDetails.length - 1].split(";");
+            this.createdTime = System.currentTimeMillis();
+            //this.type = type;
+            // Second part is the image URL
+            this.imageUrl = parts[1].trim();
+        }
     }
 
     private String joinSubsectionLoop(String[] lines, int start, int end) {

@@ -1,9 +1,11 @@
 package pantrypal;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -11,6 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ComboBox;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.util.ArrayList;
@@ -143,6 +148,8 @@ class Recipe extends HBox {
 class RecipeList extends VBox {
     // PointC
     Stage primaryStage;
+    ArrayList<RecipeData> recipes; // original recipes
+    ArrayList<RecipeData> currentRecipes, taggedRecipes; // current recipes
 
     RecipeList(Stage primaryStage) throws IOException {
         this.setSpacing(5); // sets spacing between recipes
@@ -150,7 +157,8 @@ class RecipeList extends VBox {
         this.setStyle("-fx-background-color: #F0F8FF;");
         this.primaryStage = primaryStage;
         // get the current recipe data (from JSON file)
-        ArrayList<RecipeData> recipes = CRUDRecipes.readRecipes();
+        recipes = CRUDRecipes.readRecipes();
+        currentRecipes = taggedRecipes = recipes;
         // add the recipes to the recipelist
         loadRecipes(recipes);
     }
@@ -160,7 +168,6 @@ class RecipeList extends VBox {
      * Add the recipes to the children of recipelist component
      */
     public void loadRecipes(ArrayList<RecipeData> recipes) {
-        Collections.reverse(recipes);
         for (RecipeData recipeData : recipes) {
             // create Recipe object for each recipe data
             Recipe recipe = new Recipe(primaryStage, recipeData);
@@ -168,8 +175,34 @@ class RecipeList extends VBox {
             recipe.setRecipeType(recipeData.type);
             this.getChildren().add(recipe);
         }
-        Collections.reverse(recipes);
     }
+
+    /**
+     * reorder recipes based on the following order
+     * 
+     * @param recipes the recipe order to replace with
+     */
+    public void redoRecipes(ArrayList<RecipeData> recipes) {
+        // drop current recipes
+        this.getChildren().clear();
+        // load new permutation
+        currentRecipes = recipes;
+        this.loadRecipes(recipes);
+    }
+
+    /**
+     * reorder recipes for tagged based on the following order
+     * 
+     * @param recipes the recipe order to replace with
+     */
+    public void redoRecipesT(ArrayList<RecipeData> recipes) {
+        // drop current recipes
+        this.getChildren().clear();
+        // load new permutation
+        taggedRecipes = recipes;
+        this.loadRecipes(recipes);
+    }
+
 }
 
 /**
@@ -419,23 +452,93 @@ class CreateMealType extends VBox {
     }
 }
 
+/** three buttons for filtering by meal type tag */
+class TagFilter extends VBox {
+    Button breakfast;
+    Button lunch;
+    Button dinner;
+
+    TagFilter() {
+
+        this.setSpacing(5); // sets spacing between recipes
+        this.setPrefSize(100, 100);
+        this.setStyle("-fx-background-color: #d5f2ec;");
+
+        // init buttons, add children
+        lunch = new Button("lunch"); // creates a button for marking the contact as done
+        lunch.setPrefSize(100, 20);
+        // lunch.setPrefHeight(Double.MAX_VALUE);
+        lunch.setStyle("-fx-background-color: #2B4162; -fx-border-width: 0;-fx-text-fill: white;"); // sets style of
+                                                                                                    // button
+
+        breakfast = new Button("breakfast"); // creates a button for marking the contact as done
+        breakfast.setPrefSize(100, 20);
+        // breakfast.setPrefHeight(Double.MAX_VALUE);
+        breakfast.setStyle("-fx-background-color: #FA9F42; -fx-border-width: 0;"); // sets style of button
+
+        dinner = new Button("dinner"); // creates a button for marking the contact as done
+        dinner.setPrefSize(100, 20);
+        // dinner.setPrefHeight(Double.MAX_VALUE);
+        dinner.setStyle("-fx-background-color: #0B6E4F; -fx-border-width: 0;-fx-text-fill: white;"); // sets style of
+                                                                                                     // button
+
+        this.getChildren().addAll(breakfast, lunch, dinner);
+
+    }
+
+}
+
 class Header extends HBox {
     Button backButton;
+    Button logoutButton;
     Text titleText;
     StackPane titleContainer;
+
+    TagFilter filter;
+    ComboBox<String> sortMenu;
 
     Header() {
         this.setPrefSize(500, 60); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
+        this.setSpacing(5); //
+        this.setAlignment(Pos.CENTER);
 
         // Back Button
         backButton = new Button("Back");
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
         backButton.setStyle(defaultButtonStyle);
         backButton.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
-
         backButton.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(backButton, Priority.NEVER); // Prevents the back button from growing
+
+        logoutButton = new Button("Log Out");
+        logoutButton.setStyle(defaultButtonStyle);
+        logoutButton.setPadding(new Insets(10, 10, 10, 10));
+
+        logoutButton.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(logoutButton, Priority.NEVER);
+
+        // configure the sort menu
+        ObservableList<String> sortOptions = FXCollections.observableArrayList(
+                "Sort By",
+                "Alphabetically",
+                "Reverse Alphabetically",
+                "Newest First",
+                "Oldest First");
+        sortMenu = new ComboBox<String>(sortOptions);
+        sortMenu.setValue("Sort By");
+        backButton.setAlignment(Pos.CENTER_RIGHT);
+        logoutButton.setAlignment(Pos.CENTER_RIGHT);
+
+        sortMenu.setStyle("-fx-font-size: 14px; -fx-background-color: white; -fx-border-color: #ccc;");
+        sortMenu.setStyle(defaultButtonStyle);
+        sortMenu.setPadding(new Insets(10, 10, 10, 10)); // Insets(top, right, bottom, left)
+        sortMenu.setVisible(false);
+        HBox.setHgrow(sortMenu, Priority.NEVER); // Prevents the back button from growing
+
+        filter = new TagFilter();
+        filter.setAlignment(Pos.CENTER);
+        filter.setVisible(false);
 
         // Title Text
         titleText = new Text("PantryPal");
@@ -447,9 +550,21 @@ class Header extends HBox {
         HBox.setHgrow(titleContainer, Priority.ALWAYS); // Allows the title container to grow and center the title
 
         // Add components to the HBox
-        this.getChildren().addAll(backButton, titleContainer);
+        this.getChildren().addAll(logoutButton, backButton, titleContainer, sortMenu, filter);
         this.backButton.setVisible(false);
+        this.logoutButton.setVisible(true);
+
     }
+
+    /**
+     * getter for the sort dropdown
+     * 
+     * @return the sortMenu object
+     */
+    public ComboBox<String> getSortMenu() {
+        return sortMenu;
+    }
+
 }
 
 class AppFrame extends BorderPane {
@@ -470,6 +585,14 @@ class AppFrame extends BorderPane {
     private Label recordingLabel;
     private ScrollPane scrollPane;
     private Stage primaryStage;
+
+    private ComboBox<String> sortMenu;
+
+    private Button breakfast;
+    private Button lunch;
+    private Button dinner;
+    private boolean breakYes, lunchYes, dinYes;
+    private String currentSort;
 
     AppFrame(Stage primaryStage) throws IOException {
         // Initialise the header Object
@@ -501,6 +624,13 @@ class AppFrame extends BorderPane {
         recordingLabel = createMealType.getRecordingLabel();
         recipeListButton = createMealType.getRecipeListButton();
 
+        sortMenu = header.getSortMenu();
+        breakfast = header.filter.breakfast;
+        lunch = header.filter.lunch;
+        dinner = header.filter.dinner;
+        breakYes = lunchYes = dinYes = true;
+        currentSort = "";
+
         recordingLabel.setVisible(false);
         ar = new AudioRecorder();
 
@@ -521,19 +651,172 @@ class AppFrame extends BorderPane {
             processMealTypeRecording();
         });
 
+        // opening recipe list
         recipeListButton.setOnAction(e -> {
             // switch to the list screen
             scrollPane.setVisible(true);
             createMealType.setVisible(false);
             header.backButton.setVisible(true);
+            header.logoutButton.setVisible(true);
+
+            sortMenu.setVisible(true);
+            header.filter.setVisible(true);
         });
 
+        // back to main page
         header.backButton.setOnAction(e -> {
             scrollPane.setVisible(false);
             createMealType.setVisible(true);
             header.backButton.setVisible(false);
+            sortMenu.setVisible(false);
+            header.filter.setVisible(false);
         });
 
+        header.logoutButton.setOnAction(e -> {
+            try {
+                scrollPane.setVisible(false);
+                header.backButton.setVisible(false);
+                header.logoutButton.setVisible(false);
+
+                logout();
+            } catch (IOException ex) {
+                // Handle the IOException here, log it, show an error message, or take
+                // appropriate action.
+                ex.printStackTrace();
+            }
+        });
+
+        // header.logoutButton.setOnAction(e -> {
+
+        // scrollPane.setVisible(false);
+        // header.backButton.setVisible(false);
+        // header.logoutButton.setVisible(false);
+
+        // logout();
+
+        // });
+
+        sortMenu.setOnAction(event -> {
+            // Update styling when the selection changes
+            updateList(sortMenu.getValue());
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
+        });
+
+        // type listeners
+
+        // switch
+        breakfast.setOnAction(e -> {
+            if (breakYes) {
+                // filter out breakfast
+                breakfast.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
+            } else {
+                breakfast.setStyle("-fx-background-color: #FA9F42; -fx-border-width: 0;");
+            }
+            breakYes = !breakYes;
+            // sort then filter
+            this.updateList(currentSort);
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
+        });
+
+        // switch
+        lunch.setOnAction(e -> {
+            if (lunchYes) {
+                // filter out lunch
+                lunch.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;-fx-text-fill: black;");
+            } else {
+                lunch.setStyle("-fx-background-color: #2B4162; -fx-border-width: 0;-fx-text-fill: white;");
+            }
+            lunchYes = !lunchYes;
+            // sort then filter
+            this.updateList(currentSort);
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
+        });
+
+        // switch
+        dinner.setOnAction(e -> {
+            // switch to the list screen
+            if (dinYes) {
+                // filter out dinner
+                dinner.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
+            } else {
+                dinner.setStyle("-fx-background-color: #0B6E4F; -fx-border-width: 0;-fx-text-fill: white;");
+
+            }
+            dinYes = !dinYes;
+            // sort then filter
+            this.updateList(currentSort);
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
+        });
+
+    }
+
+    /**
+     * returns a list of the current meal tags requested
+     * 
+     * @return the meals that were requested
+     */
+    private List<String> getTags() {
+        List<String> tags = new ArrayList<String>();
+        if (dinYes)
+            tags.add("Dinner");
+        if (lunchYes)
+            tags.add("Lunch");
+        if (breakYes)
+            tags.add("Breakfast");
+        return tags;
+    }
+
+    public void logout() throws IOException {
+        try {
+            System.out.println("Logging out...");
+
+            List<RecipeData> recipes = CRUDRecipes.readRecipes();
+            MiddlewareModel mm = new MiddlewareModel();
+            mm.postRecipes(recipes, AccountService.getAccount());
+            AccountService.setAccount(null);
+            CRUDRecipes.deleteRecipesFile();
+            Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+            primaryStage.setScene(accScene);
+
+        } catch (IOException e1) {
+            // TODO: handle exception
+            e1.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Update recipe list order
+     * 
+     * @param value the way the list should be ordered
+     */
+    private void updateList(String value) {
+        if (value.equals("Alphabetically")) {
+            // sort alphabetical
+            this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
+            this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, false));
+        } else if (value.equals("Reverse Alphabetically")) {
+            // sort alphabetical
+            this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
+            this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, true));
+        } else if (value.equals("Newest First")) {
+            // sort recipes reverse chronological
+            this.recipeList.setStyle("-fx-background-color: #23B5D3;");
+            this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, true));
+        } else if (value.equals("Oldest First")) {
+            // sort recipes chronological
+            this.recipeList.setStyle("-fx-background-color: #75ABBC;");
+            this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, false));
+        } else {
+            // default
+            this.recipeList.setStyle("-fx-background-color: #F0F8FF;");
+            this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, false));
+        }
+        this.currentSort = value;
     }
 
     // Given the audio file, extract the meal type, and if it valid go to
@@ -568,49 +851,52 @@ class AppFrame extends BorderPane {
 }
 
 public class Main extends Application {
-
-    @Override
-    public void init() throws Exception {
-        System.out.println("Application is initializing...");
-
-        MiddlewareModel mm = new MiddlewareModel();
-        List<RecipeData> recipes = mm.getRecipes();
-
-        for (RecipeData recipe : recipes) {
-            CRUDRecipes.createRecipe(recipe);
-        }
-
-    }
-
     @Override
     public void stop() throws Exception {
         System.out.println("Application is closing...");
 
         List<RecipeData> recipes = CRUDRecipes.readRecipes();
         MiddlewareModel mm = new MiddlewareModel();
-        mm.postRecipes(recipes);
+
+        if (!(AccountService.getAccount() == null)) {
+            mm.postRecipes(recipes, AccountService.getAccount());
+        }
 
         CRUDRecipes.deleteRecipesFile();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        MiddlewareModel mm = new MiddlewareModel();
+        if (!mm.isServerOnline()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Server Unavailable");
+                alert.setHeaderText(null);
+                alert.setContentText(
+                        "The server is currently unavailable. Please check your connection or try again later.");
+                alert.showAndWait();
+                primaryStage.close();
+            });
+        }
 
-        // Setting the Layout of the Window- Should contain a Header, Footer and the
-        // RecipeList
-        AppFrame root = new AppFrame(primaryStage);
+        else {
+            // Setting the Layout of the Window- Should contain a Header, Footer and the
+            // RecipeList
+            AppFrame root = new AppFrame(primaryStage);
 
-        // Set the title of the app
-        primaryStage.setTitle("Pantry Pal");
-        // Create scene of mentioned size with the border pane
-        // primaryStage.setScene(new Scene(root, 500, 600));
+            // Set the title of the app
+            primaryStage.setTitle("Pantry Pal");
+            // Create scene of mentioned size with the border pane
+            // primaryStage.setScene(new Scene(root, 500, 600));
 
-        Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
-        primaryStage.setScene(accScene);
-        // Make window non-resizable
-        primaryStage.setResizable(false);
-        // Show the app
-        primaryStage.show();
+            Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
+            primaryStage.setScene(accScene);
+            // Make window non-resizable
+            primaryStage.setResizable(false);
+            // Show the app
+            primaryStage.show();
+        }
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {

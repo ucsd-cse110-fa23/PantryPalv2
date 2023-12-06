@@ -17,4 +17,8 @@ class Account {
     public String getPassword() {
         return this.password;
     }
+
+    public Boolean equals(Account a) {
+        return this.username == a.getUsername() && this.password == a.getPassword();
+    }
 }

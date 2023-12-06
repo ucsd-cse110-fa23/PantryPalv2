@@ -1,24 +1,26 @@
 package pantrypal;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.geometry.Insets;
 import javafx.scene.text.*;
 import java.io.*;
-import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.List;
+import java.lang.reflect.Type;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import javafx.scene.control.CheckBox;
 
 public class AccountScreen extends BorderPane {
 
@@ -29,15 +31,28 @@ public class AccountScreen extends BorderPane {
     private Button signupButton;
     private Button loginButton;
 
+    private CheckBox rememberMe;
+
     private Stage primaryStage;
 
+    private String rememberUser;
+    private String rememberPassword;
+
     public AccountScreen(Stage primaryStage) throws IOException {
+
+        if (RememberAccount.getLastAccount() != null) {
+            rememberUser = RememberAccount.getLastAccount().getUsername();
+            rememberPassword = RememberAccount.getLastAccount().getPassword();
+        } else {
+            rememberUser = "";
+            rememberPassword = "";
+        }
+
         // Initialise the header Object
         header = new AccountScreenHeader("Welcome to Pantry Pal!");
 
         // Initialise the body Object
-        // body = new AccountScreenBody();
-        accountInfo = new AccountInfo();
+        accountInfo = new AccountInfo(rememberUser, rememberPassword);
 
         // Initialise the Footer Object
         footer = new AccountScreenFooter();
@@ -49,6 +64,7 @@ public class AccountScreen extends BorderPane {
         // Initialise Button Variables through the getters in Footer
         signupButton = footer.getsignupButton();
         loginButton = footer.getloginButton();
+        rememberMe = footer.getRememberMe();
 
         this.primaryStage = primaryStage;
 
@@ -57,109 +73,53 @@ public class AccountScreen extends BorderPane {
 
     public void addListeners() {
         signupButton.setOnAction(e2 -> {
-            System.out.println("username: " + accountInfo.getUsernameField());
-            System.out.println("password: " + accountInfo.getPasswordField());
-
+            // Get account from text fields
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
 
-            // create account document in database
-            // display error message if username already used(?)
-
-            // create a new account object
-            // Account account = new Account(accountInfo.getUsernameField(),
-            // accountInfo.getPasswordField());
-            // Account account = new Account(accountInfo.getUsernameField(),
-            // accountInfo.getPasswordField());
-
-            // try {
-            // System.out.println(AccountService.accountExists(account.getUsername()));
-            // } catch (IOException e1) {
-            // e1.printStackTrace();
-            // }
-            try {
-                Account account = new Account(enteredUsername, enteredPassword);
-                MiddlewareModel mm = new MiddlewareModel();
-                boolean created = mm.postAccountCreation(account);
-                if (created) {
-                    System.out.println("User signed up successfully!");
-                    accountInfo.setMessage("User signed up successfully!");
-                    try {
-                        primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+            Boolean signup = AccountService.accountSignup(enteredUsername, enteredPassword, new MiddlewareModel());
+            if (signup) {
+                try {
+                    if (rememberMe.isSelected()) {
+                        System.out.println("Remember Me!");
+                        RememberAccount.createAccount(new Account(enteredUsername, enteredPassword));
                     }
-                } else {
-                    System.out.println("Account with that username already exists. Choose a different username");
-                    accountInfo.setMessage("Account with that username already exists. Choose a different username");
+                    primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (Exception e1) {
-                e1.printStackTrace();
+            } else if (signup == false) {
+                System.out.println("Account with that username already exists. Choose a different username");
+            } else { // if signup == null
+                System.out.println("Error with the server");
             }
-
-            // redirect to next screen once authenticated
-            // temp transition:
-            // try {
-            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-            // } catch (IOException e1) {
-            // e1.printStackTrace();
-            // }
-
-            // redirect to next screen once authenticated
-            // temp transition:
-            // try {
-            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-            // } catch (IOException e1) {
-            // e1.printStackTrace();
-            // }
         });
 
         loginButton.setOnAction(e2 -> {
-            System.out.println("username: " + accountInfo.getUsernameField());
-            System.out.println("password: " + accountInfo.getPasswordField());
-
+            // Get account from text fields
             String enteredUsername = accountInfo.getUsernameField();
             String enteredPassword = accountInfo.getPasswordField();
-            try {
-                Account account = new Account(enteredUsername, enteredPassword);
-                MiddlewareModel mm = new MiddlewareModel();
-                boolean login = mm.postAccountAuthentication(account);
-                if (login) {
-                    System.out.println("user logged in successfully!");
-                    accountInfo.setMessage("user logged in successfully!");
-                    try {
-                        primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+
+            Boolean login = AccountService.accountLogin(enteredUsername, enteredPassword, new MiddlewareModel());
+
+            if (login) {
+                try {
+                    if (rememberMe.isSelected()) {
+                        System.out.println("Remember Me!");
+                        RememberAccount.createAccount(new Account(enteredUsername, enteredPassword));
                     }
-                } else {
-                    System.out.println("Unsuccessful login attempt");
-                    accountInfo.setMessage("Unsuccessful login attempt");
+                    primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
-            } catch (Exception e1) {
-                e1.printStackTrace();
+            } else if (login == false) {
+                System.out.println("Unsuccessful login attempt");
+            } else { // if signup == null
+                System.out.println("Error with the server");
             }
-
-            // check if matching document exists in database
-            // display error message if not
-
-            // redirect to next screen once authenticated
-            // temp transition:
-            // try {
-            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-            // try {
-            // primaryStage.setScene(new Scene(new AppFrame(primaryStage)));
-
-            // } catch (IOException e1) {
-            // e1.printStackTrace();
-            // }
-            // } catch (IOException e1) {
-            // e1.printStackTrace();
-            // }
         });
     }
+
 }
 
 class AccountScreenHeader extends HBox {
@@ -181,45 +141,10 @@ class AccountScreenHeader extends HBox {
     }
 }
 
-// class AccountScreenBody extends HBox {
-
-// private TextField username;
-// private TextField password;
-
-// private VBox fields;
-
-// AccountScreenBody() {
-// this.setPrefSize(500, 120); // Size of the header
-// this.setStyle("-fx-background-color: #d5f2ec;");
-
-// fields = new VBox();
-// fields.setSpacing(5);
-// fields.setPrefSize(200, 60);
-
-// username = new TextField();
-// username.setPrefSize(150, 20);
-// username.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
-// username.setPadding(new Insets(5, 0, 5, 0));
-// this.username.setPromptText("Username");
-// fields.getChildren().add(username);
-
-// password = new TextField();
-// password.setPrefSize(150, 20);
-// password.setStyle("-fx-background-color: #DAE5EA; -fx-border-width:0;");
-// password.setPadding(new Insets(5, 0, 5, 0));
-// this.password.setPromptText("Password");
-// fields.getChildren().add(password);
-
-// this.getChildren().add(fields);
-
-// this.setAlignment(Pos.CENTER); // Align the text to the Center
-// }
-
-// }
-
 class AccountScreenFooter extends HBox {
     private Button signupButton;
     private Button loginButton;
+    private CheckBox rememberMe;
 
     AccountScreenFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
@@ -233,7 +158,9 @@ class AccountScreenFooter extends HBox {
         loginButton = new Button("Log In"); // text displayed on clear recipes button
         loginButton.setStyle(defaultButtonStyle);
 
-        this.getChildren().addAll(signupButton, loginButton); // adding buttons to footer
+        rememberMe = new CheckBox("Remember Me?");
+
+        this.getChildren().addAll(signupButton, loginButton, rememberMe); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -244,6 +171,10 @@ class AccountScreenFooter extends HBox {
 
     public Button getloginButton() {
         return loginButton;
+    }
+
+    public CheckBox getRememberMe() {
+        return rememberMe;
     }
 
 }

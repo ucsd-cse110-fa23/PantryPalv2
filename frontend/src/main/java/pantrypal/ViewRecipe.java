@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import javafx.stage.Popup;
+
 public class ViewRecipe extends BorderPane {
 
     private ViewRecipeHeader header;
@@ -30,6 +34,7 @@ public class ViewRecipe extends BorderPane {
     private Button editButton;
     private Button saveButton;
     private Button deleteButton;
+    private Button shareButton;
 
     private String response;
     private RecipeData recipe;
@@ -38,7 +43,7 @@ public class ViewRecipe extends BorderPane {
     private boolean isEditing = false;
 
     public ViewRecipe(Stage primaryStage, RecipeData recipe) throws IOException {
-        this.response = recipe.title + "\n" + recipe.instructions;
+        this.response = recipe.title + "\n" + String.join("\n", recipe.ingredients) + "\n" + recipe.instructions;
         // Initialise the header Object
         header = new ViewRecipeHeader(recipe.title, recipe.imageUrl);
 
@@ -54,12 +59,13 @@ public class ViewRecipe extends BorderPane {
         // Add footer to the bottom of the BorderPane
         this.setBottom(footer);
 
-        backButton = header.getBackButton();
+        backButton = footer.getBackButton();
 
         // Initialise Button Variables through the getters in Footer
         editButton = footer.getEditButton();
         saveButton = footer.getSaveButton();
         deleteButton = footer.getDeleteButton();
+        shareButton = footer.getShareButton();
 
         this.recipe = recipe;
         this.primaryStage = primaryStage;
@@ -128,26 +134,48 @@ public class ViewRecipe extends BorderPane {
 
         });
 
+        shareButton.setOnAction(e -> {
+            MiddlewareModel mm = new MiddlewareModel();
+            String link = mm.createShareableRecipe(recipe);
+
+            Popup popup = new Popup();
+
+            TextField popupLabel = new TextField(link);
+            popupLabel.setStyle("-fx-background-color: lightblue; -fx-padding: 50px; -fx-wrap-text: true;");
+
+            Button closeMyButton = new Button("Close");
+            closeMyButton.setOnAction(e1 -> popup.hide());
+
+            HBox hbox = new HBox();
+            hbox.getChildren().addAll(closeMyButton, popupLabel);
+            hbox.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+
+            StackPane popupContent = new StackPane();
+            popupContent.getChildren().add(hbox);
+
+            popup.getContent().add(popupContent);
+
+            popup.show(primaryStage, primaryStage.getX() + 50, primaryStage.getY() + 50);
+
+        });
+
     }
 }
 
 class ViewRecipeHeader extends HBox {
-
-    private Button backButton;
     private ImageView imageView;
 
     ViewRecipeHeader(String title, String url) {
-
-        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF; -fx-font-weight: bold; -fx-font: 11 arial;";
-        backButton = new Button("Back");
-        backButton.setStyle(defaultButtonStyle);
-
         this.setPrefSize(500, 200); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
         // Create and set up the ImageView
+
+        // if the url is null, add a placeholder image
+        if (url == null)
+            url = "https://cdn.dribbble.com/users/1012566/screenshots/4187820/media/985748436085f06bb2bd63686ff491a5.jpg?resize=400x300&vertical=center";
         imageView = new ImageView(new Image(url, true)); // true to load in background
-        imageView.setFitHeight(120); 
+        imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
 
         Text titleText = new Text(title); // Text of the Header
@@ -157,10 +185,6 @@ class ViewRecipeHeader extends HBox {
         this.getChildren().addAll(imageView, titleText);
         this.setAlignment(Pos.CENTER);
         this.setSpacing(15);
-    }
-
-    public Button getBackButton() {
-        return backButton;
     }
 }
 
@@ -189,6 +213,8 @@ class ViewRecipeFooter extends HBox {
     private Button editButton;
     private Button deleteButton;
     private Button saveButton;
+    private Button backButton;
+    private Button shareButton;
 
     ViewRecipeFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
@@ -202,8 +228,13 @@ class ViewRecipeFooter extends HBox {
         saveButton.setStyle(defaultButtonStyle);
         deleteButton = new Button("Delete Recipe"); // text displayed on clear recipes button
         deleteButton.setStyle(defaultButtonStyle);
+        backButton = new Button("Back"); // text displayed on clear recipes button
+        backButton.setStyle(defaultButtonStyle);
+        shareButton = new Button("Share"); // text displayed on clear recipes button
+        shareButton.setStyle(defaultButtonStyle);
 
-        this.getChildren().addAll(editButton, saveButton, deleteButton); // adding buttons to footer
+        this.getChildren().addAll(editButton, saveButton, deleteButton, backButton, shareButton); // adding buttons to
+                                                                                                  // footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -218,6 +249,14 @@ class ViewRecipeFooter extends HBox {
 
     public Button getDeleteButton() {
         return deleteButton;
+    }
+
+    public Button getBackButton() {
+        return backButton;
+    }
+
+    public Button getShareButton() {
+        return shareButton;
     }
 
 }
