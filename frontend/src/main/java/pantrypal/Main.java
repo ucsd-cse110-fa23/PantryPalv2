@@ -129,8 +129,8 @@ class Recipe extends HBox {
 class RecipeList extends VBox {
     // PointC
     Stage primaryStage;
-    ArrayList<RecipeData> recipes; // original recipes 
-    ArrayList<RecipeData> currentRecipes, taggedRecipes; // current recipes 
+    ArrayList<RecipeData> recipes; // original recipes
+    ArrayList<RecipeData> currentRecipes, taggedRecipes; // current recipes
 
     RecipeList(Stage primaryStage) throws IOException {
         this.setSpacing(5); // sets spacing between recipes
@@ -159,6 +159,7 @@ class RecipeList extends VBox {
 
     /**
      * reorder recipes based on the following order
+     * 
      * @param recipes the recipe order to replace with
      */
     public void redoRecipes(ArrayList<RecipeData> recipes) {
@@ -171,6 +172,7 @@ class RecipeList extends VBox {
 
     /**
      * reorder recipes for tagged based on the following order
+     * 
      * @param recipes the recipe order to replace with
      */
     public void redoRecipesT(ArrayList<RecipeData> recipes) {
@@ -442,24 +444,25 @@ class TagFilter extends VBox {
         this.setPrefSize(100, 100);
         this.setStyle("-fx-background-color: #d5f2ec;");
 
-
-        // init buttons, add children 
+        // init buttons, add children
         lunch = new Button("lunch"); // creates a button for marking the contact as done
         lunch.setPrefSize(100, 20);
-        //lunch.setPrefHeight(Double.MAX_VALUE);
-        lunch.setStyle("-fx-background-color: #2B4162; -fx-border-width: 0;-fx-text-fill: white;"); // sets style of button
+        // lunch.setPrefHeight(Double.MAX_VALUE);
+        lunch.setStyle("-fx-background-color: #2B4162; -fx-border-width: 0;-fx-text-fill: white;"); // sets style of
+                                                                                                    // button
 
         breakfast = new Button("breakfast"); // creates a button for marking the contact as done
         breakfast.setPrefSize(100, 20);
-        //breakfast.setPrefHeight(Double.MAX_VALUE);
+        // breakfast.setPrefHeight(Double.MAX_VALUE);
         breakfast.setStyle("-fx-background-color: #FA9F42; -fx-border-width: 0;"); // sets style of button
 
         dinner = new Button("dinner"); // creates a button for marking the contact as done
         dinner.setPrefSize(100, 20);
-        //dinner.setPrefHeight(Double.MAX_VALUE);
-        dinner.setStyle("-fx-background-color: #0B6E4F; -fx-border-width: 0;-fx-text-fill: white;"); // sets style of button
-        
-        this.getChildren().addAll(breakfast,lunch,dinner);
+        // dinner.setPrefHeight(Double.MAX_VALUE);
+        dinner.setStyle("-fx-background-color: #0B6E4F; -fx-border-width: 0;-fx-text-fill: white;"); // sets style of
+                                                                                                     // button
+
+        this.getChildren().addAll(breakfast, lunch, dinner);
 
     }
 
@@ -501,8 +504,7 @@ class Header extends HBox {
                 "Alphabetically",
                 "Reverse Alphabetically",
                 "Newest First",
-                "Oldest First"
-        );
+                "Oldest First");
         sortMenu = new ComboBox<String>(sortOptions);
         sortMenu.setValue("Sort By");
         backButton.setAlignment(Pos.CENTER_RIGHT);
@@ -518,7 +520,6 @@ class Header extends HBox {
         filter.setAlignment(Pos.CENTER);
         filter.setVisible(false);
 
-
         // Title Text
         titleText = new Text("PantryPal");
         titleText.setStyle("-fx-font-weight: bold; -fx-font-size: 20;");
@@ -529,21 +530,21 @@ class Header extends HBox {
         HBox.setHgrow(titleContainer, Priority.ALWAYS); // Allows the title container to grow and center the title
 
         // Add components to the HBox
-        this.getChildren().addAll(logoutButton, backButton, titleContainer,sortMenu,filter);
+        this.getChildren().addAll(logoutButton, backButton, titleContainer, sortMenu, filter);
         this.backButton.setVisible(false);
-        this.logoutButton.setVisible(false);
+        this.logoutButton.setVisible(true);
 
     }
 
-    /** 
+    /**
      * getter for the sort dropdown
+     * 
      * @return the sortMenu object
      */
     public ComboBox<String> getSortMenu() {
         return sortMenu;
     }
 
-    
 }
 
 class AppFrame extends BorderPane {
@@ -570,7 +571,7 @@ class AppFrame extends BorderPane {
     private Button breakfast;
     private Button lunch;
     private Button dinner;
-    private boolean breakYes,lunchYes,dinYes;
+    private boolean breakYes, lunchYes, dinYes;
     private String currentSort;
 
     AppFrame(Stage primaryStage) throws IOException {
@@ -678,71 +679,73 @@ class AppFrame extends BorderPane {
         sortMenu.setOnAction(event -> {
             // Update styling when the selection changes
             updateList(sortMenu.getValue());
-            this.recipeList.redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes,this.getTags()));
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
         });
 
-         // type listeners
+        // type listeners
 
         // switch
         breakfast.setOnAction(e -> {
-            if(breakYes) {
+            if (breakYes) {
                 // filter out breakfast
                 breakfast.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
-            }
-            else {
+            } else {
                 breakfast.setStyle("-fx-background-color: #FA9F42; -fx-border-width: 0;");
             }
             breakYes = !breakYes;
-            // sort then filter 
+            // sort then filter
             this.updateList(currentSort);
-            this.recipeList.redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes,this.getTags()));
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
         });
 
         // switch
         lunch.setOnAction(e -> {
-            if(lunchYes) {
+            if (lunchYes) {
                 // filter out lunch
                 lunch.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;-fx-text-fill: black;");
-            }
-            else {
+            } else {
                 lunch.setStyle("-fx-background-color: #2B4162; -fx-border-width: 0;-fx-text-fill: white;");
             }
             lunchYes = !lunchYes;
             // sort then filter
             this.updateList(currentSort);
-            this.recipeList.redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes,this.getTags()));
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
         });
 
         // switch
         dinner.setOnAction(e -> {
             // switch to the list screen
-            if(dinYes) {
+            if (dinYes) {
                 // filter out dinner
                 dinner.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;");
-            }
-            else {
+            } else {
                 dinner.setStyle("-fx-background-color: #0B6E4F; -fx-border-width: 0;-fx-text-fill: white;");
 
             }
             dinYes = !dinYes;
             // sort then filter
             this.updateList(currentSort);
-            this.recipeList.redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes,this.getTags()));
+            this.recipeList
+                    .redoRecipes(FilterRecipes.filterRecipeByMeal(this.recipeList.currentRecipes, this.getTags()));
         });
-
 
     }
 
-    /** returns a list of the current meal tags requested
-     * @return the meals that were requested 
+    /**
+     * returns a list of the current meal tags requested
+     * 
+     * @return the meals that were requested
      */
     private List<String> getTags() {
         List<String> tags = new ArrayList<String>();
-        if(dinYes)
+        if (dinYes)
             tags.add("Dinner");
-        if(lunchYes)
+        if (lunchYes)
             tags.add("Lunch");
-        if(breakYes)
+        if (breakYes)
             tags.add("Breakfast");
         return tags;
     }
@@ -775,13 +778,11 @@ class AppFrame extends BorderPane {
             // sort alphabetical
             this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
             this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, false));
-        } 
-        else if (value.equals("Reverse Alphabetically")) {
+        } else if (value.equals("Reverse Alphabetically")) {
             // sort alphabetical
             this.recipeList.setStyle("-fx-background-color: #A2AEBB;");
             this.recipeList.redoRecipes(SortRecipes.sortAlphabetically(this.recipeList.recipes, true));
-        } 
-        else if (value.equals("Newest First")) {
+        } else if (value.equals("Newest First")) {
             // sort recipes reverse chronological
             this.recipeList.setStyle("-fx-background-color: #23B5D3;");
             this.recipeList.redoRecipes(SortRecipes.sortByTime(this.recipeList.recipes, true));
@@ -849,13 +850,14 @@ public class Main extends Application {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Server Unavailable");
                 alert.setHeaderText(null);
-                alert.setContentText("The server is currently unavailable. Please check your connection or try again later.");
+                alert.setContentText(
+                        "The server is currently unavailable. Please check your connection or try again later.");
                 alert.showAndWait();
                 primaryStage.close();
             });
-        } 
+        }
 
-        else{
+        else {
             // Setting the Layout of the Window- Should contain a Header, Footer and the
             // RecipeList
             AppFrame root = new AppFrame(primaryStage);

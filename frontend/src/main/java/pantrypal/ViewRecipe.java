@@ -30,6 +30,7 @@ public class ViewRecipe extends BorderPane {
     private Button editButton;
     private Button saveButton;
     private Button deleteButton;
+    private Button shareButton;
 
     private String response;
     private RecipeData recipe;
@@ -60,6 +61,7 @@ public class ViewRecipe extends BorderPane {
         editButton = footer.getEditButton();
         saveButton = footer.getSaveButton();
         deleteButton = footer.getDeleteButton();
+        shareButton = footer.getShareButton();
 
         this.recipe = recipe;
         this.primaryStage = primaryStage;
@@ -128,6 +130,11 @@ public class ViewRecipe extends BorderPane {
 
         });
 
+        shareButton.setOnAction(e -> {
+            // share logic
+
+        });
+
     }
 }
 
@@ -140,11 +147,11 @@ class ViewRecipeHeader extends HBox {
 
         // Create and set up the ImageView
 
-        // if the url is null, add a placeholder image 
-        if(url==null) 
+        // if the url is null, add a placeholder image
+        if (url == null)
             url = "https://cdn.dribbble.com/users/1012566/screenshots/4187820/media/985748436085f06bb2bd63686ff491a5.jpg?resize=400x300&vertical=center";
         imageView = new ImageView(new Image(url, true)); // true to load in background
-        imageView.setFitHeight(120); 
+        imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
 
         Text titleText = new Text(title); // Text of the Header
@@ -183,6 +190,7 @@ class ViewRecipeFooter extends HBox {
     private Button deleteButton;
     private Button saveButton;
     private Button backButton;
+    private Button shareButton;
 
     ViewRecipeFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
@@ -198,8 +206,11 @@ class ViewRecipeFooter extends HBox {
         deleteButton.setStyle(defaultButtonStyle);
         backButton = new Button("Back"); // text displayed on clear recipes button
         backButton.setStyle(defaultButtonStyle);
+        shareButton = new Button("Share"); // text displayed on clear recipes button
+        shareButton.setStyle(defaultButtonStyle);
 
-        this.getChildren().addAll(editButton, saveButton, deleteButton, backButton); // adding buttons to footer
+        this.getChildren().addAll(editButton, saveButton, deleteButton, backButton, shareButton); // adding buttons to
+                                                                                                  // footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -218,6 +229,10 @@ class ViewRecipeFooter extends HBox {
 
     public Button getBackButton() {
         return backButton;
+    }
+
+    public Button getShareButton() {
+        return shareButton;
     }
 
 }

@@ -33,6 +33,7 @@ public class NewRecipeScreen extends BorderPane {
     private String response;
     private RecipeData recipe;
     private Stage primaryStage;
+    private Button shareButton;
 
     private boolean isEditing = false;
 
@@ -63,6 +64,7 @@ public class NewRecipeScreen extends BorderPane {
         // Initialise Button Variables through the getters in Footer
         editButton = newfooter.getEditButton();
         saveButton = newfooter.getSaveButton();
+        shareButton = newfooter.getShareButton();
         cancelButton = newfooter.getCancelButton();
         regenerateButton = newfooter.getRegenerateButton();
 
@@ -131,23 +133,27 @@ public class NewRecipeScreen extends BorderPane {
                 try {
                     MiddlewareModel mm = new MiddlewareModel();
                     recipe.updateRecipeData(mm.regenerateRecipe(recipe.ingredients, recipe.type, recipe.toString()));
-        
+
                     Scene newscene = new Scene(new NewRecipeScreen(primaryStage, recipe), 500, 600);
                     primaryStage.setScene(newscene);
-                    primaryStage.show(); 
+                    primaryStage.show();
                 } catch (IOException ex) {
-                    ex.printStackTrace(); 
+                    ex.printStackTrace();
                 }
             }
+        });
+
+        shareButton.setOnAction(e -> {
+            // share logic
         });
     }
 }
 
 class NewRecipeHeader extends HBox {
     private ImageView imageView;
+
     NewRecipeHeader(String title, String url) {
-        
-        
+
         this.setPrefSize(500, 200); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
@@ -189,6 +195,7 @@ class NewRecipeBody extends HBox {
 
 class NewRecipeFooter extends HBox {
     private Button editButton;
+    private Button shareButton;
     private Button saveButton;
     private Button cancelButton;
     private Button regenerateButton;
@@ -199,15 +206,19 @@ class NewRecipeFooter extends HBox {
         this.setSpacing(15);
 
         String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF;  -fx-font-weight: bold; -fx-font: 11 arial;";
+        cancelButton = new Button("Back"); // text displayed on clear recipes button
+        cancelButton.setStyle(defaultButtonStyle);
         editButton = new Button("Edit Recipe"); // text displayed on clear recipes button
         editButton.setStyle(defaultButtonStyle);
         saveButton = new Button("Save to Database"); // text displayed on clear recipes button
         saveButton.setStyle(defaultButtonStyle);
-        cancelButton = new Button("Back"); // text displayed on clear recipes button
-        cancelButton.setStyle(defaultButtonStyle);
-        regenerateButton = new Button("Regenerate Recipe"); 
+        regenerateButton = new Button("Regenerate Recipe");
         regenerateButton.setStyle(defaultButtonStyle);
-        this.getChildren().addAll(editButton, saveButton, cancelButton, regenerateButton); // adding buttons to footer
+        shareButton = new Button("Share"); // text displayed on clear recipes button
+        shareButton.setStyle(defaultButtonStyle);
+        this.getChildren().addAll(editButton, saveButton, cancelButton, regenerateButton, shareButton); // adding
+                                                                                                        // buttons to
+                                                                                                        // footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -226,6 +237,10 @@ class NewRecipeFooter extends HBox {
 
     public Button getRegenerateButton() {
         return regenerateButton;
+    }
+
+    public Button getShareButton() {
+        return shareButton;
     }
 
 }
