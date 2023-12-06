@@ -43,7 +43,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 public class MiddlewareModel implements IMiddlewareModel {
-    private static final String API_ENDPOINT_SHARE = "http://localhost:8080";
+    private static final String API_ENDPOINT_SHARE = "http://" + GetIP.getIP() + ":8080";
     private static final String API_ENDPOINT = "http://" + GetIP.getIP() + ":8080/api"; // TODO: Create a config
     // file
     // with
@@ -324,7 +324,8 @@ public class MiddlewareModel implements IMiddlewareModel {
             // Check if the response status code indicates logging in (e.g., 200 OK)
             if (response.getStatusLine().getStatusCode() == 200) {
                 String responseBody = EntityUtils.toString(response.getEntity());
-                String output = "http://localhost:8080/share/recipe?recipe=" + responseBody;
+                String output = API_ENDPOINT_SHARE + "/share/recipe?recipe=" + responseBody;;
+                //String output = "http://localhost:8080/share/recipe?recipe=" + responseBody;
                 return output;
             }
         } catch (Exception e) {
