@@ -44,7 +44,7 @@ public class ShareRecipeController {
         return output;
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<String> createSharedRecipe(@RequestBody RecipeData recipe) {
         try {
             ShareableRecipeService.writeRecipe(recipe);
