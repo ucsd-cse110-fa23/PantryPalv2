@@ -9,4 +9,5 @@ public interface IMiddlewareModel {
     public String generateRecipe(String filePath, String mealType);
     public Boolean postAccountAuthentication(Account acc);
     public Boolean postAccountCreation(Account acc);
+    public Boolean isServerOnline();
 }

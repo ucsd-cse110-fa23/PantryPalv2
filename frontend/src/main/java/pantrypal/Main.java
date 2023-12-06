@@ -857,6 +857,7 @@ public class Main extends Application {
                         "The server is currently unavailable. Please check your connection or try again later.");
                 alert.showAndWait();
                 primaryStage.close();
+                Platform.exit();
             });
         }
 

@@ -327,6 +327,9 @@ public class MiddlewareModel implements IMiddlewareModel {
                 String output = "http://localhost:8080/share/recipe?recipe=" + responseBody;
                 return output;
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -343,7 +346,7 @@ public class MiddlewareModel implements IMiddlewareModel {
         });
     }
 
-    public boolean isServerOnline() {
+    public Boolean isServerOnline() {
         try {
             HttpClient httpClient = HttpClients.createDefault();
             HttpGet httpGet = new HttpGet(API_ENDPOINT + "/status");
