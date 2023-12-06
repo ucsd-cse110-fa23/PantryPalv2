@@ -12,18 +12,19 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.beans.binding.When;
+
 public class FilterRecipeBDD {
     
     @Test
     void testFilterBDD() {
-        // Given there exist 0 or more than 1 recipes that are saved in the recipe list and the user is logged in to their account
-        // When the user selects the “sort” button
-        // Then the user is prompted with a dropdown menu displaying the various types of sorting mechanisms such as “alphabetically”, “reverse alphabetically”, “chronologically”, “reverse chronologically”
-        // When the user clicks on the sort type they want to apply to the recipe list from the dropdown menu
-        // Then the recipes are sorted in the designated manner based on the selected sort type. 
+        // Given there exist 0 or more than 1 recipes that are saved in the recipe list and the user is logged in to their account and has clicked on the “View Recipe List”
+        // When the user selects the “filter” button
+        // Then the user is prompted with a dropdown menu displaying the three type of meals “breakfast”, “lunch”, or “dinner”
+        // When the user clicks on the meal type they want to apply to the recipe list from the dropdown menu
+        // Then the recipes are filtered by the designated meal type to only show the selected meal type  
 
-        //populate the list of recipes - precondition
-        // uses the "MockSortFilterUI" class to mock the frontend behavior of the application
+
 
         ArrayList<RecipeData> recipes = new ArrayList<RecipeData>();
         recipes.add(new RecipeData("A title",null,null));
