@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class MockMiddlewareModel implements IMiddlewareModel {
     private ArrayList<Account> accounts = new ArrayList<>();
     private List<RecipeData> recipes = new ArrayList<>();
+    public Boolean serverOnline = true;
 
     // TODO: implement or remove from interface
     public List<RecipeData> getRecipes(Account acc) {
@@ -43,5 +44,17 @@ public class MockMiddlewareModel implements IMiddlewareModel {
         }
         accounts.add(acc);
         return true;
+    }
+
+    public void simulateServerDown() {
+        serverOnline = false;
+    }
+
+    public void simulateServerRunning() {
+        serverOnline = true;
+    }
+
+    public Boolean isServerOnline() {
+        return serverOnline;
     }
 }
