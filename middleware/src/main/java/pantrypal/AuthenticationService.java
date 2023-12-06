@@ -15,7 +15,9 @@ public class AuthenticationService {
     private static final String COLLECTION_NAME = "accounts";
 
     public static boolean authenticate(String username, String password) {
-        try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
+        System.out.println(MONGO_URI);
+        try {
+            MongoClient mongoClient = MongoClients.create(MONGO_URI);
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
@@ -26,11 +28,16 @@ public class AuthenticationService {
 
             String actualPassword = user.getString("password");
             return actualPassword.equals(password);
+        } catch (Exception e) {
+            System.out.println(username);
+            System.out.println(e);
+            return false;
         }
     }
 
     public static boolean createAccount(String username, String password) {
-        try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
+        try {
+            MongoClient mongoClient = MongoClients.create(MONGO_URI);
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
@@ -42,6 +49,10 @@ public class AuthenticationService {
             Document newUser = new Document("username", username).append("password", password);
             collection.insertOne(newUser);
             return true;
+        } catch (Exception e) {
+            System.out.println(username);
+            System.out.println(e);
+            return false;
         }
     }
 }

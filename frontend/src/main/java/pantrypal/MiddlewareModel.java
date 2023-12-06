@@ -43,8 +43,9 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 public class MiddlewareModel implements IMiddlewareModel {
-    private static final String API_ENDPOINT = "http://localhost:8080/api";
+    private static final String API_ENDPOINT = "http://192.168.232.174:8080/api";
     private static final String API_ENDPOINT_SHARE = "http://localhost:8080";
+
 
     // Gets list of recipes from middleware server
     public List<RecipeData> getRecipes(Account acc) {

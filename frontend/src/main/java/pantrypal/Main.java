@@ -757,6 +757,7 @@ class AppFrame extends BorderPane {
             List<RecipeData> recipes = CRUDRecipes.readRecipes();
             MiddlewareModel mm = new MiddlewareModel();
             mm.postRecipes(recipes, AccountService.getAccount());
+            AccountService.setAccount(new Account("", ""));
             CRUDRecipes.deleteRecipesFile();
             Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
             primaryStage.setScene(accScene);
