@@ -38,7 +38,7 @@ public class ViewRecipe extends BorderPane {
     private boolean isEditing = false;
 
     public ViewRecipe(Stage primaryStage, RecipeData recipe) throws IOException {
-        this.response = recipe.title + "\n" + recipe.instructions;
+        this.response = recipe.title + "\n" + String.join("\n", recipe.ingredients) + "\n" + recipe.instructions;
         // Initialise the header Object
         header = new ViewRecipeHeader(recipe.title, recipe.imageUrl);
 
