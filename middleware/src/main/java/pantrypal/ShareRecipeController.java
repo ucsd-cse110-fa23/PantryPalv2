@@ -30,13 +30,13 @@ public class ShareRecipeController {
                 </head>
                 <body>
                     <h1>%s</h1>
-                    <div>%s</div>
-                    <div>%s</div>
+                    <div>Ingredients: %s</div>
+                    <div>Instructions:\n%s</div>
                 </body>
                 </html>
                 """;
 
-            output = String.format(output, recipe.title, recipe.title, recipe.ingredients, recipe.instructions);
+            output = String.format(output, recipe.title, recipe.title, String.join(", ", recipe.ingredients), recipe.instructions);
         } catch (IOException e) {
             e.printStackTrace();
         }
