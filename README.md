@@ -33,6 +33,8 @@ git clone https://github.com/ucsd-cse110-fa23/cse-110-project-team-25.git
 
 and then cd into the designated project directory.
 
+updating the java version in `frontend/build.gradle` and `middleware/build.gradle` may be required based on the respective java version. 
+
 ### For Mac
 
 Then, as our project is gradle-based, build the project using the following command:
@@ -43,8 +45,14 @@ Then, as our project is gradle-based, build the project using the following comm
 
 And finally, run the project using the following command:
 
+to run the server - 
 ```
-./gradlew run --parallel
+./gradlew :middleware:run 
+```
+
+to run the UI - 
+```
+./gradlew :frontend:run
 ```
 
 ### For Windows
@@ -57,8 +65,14 @@ gradlew build
 
 And finally, run the project using the following command:
 
+to run the server - 
 ```
-gradlew run
+gradlew :middleware:run 
+```
+
+to run the UI - 
+```
+gradlew :frontend:run
 ```
 
 ### and in case that doesn't work on windows...try powershell!
@@ -93,5 +107,16 @@ To use our application all you need to do is follow a few simple steps!
 6. At any point you can cancel your recipe or go back to a previous page
 7. To view your recipes list, click the "View Recipe List" button
 8. In your recipes list, you can view and delete past recipes!
+
+## PantryPal Updates 🥳🤑
+
+We are so excited to share with you our newly updated PantryPal 2 🥳🥳 enjoy these new features -
+
+1. Don't like a recipe? Simply press the "regenerate recipe" button on the bottom when you have created a new recipe to get a new one with your same specs.
+2. Want to know what your recipe will look like? in each detailed recipe view, it now shows a generated image of what your dish could look like! Yummy!
+3. Now you can sort and filter your recipes! In the "View Recipe List" tab, you can click the "Sort By" dropdown to sort recipes based on your needs. You can also toggle the "Breakfast", "Lunch", and "Dinner" buttons on the top-right to filter the recipe list.
+4. Recipes in the list of recipes now display a tag of the type of recipe it is!
+5. To share a link of a recipe, press the "Share recipe" button on the bottom of any detailed recipe view, and a shareable link to a website with all that recipe's info will be generated!
+6. Now you can access your recipes anywhere with a login service! Upon opening the app, users will be prompted to log in or create an account. Now recipes can be associated with a user! Furthermore, to expedite log in services, simply press the "remember me" checkbox upon log in in the bottom corner to auto-save login during a session. 
 
 **Thank you for choosing Team 25's PantryPal for your pantry needs! 🧑‍🍳🍳💅**

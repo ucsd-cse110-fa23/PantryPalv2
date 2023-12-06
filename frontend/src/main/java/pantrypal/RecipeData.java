@@ -4,6 +4,24 @@ public class RecipeData {
     Long id;
     String title;
     String instructions;
+    
+
+    // public RecipeData(String gptResponse) {
+    //     // Split by |||||
+    //     String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
+
+    //     // Check if the split response has at least two parts (recipe and image URL)
+    //     if (parts.length > 1) {
+            
+    //         // Process the first part for recipe details
+    //         String[] recipeDetails = parts[0].split("\n");
+    //         this.title = recipeDetails[0].trim();
+    //         this.instructions = joinSubsectionLoop(recipeDetails, 1, recipeDetails.length - 2);
+    //         this.ingredients = recipeDetails[recipeDetails.length - 1].split(";");
+
+    //         // Second part is the image URL
+    //         this.imageUrl = parts[1].trim();
+    //     }
     String[] ingredients;
     String imageUrl;
     double createdTime;
@@ -13,7 +31,7 @@ public class RecipeData {
         String[] parts = gptResponse.split("\\|\\|\\|\\|\\|");
 
         if (parts.length > 1) {
-            
+
             // Process the first part for recipe details
             String[] recipeDetails = parts[0].split("\n");
             this.title = recipeDetails[0].trim();
@@ -81,5 +99,8 @@ public class RecipeData {
     public String toString() {
         return title + "\n" + instructions + "\n" + String.join(";", ingredients);
     }
-}
 
+    public String getRecipeType() {
+        return this.type;
+    }
+}

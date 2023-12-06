@@ -31,6 +31,8 @@ class Recipe extends HBox {
     public TextField recipeName;
     public TextField recipeDetails;
 
+    private TextField recipeType;
+
     private Button viewButton;
     private Button deleteButton;
 
@@ -56,12 +58,21 @@ class Recipe extends HBox {
         this.getChildren().add(index); // add index label to recipe
 
         recipeName = new TextField(); // create recipe name text field
-        recipeName.setPrefSize(380, 20); // set size of text field
+        recipeName.setPrefSize(300, 20); // set size of text field
         recipeName.setStyle("-fx-background-color: #DAE5EA; -fx-border-width: 0;"); // set background color of texfield
         index.setTextAlignment(TextAlignment.LEFT); // set alignment of text field
         recipeName.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
         recipeName.setEditable(false);
+
+        recipeType = new TextField(); // create recipe name text field
+        recipeType.setPrefSize(100, 20); // set size of text field
+        recipeType.setStyle("-fx-background-color: lightblue; -fx-border-width: 0;"); // set background color of
+                                                                                      // texfield
+        recipeType.setPadding(new Insets(10, 0, 10, 0)); // adds some padding to the text field
+        recipeType.setEditable(false);
+
         this.getChildren().add(recipeName); // add textlabel to recipe
+        this.getChildren().add(recipeType);
 
         viewButton = new Button("View");
         viewButton.setPrefSize(100, 20);
@@ -71,7 +82,7 @@ class Recipe extends HBox {
                                                                                                             // button
 
         deleteButton = new Button("Delete"); // creates a button for marking the recipe as done
-        deleteButton.setPrefSize(100, 20);
+        deleteButton.setPrefSize(125, 20);
         deleteButton.setPrefHeight(Double.MAX_VALUE);
         deleteButton.setStyle("-fx-background-color: #e394b2; -fx-border-width: 0; -fx-border-radius: 1em;"); // sets
                                                                                                               // style
@@ -108,12 +119,20 @@ class Recipe extends HBox {
         this.recipeName.setText(name);
     }
 
+    public void setRecipeType(String type) {
+        this.recipeType.setText(type);
+    }
+
     public void setRecipeDetails(String details) {
         this.recipeDetails.setText(details);
     }
 
     public TextField getRecipeName() {
         return this.recipeName;
+    }
+
+    public TextField getRecipeType() {
+        return this.recipeType;
     }
 
     public Button getDeleteButton() {
@@ -153,6 +172,7 @@ class RecipeList extends VBox {
             // create Recipe object for each recipe data
             Recipe recipe = new Recipe(primaryStage, recipeData);
             recipe.setRecipeName(recipeData.title);
+            recipe.setRecipeType(recipeData.type);
             this.getChildren().add(recipe);
         }
     }
@@ -532,7 +552,7 @@ class Header extends HBox {
         // Add components to the HBox
         this.getChildren().addAll(logoutButton, backButton, titleContainer, sortMenu, filter);
         this.backButton.setVisible(false);
-        this.logoutButton.setVisible(false);
+        this.logoutButton.setVisible(true);
 
     }
 
@@ -757,7 +777,7 @@ class AppFrame extends BorderPane {
             List<RecipeData> recipes = CRUDRecipes.readRecipes();
             MiddlewareModel mm = new MiddlewareModel();
             mm.postRecipes(recipes, AccountService.getAccount());
-            AccountService.setAccount(new Account("", ""));
+            AccountService.setAccount(null);
             CRUDRecipes.deleteRecipesFile();
             Scene accScene = new Scene(new AccountScreen(primaryStage), 500, 600);
             primaryStage.setScene(accScene);
@@ -837,10 +857,12 @@ public class Main extends Application {
 
         List<RecipeData> recipes = CRUDRecipes.readRecipes();
         MiddlewareModel mm = new MiddlewareModel();
-        mm.postRecipes(recipes, AccountService.getAccount());
+
+        if (!(AccountService.getAccount() == null)) {
+            mm.postRecipes(recipes, AccountService.getAccount());
+        }
 
         CRUDRecipes.deleteRecipesFile();
-        RememberAccount.deleteRememberedAccountsFile();
     }
 
     @Override
