@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -38,10 +40,14 @@ import org.apache.http.NameValuePair;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 
 public class MiddlewareModel implements IMiddlewareModel {
-    private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this
-                                                                            // instead
+    private static final String API_ENDPOINT = "http://" + GetIP.getIP() + ":8080/api"; // TODO: Create a config
+    // file
+    // with
+    // this
+    // instead
 
     // Gets list of recipes from middleware server
     public List<RecipeData> getRecipes(Account acc) {
@@ -67,6 +73,9 @@ public class MiddlewareModel implements IMiddlewareModel {
                 System.err.println(
                         "HTTP GET request failed with status code: " + response.getStatusLine().getStatusCode());
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -106,6 +115,9 @@ public class MiddlewareModel implements IMiddlewareModel {
                 System.err.println(
                         "HTTP POST request failed with status code: " + response.getStatusLine().getStatusCode());
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,6 +146,10 @@ public class MiddlewareModel implements IMiddlewareModel {
                     return "Upload failed. Server returned status code: " + statusCode;
                 }
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+            return null;
         } catch (IOException e) {
             return "Error occurred during upload: " + e.getMessage();
         }
@@ -164,13 +180,17 @@ public class MiddlewareModel implements IMiddlewareModel {
                     // return {"Upload failed. Server returned status code: " + statusCode};
                 }
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+            return null;
         } catch (IOException e) {
             return null;
             // return "Error occurred during upload: " + e.getMessage();
         }
     }
 
-    public String regenerateRecipe(String[] ingredients, String mealType, String  originalRecipe) {
+    public String regenerateRecipe(String[] ingredients, String mealType, String originalRecipe) {
         String path = "/regenerate-recipe";
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -197,6 +217,10 @@ public class MiddlewareModel implements IMiddlewareModel {
                     // return {"Upload failed. Server returned status code: " + statusCode};
                 }
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+            return null;
         } catch (IOException e) {
             return null;
             // return "Error occurred during upload: " + e.getMessage();
@@ -231,6 +255,9 @@ public class MiddlewareModel implements IMiddlewareModel {
             } else if (response.getStatusLine().getStatusCode() == 404) {
                 return false;
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -261,13 +288,39 @@ public class MiddlewareModel implements IMiddlewareModel {
             if (response.getStatusLine().getStatusCode() == 200) {
                 // Parse the response content
                 String responseBody = EntityUtils.toString(response.getEntity());
-                return true; //returns username if logged in
+                return true; // returns username if logged in
             } else if (response.getStatusLine().getStatusCode() == 404) {
                 return false;
             }
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void showError(String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
+
+    public boolean isServerOnline() {
+        try {
+            HttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(API_ENDPOINT + "/status");
+
+            HttpResponse response = httpClient.execute(httpGet);
+            return response.getStatusLine().getStatusCode() == 200;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
