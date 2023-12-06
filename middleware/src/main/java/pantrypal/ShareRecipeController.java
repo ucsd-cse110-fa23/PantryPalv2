@@ -14,29 +14,36 @@ public class ShareRecipeController {
 
     @GetMapping
     public String getSharedRecipe(@RequestParam(name = "recipe", defaultValue = "None") String recipeTitle) {
-        if(recipeTitle.equals("None")) {
+        if (recipeTitle.equals("None")) {
             return "Invalid URL";
         }
         String output = "Invalid URL";
-        
+
         try {
-            RecipeData recipe = ShareableRecipeService.readRecipe(recipeTitle);
+            RecipeData recipe = ShareableRecipeService.readRecipe(recipeTitle.replace("_", " "));
+
+            System.out.println();
+            // System.out.println("image url: " + recipe.imageUrl);
 
             output = """
-                <!DOCTYPE html>
-                <html xmlns:th="http://www.thymeleaf.org">
-                <head>
-                    <title>%s</title>
-                </head>
-                <body>
-                    <h1>%s</h1>
-                    <div>Ingredients: %s</div>
-                    <div>Instructions:\n%s</div>
-                </body>
-                </html>
-                """;
+                    <!DOCTYPE html>
+                    <html xmlns:th="http://www.thymeleaf.org">
+                    <head>
+                        <title>%s</title>
+                    </head>
+                    <body>
+                        <h1>%s</h1>
+                        <div>Ingredients: %s</div>
+                        <div>Instructions:\n%s</div>
+                        <img src="%s" alt="Image"/>
+                    </body>
+                    </html>
+                    """;
 
-            output = String.format(output, recipe.title, recipe.title, String.join(", ", recipe.ingredients), recipe.instructions);
+            output = String.format(output, recipe.title, recipe.title, String.join(", ",
+                    recipe.ingredients),
+                    recipe.instructions, recipe.imageUrl);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,9 +53,11 @@ public class ShareRecipeController {
 
     @PostMapping()
     public ResponseEntity<String> createSharedRecipe(@RequestBody RecipeData recipe) {
+        System.out.println("INSIDE API");
         try {
+            System.out.println("INSIDE TRY BLOCK");
             ShareableRecipeService.writeRecipe(recipe);
-            return ResponseEntity.ok(recipe.title);
+            return ResponseEntity.ok(recipe.title.replace(" ", "_"));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("An error occurred while .");

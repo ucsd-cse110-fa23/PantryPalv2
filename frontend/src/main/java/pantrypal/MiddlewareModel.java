@@ -43,8 +43,8 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 public class MiddlewareModel implements IMiddlewareModel {
-    private static final String API_ENDPOINT = "http://localhost:8080/api"; // TODO: Create a config file with this
-                                                                            // instead
+    private static final String API_ENDPOINT = "http://localhost:8080/api";
+    private static final String API_ENDPOINT_SHARE = "http://localhost:8080";
 
     // Gets list of recipes from middleware server
     public List<RecipeData> getRecipes(Account acc) {
@@ -70,9 +70,10 @@ public class MiddlewareModel implements IMiddlewareModel {
                 System.err.println(
                         "HTTP GET request failed with status code: " + response.getStatusLine().getStatusCode());
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
-        }catch (Exception e) {
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -111,9 +112,10 @@ public class MiddlewareModel implements IMiddlewareModel {
                 System.err.println(
                         "HTTP POST request failed with status code: " + response.getStatusLine().getStatusCode());
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
-        }catch (Exception e) {
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -141,10 +143,11 @@ public class MiddlewareModel implements IMiddlewareModel {
                     return "Upload failed. Server returned status code: " + statusCode;
                 }
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
             return null;
-        }catch (IOException e) {
+        } catch (IOException e) {
             return "Error occurred during upload: " + e.getMessage();
         }
     }
@@ -174,16 +177,17 @@ public class MiddlewareModel implements IMiddlewareModel {
                     // return {"Upload failed. Server returned status code: " + statusCode};
                 }
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
             return null;
-        }catch (IOException e) {
+        } catch (IOException e) {
             return null;
             // return "Error occurred during upload: " + e.getMessage();
         }
     }
 
-    public String regenerateRecipe(String[] ingredients, String mealType, String  originalRecipe) {
+    public String regenerateRecipe(String[] ingredients, String mealType, String originalRecipe) {
         String path = "/regenerate-recipe";
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -210,10 +214,11 @@ public class MiddlewareModel implements IMiddlewareModel {
                     // return {"Upload failed. Server returned status code: " + statusCode};
                 }
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
             return null;
-        }catch (IOException e) {
+        } catch (IOException e) {
             return null;
             // return "Error occurred during upload: " + e.getMessage();
         }
@@ -247,9 +252,10 @@ public class MiddlewareModel implements IMiddlewareModel {
             } else if (response.getStatusLine().getStatusCode() == 404) {
                 return false;
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
-        }catch (Exception e) {
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -279,14 +285,14 @@ public class MiddlewareModel implements IMiddlewareModel {
             if (response.getStatusLine().getStatusCode() == 200) {
                 // Parse the response content
                 String responseBody = EntityUtils.toString(response.getEntity());
-                return true; //returns username if logged in
+                return true; // returns username if logged in
             } else if (response.getStatusLine().getStatusCode() == 404) {
                 return false;
             }
-        } catch (ConnectException e){
-            showError("Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
-        }
-        catch (Exception e) {
+        } catch (ConnectException e) {
+            showError(
+                    "Cannot connect to server. Certain features are unavailable. Please check your connection. (Warning: Recipes might not save!)");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -301,7 +307,7 @@ public class MiddlewareModel implements IMiddlewareModel {
             String jsonRequest = gson.toJson(recipe);
 
             // Create an HttpPost request
-            HttpPost httpPost = new HttpPost(API_ENDPOINT + "/share/recipe");
+            HttpPost httpPost = new HttpPost(API_ENDPOINT_SHARE + "/share/recipe");
 
             // Set the JSON request body
             StringEntity entity = new StringEntity(jsonRequest);
@@ -309,13 +315,15 @@ public class MiddlewareModel implements IMiddlewareModel {
             httpPost.setEntity(entity);
 
             // Execute the POST request and get the response
+            System.out.println("createshareblae");
             HttpResponse response = httpClient.execute(httpPost);
+            System.out.println("code:::: " + response.getStatusLine().getStatusCode());
 
             // Check if the response status code indicates logging in (e.g., 200 OK)
             if (response.getStatusLine().getStatusCode() == 200) {
                 String responseBody = EntityUtils.toString(response.getEntity());
-                System.out.println("http://localhost:8080/share/recipe?recipe=" + responseBody.replace(" ", "%20"));
-                return responseBody;
+                String output = "http://localhost:8080/share/recipe?recipe=" + responseBody;
+                return output;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -333,12 +341,11 @@ public class MiddlewareModel implements IMiddlewareModel {
         });
     }
 
-
     public boolean isServerOnline() {
         try {
             HttpClient httpClient = HttpClients.createDefault();
             HttpGet httpGet = new HttpGet(API_ENDPOINT + "/status");
-    
+
             HttpResponse response = httpClient.execute(httpGet);
             return response.getStatusLine().getStatusCode() == 200;
         } catch (IOException e) {
@@ -347,5 +354,3 @@ public class MiddlewareModel implements IMiddlewareModel {
         }
     }
 }
-
-

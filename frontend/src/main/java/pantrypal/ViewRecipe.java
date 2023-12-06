@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import javafx.stage.Popup;
+
 public class ViewRecipe extends BorderPane {
 
     private ViewRecipeHeader header;
@@ -131,7 +135,27 @@ public class ViewRecipe extends BorderPane {
         });
 
         shareButton.setOnAction(e -> {
-            // share logic
+            MiddlewareModel mm = new MiddlewareModel();
+            String link = mm.createShareableRecipe(recipe);
+
+            Popup popup = new Popup();
+
+            TextField popupLabel = new TextField(link);
+            popupLabel.setStyle("-fx-background-color: lightblue; -fx-padding: 50px; -fx-wrap-text: true;");
+
+            Button closeMyButton = new Button("Close");
+            closeMyButton.setOnAction(e1 -> popup.hide());
+
+            HBox hbox = new HBox();
+            hbox.getChildren().addAll(closeMyButton, popupLabel);
+            hbox.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+
+            StackPane popupContent = new StackPane();
+            popupContent.getChildren().add(hbox);
+
+            popup.getContent().add(popupContent);
+
+            popup.show(primaryStage, primaryStage.getX() + 50, primaryStage.getY() + 50);
 
         });
 

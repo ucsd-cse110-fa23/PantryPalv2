@@ -17,6 +17,8 @@ public class ShareableRecipeService {
 
     public static void writeRecipe(RecipeData recipe) throws IOException {
         String uri = MongoKey.getAPIKey();
+        System.out.println("INSIDE writerecipe: " + uri);
+
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase database = mongoClient.getDatabase("Shared");
             MongoCollection<Document> collection = database.getCollection("Recipes");
