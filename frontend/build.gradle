@@ -1,12 +1,12 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(17)
         //for sonia's mac
         // languageVersion = JavaLanguageVersion.of(18)
     }
