@@ -35,6 +35,15 @@ and then cd into the designated project directory.
 
 updating the java version in `frontend/build.gradle` and `middleware/build.gradle` may be required based on the respective java version. 
 
+Before attempting to run, ensure that the following files exist in your project :
+```
+frontend/src/resources/ip.txt
+middleware/src/resources/keys.txt
+middleware/src/resources/mongokey.txt
+```
+
+where `ip.txt` is the ip address of the server to which you are connecting (`localhost` if running locally), `keys.txt` contains your OpenAI API key, and `mongokey.txt` contains your mongodb connection string. 
+
 ### For Mac
 
 Then, as our project is gradle-based, build the project using the following command:
