@@ -292,37 +292,6 @@ public class MiddlewareModel implements IMiddlewareModel {
         return false;
     }
 
-    public String createShareableRecipe(RecipeData recipe) {
-        try {
-            HttpClient httpClient = HttpClients.createDefault();
-            Gson gson = new GsonBuilder().create();
-
-            // Serialize the Account object to JSON
-            String jsonRequest = gson.toJson(recipe);
-
-            // Create an HttpPost request
-            HttpPost httpPost = new HttpPost(API_ENDPOINT + "/share/recipe");
-
-            // Set the JSON request body
-            StringEntity entity = new StringEntity(jsonRequest);
-            entity.setContentType("application/json");
-            httpPost.setEntity(entity);
-
-            // Execute the POST request and get the response
-            HttpResponse response = httpClient.execute(httpPost);
-
-            // Check if the response status code indicates logging in (e.g., 200 OK)
-            if (response.getStatusLine().getStatusCode() == 200) {
-                String responseBody = EntityUtils.toString(response.getEntity());
-                System.out.println("http://localhost:8080/share/recipe?recipe=" + responseBody.replace(" ", "%20"));
-                return responseBody;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static void showError(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
