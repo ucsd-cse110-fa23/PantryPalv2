@@ -54,7 +54,7 @@ public class ViewRecipe extends BorderPane {
         // Add footer to the bottom of the BorderPane
         this.setBottom(footer);
 
-        backButton = header.getBackButton();
+        backButton = footer.getBackButton();
 
         // Initialise Button Variables through the getters in Footer
         editButton = footer.getEditButton();
@@ -132,16 +132,9 @@ public class ViewRecipe extends BorderPane {
 }
 
 class ViewRecipeHeader extends HBox {
-
-    private Button backButton;
     private ImageView imageView;
 
     ViewRecipeHeader(String title, String url) {
-
-        String defaultButtonStyle = "-fx-font-style: italic; -fx-background-color: #FFFFFF; -fx-font-weight: bold; -fx-font: 11 arial;";
-        backButton = new Button("Back");
-        backButton.setStyle(defaultButtonStyle);
-
         this.setPrefSize(500, 200); // Size of the header
         this.setStyle("-fx-background-color: #d5f2ec;");
 
@@ -161,10 +154,6 @@ class ViewRecipeHeader extends HBox {
         this.getChildren().addAll(imageView, titleText);
         this.setAlignment(Pos.CENTER);
         this.setSpacing(15);
-    }
-
-    public Button getBackButton() {
-        return backButton;
     }
 }
 
@@ -193,6 +182,7 @@ class ViewRecipeFooter extends HBox {
     private Button editButton;
     private Button deleteButton;
     private Button saveButton;
+    private Button backButton;
 
     ViewRecipeFooter() {
         this.setStyle("-fx-background-color: #d5f2ec;");
@@ -206,8 +196,10 @@ class ViewRecipeFooter extends HBox {
         saveButton.setStyle(defaultButtonStyle);
         deleteButton = new Button("Delete Recipe"); // text displayed on clear recipes button
         deleteButton.setStyle(defaultButtonStyle);
+        backButton = new Button("Back"); // text displayed on clear recipes button
+        backButton.setStyle(defaultButtonStyle);
 
-        this.getChildren().addAll(editButton, saveButton, deleteButton); // adding buttons to footer
+        this.getChildren().addAll(editButton, saveButton, deleteButton, backButton); // adding buttons to footer
         this.setAlignment(Pos.CENTER); // aligning the buttons to center
 
     }
@@ -222,6 +214,10 @@ class ViewRecipeFooter extends HBox {
 
     public Button getDeleteButton() {
         return deleteButton;
+    }
+
+    public Button getBackButton() {
+        return backButton;
     }
 
 }
