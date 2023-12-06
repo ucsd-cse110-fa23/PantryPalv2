@@ -14,4 +14,5 @@ public interface IMiddlewareModel {
     public Boolean postAccountAuthentication(Account acc);
 
     public Boolean postAccountCreation(Account acc);
+    public Boolean isServerOnline();
 }
