@@ -532,7 +532,7 @@ class Header extends HBox {
         // Add components to the HBox
         this.getChildren().addAll(logoutButton, backButton, titleContainer, sortMenu, filter);
         this.backButton.setVisible(false);
-        this.logoutButton.setVisible(false);
+        this.logoutButton.setVisible(true);
 
     }
 
