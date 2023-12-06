@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 // class to mock the frontend behavior of the sort dropdown and filter buttons
-public class MockSortFilterUI {
+public class MockSortFilterLogic {
     ArrayList<RecipeData> recipes;
     ArrayList<RecipeData> currentRecipes;
     boolean dinYes,lunchYes,breakYes;
     String currentSort;
     
-    public MockSortFilterUI(ArrayList<RecipeData> recipes) {
+    public MockSortFilterLogic(ArrayList<RecipeData> recipes) {
         this.recipes = recipes; // mock list of recipes
         this.currentRecipes = recipes;
         currentSort = "";

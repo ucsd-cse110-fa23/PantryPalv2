@@ -1,18 +1,11 @@
 package pantrypal;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.nio.file.*;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import javafx.beans.binding.When;
 
 public class FilterRecipeBDD {
     
@@ -38,7 +31,7 @@ public class FilterRecipeBDD {
         recipes.get(0).createdTime = 3;
         recipes.get(1).createdTime = 4;
 
-        MockSortFilterUI mock = new MockSortFilterUI(recipes);
+        MockSortFilterLogic mock = new MockSortFilterLogic(recipes);
 
         // create expected results arrays 
         String[] alphabetically = {"A title","B title","C title","D title"};
