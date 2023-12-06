@@ -28,14 +28,12 @@ public class ChatGPTTest {
         String mealType2 = "Lunch";
         String mealType3 = "Dinner";
 
-        IChatGPT gpt = new ChatGPT();
-        String[] test = gpt.generateRecipe(transcription, mealType1);
+        MockGPT gpt = new MockGPT();
+        String recipe = gpt.generateRecipe(transcription, mealType1);
         
-        String[] output = {"Proper recipe here", "Chicken", "Rice"};
+        String exceptOutput = "Chicken Fried Rice\nBreakfast\nChicken;Rice;\ncook it!";
 
-        assertEquals(test[0], output[0]);
-        assertEquals(test[1], output[1]);
-        assertEquals(test[2], output[2]);
+        assertEquals(recipe, exceptOutput);
 
     }
 
@@ -49,7 +47,7 @@ public class ChatGPTTest {
         String mealType2 = "Lunch";
         String mealType3 = "Dinner";
 
-        ChatGPT gpt = new ChatGPT(new MockModel());
+        MockGPT gpt = new MockGPT();
         String test1 = gpt.createRecipe(ingredients1, mealType1);
         String test2 = gpt.createRecipe(ingredients2, mealType2);
         String test3 = gpt.createRecipe(ingredients3, mealType3);
@@ -66,8 +64,7 @@ public class ChatGPTTest {
         String prompt1 = "{\"ingredients\": [\"Chicken\",\"Rice\"]}";
         String prompt2 = "{\"ingredients\": [\"Steak\",\"Sea Salt\",\"Pepper\",\"Garlic\",\"Olive Oil\"]}";
 
-        MockModel model = new MockModel();
-        ChatGPT gpt = new ChatGPT(model);
+        ChatGPT gpt = new ChatGPT();
 
         String[] test1 = gpt.parseModelResponse(prompt1);
         String[] test2 = gpt.parseModelResponse(prompt2);
@@ -89,8 +86,7 @@ public class ChatGPTTest {
     void testExtractIngredients() {
         String prompt = "{\"ingredients\": [\"Chicken\",\"Rice\"]}";
 
-        MockModel model = new MockModel();
-        ChatGPT gpt = new ChatGPT(model);
+        MockGPT gpt = new MockGPT();
 
         String[] test = gpt.extractIngredients(prompt);
 
@@ -104,12 +100,11 @@ public class ChatGPTTest {
     void testGenerateMealType() {
         String prompt = "I want to have breakfast";
 
-        MockModel model = new MockModel();
-        ChatGPT gpt = new ChatGPT(model);
+        MockGPT gpt = new MockGPT();
 
         String test = gpt.generateMealType(prompt);
 
-        String output = "Proper meal type here";
+        String output = "Breakfast";
 
         assertEquals(test, output);
     }
