@@ -32,7 +32,7 @@ public class SortRecipeBDD {
         recipes.add(new RecipeData("C",null,null,"Lunch"));
         recipes.add(new RecipeData("D",null,null,"Dinner"));
 
-        MockSortFilterUI mock = new MockSortFilterUI(recipes);
+        MockSortFilterLogic mock = new MockSortFilterLogic(recipes);
 
         // create expected results arrays 
         String[] lunch = {"A","C"};
